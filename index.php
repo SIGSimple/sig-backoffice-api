@@ -12,7 +12,7 @@ Flight::route('GET /usuarios', array('UsuarioController', 'getUsuarios'));
 Flight::route('POST /usuario', array('UsuarioController', 'cadastroUsuario'));
 Flight::route('POST /logar', array('LoginController', 'logar'));
 
-Flight::route('GET /colaboradores', array('ColaboradorController', 'getColaboradores'));
+Flight::route('GET /colaboradores(.json)', array('ColaboradorController', 'getColaboradores'));
 
 Flight::start();
 
