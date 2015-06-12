@@ -93,12 +93,49 @@ class ColaboradorDao{
 				LEFT JOIN tb_estado				AS est_nat		ON est_nat.cod_estado					= col.cod_estado_naturalidade
 				LEFT JOIN tb_banco				AS bnc			ON bnc.cod_banco						= col.cod_banco
 				LEFT JOIN tb_sindicato			AS sdc			ON sdc.cod_sindicato					= col.cod_sindicato
-				LEFT JOIN tb_entidade			AS ent			ON ent.cod_entidade						= col.cod_entidade
-				ORDER BY col.cod_colaborador;";
+				LEFT JOIN tb_entidade			AS ent			ON ent.cod_entidade						= col.cod_entidade";
+
+		if(isset($_GET['limit']))
+			$limit = $_GET['limit'];
+		else
+			$limit = 5;
+
+		if(isset($_GET['offset']))
+			$offset = $_GET['offset'];
+		else
+			$offset = 0;
+
+		if(isset($_GET['order']))
+			$order = $_GET['order'];
+		else
+			$order = "asc";
+
+		if(isset($_GET['search']))
+			$search = $_GET['search'];
+		else
+			$search = "";
+
+		if($search != "")
+			$sql .= " WHERE nme_colaborador LIKE '%$search%' OR nme_fantasia LIKE '%$search%' OR nme_departamento LIKE '%$search%'";
+
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
-			if($select->rowCount()>0)
-				return $select->fetchALL(PDO::FETCH_ASSOC);
+			if($select->rowCount()>0) {
+				$result = $select->fetchALL(PDO::FETCH_ASSOC);
+
+				if($order != "asc")
+					$result = array_reverse($result);
+
+				$sizeOfResult = count($result);
+
+				$result = array_slice($result, $offset, $limit);
+
+				$data = array();
+				$data['total'] 	= $sizeOfResult;
+				$data['rows'] 	= $result;
+
+				return $data;
+			}
 			else
 				return false;
 		}
