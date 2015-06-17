@@ -5,11 +5,11 @@ class ModuloController {
 		$dao = new ModuloDao;
 	
 		$data = $dao->getModulos($_GET);
-		
+
 		$itemsByReference = array();
 		
 		// Build array of item references:
-		foreach($data as $key => &$item) {
+		foreach($data['rows'] as $key => &$item) {
 			$itemsByReference[$item['cod_modulo']] = &$item;
 			// Children array:
 			$itemsByReference[$item['cod_modulo']]['children'] = array();
@@ -18,17 +18,17 @@ class ModuloController {
 		}
 
 		// Set items as children of the relevant parent item.
-		foreach($data as $key => &$item)
+		foreach($data['rows'] as $key => &$item)
 			if($item['cod_modulo_pai'] && isset($itemsByReference[$item['cod_modulo_pai']]))
 				$itemsByReference [$item['cod_modulo_pai']]['children'][] = &$item;
 		
 		// Remove items that were added to parents elsewhere:
-		foreach($data as $key => &$item) {
+		foreach($data['rows'] as $key => &$item) {
 			if($item['cod_modulo_pai'] && isset($itemsByReference[$item['cod_modulo_pai']]))
-				unset($data[$key]);
+				unset($data['rows'][$key]);
 		}
 
-		Flight::json($data);
+		Flight::json($data['rows']);
 	}
 }
 
