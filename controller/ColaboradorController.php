@@ -3,7 +3,7 @@
 class ColaboradorController {
 	public static function getColaboradores() {
 		$colaboradorDao = new ColaboradorDao();
-		$colaborador = $colaboradorDao->getColaboradores();
+		$colaborador = $colaboradorDao->getColaboradores($_GET);
 		if($colaborador)
 			Flight::json($colaborador);
 		else

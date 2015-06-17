@@ -7,7 +7,7 @@ class ColaboradorDao{
 		$this->conn = Conexao::getInstance();
 	} 
 
-	public function getColaboradores(){
+	public function getColaboradores($busca=null){
 		$sql = "SELECT 
 					col.cod_colaborador, 
 				    col.num_matricula, 
@@ -95,28 +95,45 @@ class ColaboradorDao{
 				LEFT JOIN tb_sindicato			AS sdc			ON sdc.cod_sindicato					= col.cod_sindicato
 				LEFT JOIN tb_entidade			AS ent			ON ent.cod_entidade						= col.cod_entidade";
 
-		if(isset($_GET['limit']))
-			$limit = $_GET['limit'];
-		else
-			$limit = 5;
+		$limit = 5;
+		$offset = 0;
+		$order = "asc";
+		$search = "";
 
-		if(isset($_GET['offset']))
-			$offset = $_GET['offset'];
-		else
-			$offset = 0;
+		if(is_array($busca) && count($busca) > 0) {
+			if(isset($busca['limit'])) {
+				$limit = $busca['limit'];
+				unset($busca['limit']);
+			}	
 
-		if(isset($_GET['order']))
-			$order = $_GET['order'];
-		else
-			$order = "asc";
+			if(isset($busca['offset'])) {
+				$offset = $busca['offset'];
+				unset($busca['offset']);
+			}	
 
-		if(isset($_GET['search']))
-			$search = $_GET['search'];
-		else
-			$search = "";
+			if(isset($busca['order'])) {
+				$order = $busca['order'];
+				unset($busca['order']);
+			}	
 
-		if($search != "")
-			$sql .= " WHERE nme_colaborador LIKE '%$search%' OR nme_fantasia LIKE '%$search%' OR nme_departamento LIKE '%$search%'";
+			if(isset($busca['search'])) {
+				$search = $busca['search'];
+				unset($busca['search']);
+			}
+
+			if($search != "") {
+				$sql .= " WHERE nme_colaborador LIKE '%$search%' OR nme_fantasia LIKE '%$search%' OR nme_departamento LIKE '%$search%'";
+
+				if(count($busca) > 0) {
+					$where = prepareWhere($busca);
+					$sql .= " AND " . $where;
+				}
+			}
+			else if(count($busca) > 0) {
+				$where = prepareWhere($busca);
+				$sql .= " WHERE " . $where;
+			}
+		}
 
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
