@@ -16,6 +16,7 @@ Flight::route('POST /horario/new', array('RegistroHorarioController', 'setRegist
 Flight::route('GET /colaboradores(.json)', array('ColaboradorController', 'getColaboradores'));
 Flight::route('GET /empreendimentos(.json)', array('EmpreendimentoController', 'getEmpreendimentos'));
 Flight::route('GET /empresas(.json)', array('EmpresaController', 'getEmpresas'));
+Flight::route('GET /modulos(.json)', array('ModuloController', 'getModulos'));
 
 Flight::start();
 
