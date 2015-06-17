@@ -4,7 +4,7 @@ class ModuloController {
 	public static function getModulos() {
 		$dao = new ModuloDao;
 	
-		$data = $dao->getModulos();
+		$data = $dao->getModulos($_GET);
 		
 		$itemsByReference = array();
 		
