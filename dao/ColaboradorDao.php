@@ -78,7 +78,8 @@ class ColaboradorDao{
 				    col.pth_arquivo_reservista,
 				    col.cod_entidade,
 				    ent.nme_entidade,
-				    col.num_entidade
+				    col.num_entidade,
+				    col.qtd_horas_contratadas
 				FROM tb_colaborador 			AS col
 				LEFT JOIN tb_empresa 			AS emp 			ON emp.cod_empresa 						= col.cod_empresa_contratante
 				LEFT JOIN tb_origem 			AS org			ON org.cod_origem 						= col.cod_contrato
