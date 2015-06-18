@@ -8,7 +8,7 @@ class GradeHorarioProgramacaoDao{
 	} 
 
 	public function getGradeHorarioProgramacoes($busca=null){
-		$sql = "SELECT tds.nme_mini_dia_semana, ghp.* 
+		$sql = "SELECT * 
 				FROM tb_grade_horario_programacao 	as ghp
 				INNER JOIN tb_dia_semana 			as tds on tds.cod_dia_semana = ghp.cod_dia_semana";
 		
