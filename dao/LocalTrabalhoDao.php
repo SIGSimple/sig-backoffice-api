@@ -8,8 +8,10 @@ class LocalTrabalhoDao{
 	} 
 
 	public function getLocaisTrabalho($busca=null){
-		$sql = "SELECT * FROM tb_local_trabalho";
-		
+		$sql = "SELECT tlt.*, col.nme_colaborador
+				FROM tb_local_trabalho 		as tlt
+				LEFT JOIN tb_colaborador 	as col on col.cod_colaborador = tlt.cod_representante";
+
 		$limit = 5;
 		$offset = 0;
 		$order = "asc";
