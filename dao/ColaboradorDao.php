@@ -28,6 +28,7 @@ class ColaboradorDao{
 				    col.cod_grade_horario,
 				    grh.nme_grade_horario,
 				    col.flg_ativo, 
+				    col.flg_trabalho_fim_semana,
 				    col.dta_admissao,
 				    col.dta_demissao,
 				    col.num_ctps,

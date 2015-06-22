@@ -73,7 +73,6 @@ class SindicatoDao{
 		}
 		else
 			return false;
-
 	}
 }
 ?>
