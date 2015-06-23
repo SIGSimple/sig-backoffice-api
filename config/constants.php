@@ -13,9 +13,9 @@ if(serverName() == 'localhost') {
 else
 {
 	// PRODUÇÃO - AMAZON
-	define('HOST', 		'srvwldb1.cjnvfjneksls.sa-east-1.rds.amazonaws.com');
+	define('HOST', 		'192.168.0.12');
 	define('DBNAME', 	'bd_sig_backoffice');
 	define('USER', 		'root');
-	define('PASSWORD', 	'root1234567');
+	define('PASSWORD', 	'150679');
 }
 ?>
