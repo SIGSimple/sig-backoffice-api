@@ -1,48 +1,60 @@
 <?php
-
-class EmpresaDao {
+class EmpresaDao{
 
 	private $conn;
 
 	public function __construct() {
 		$this->conn = Conexao::getInstance();
 	} 
-	
-	public function getEmpresas() {
-		$sql = "SELECT emp.*, cid.nme_cidade, est.sgl_estado, est.nme_estado 
-				FROM tb_empresa as emp
-				INNER JOIN tb_cidade as cid on cid.cod_cidade = emp.cod_cidade
-				INNER JOIN tb_estado as est on est.cod_estado = emp.cod_estado";
 
-		if(isset($_GET['limit']))
-			$limit = $_GET['limit'];
-		else
-			$limit = 5;
+	public function getEmpresas($busca=null){
+		$sql = "SELECT * FROM tb_empresa";
+		
+		$limit = 5;
+		$offset = 0;
+		$order = "asc";
+		$search = "";
 
-		if(isset($_GET['offset']))
-			$offset = $_GET['offset'];
-		else
-			$offset = 0;
+		if(is_array($busca) && count($busca) > 0) {
+			if(isset($busca['limit'])) {
+				$limit = $busca['limit'];
+				unset($busca['limit']);
+			}	
 
-		if(isset($_GET['order']))
-			$order = $_GET['order'];
-		else
-			$order = "asc";
+			if(isset($busca['offset'])) {
+				$offset = $busca['offset'];
+				unset($busca['offset']);
+			}	
 
-		if(isset($_GET['search']))
-			$search = $_GET['search'];
-		else
-			$search = "";
+			if(isset($busca['order'])) {
+				$order = $busca['order'];
+				unset($busca['order']);
+			}	
 
-		if($search != "")
-			$sql .= " WHERE nme_razao_social LIKE '%$search%' OR nme_fantasia LIKE '%$search%'";
+			if(isset($busca['search'])) {
+				$search = $busca['search'];
+				unset($busca['search']);
+			}
 
+			if($search != "") {
+				$sql .= " WHERE nme_fantasia LIKE '%$search%' OR nme_razao_social LIKE '%$search%'";
 
-		$select = $this->conn->prepare($sql);		
+				if(count($busca) > 0) {
+					$where = prepareWhere($busca);
+					$sql .= " AND " . $where;
+				}
+			}
+			else if(count($busca) > 0) {
+				$where = prepareWhere($busca);
+				$sql .= " WHERE " . $where;
+			}
+		}
+
+		$select = $this->conn->prepare($sql);
 		if($select->execute()){
 			if($select->rowCount()>0) {
 				$result = $select->fetchALL(PDO::FETCH_ASSOC);
-				
+
 				if($order != "asc")
 					$result = array_reverse($result);
 
@@ -61,7 +73,7 @@ class EmpresaDao {
 		}
 		else
 			return false;
+
 	}
 }
-
 ?>
