@@ -60,7 +60,7 @@ class DepartamentoDao{
 
 				$sizeOfResult = count($result);
 
-				$result = array_slice($result, $offset, $limit);
+				/*$result = array_slice($result, $offset, $limit);*/
 
 				$data = array();
 				$data['total'] 	= $sizeOfResult;

@@ -16,10 +16,10 @@ class BancoDao{
 		$search = "";
 
 		if(is_array($busca) && count($busca) > 0) {
-			if(isset($busca['limit'])) {
-				$limit = $busca['limit'];
+			if(isset($busca['limit'])) {  
+ 				$limit = $busca['limit'];
 				unset($busca['limit']);
-			}	
+			}
 
 			if(isset($busca['offset'])) {
 				$offset = $busca['offset'];
@@ -60,7 +60,7 @@ class BancoDao{
 
 				$sizeOfResult = count($result);
 
-				$result = array_slice($result, $offset, $limit);
+				/*$result = array_slice($result, $offset, $limit);*/
 
 				$data = array();
 				$data['total'] 	= $sizeOfResult;
