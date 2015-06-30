@@ -38,6 +38,7 @@ Flight::route('GET /cidades(.json)', 								array('CidadeController', 'getCidad
 Flight::route('GET /regimes-contratacao(.json)', 					array('RegimeContratacaoController', 'getRegimesContratacao'));
 Flight::route('GET /departamentos(.json)',		 					array('DepartamentoController', 'getDepartamentos'));
 Flight::route('GET /bancos(.json)',		 							array('BancoController', 'getBancos'));
+Flight::route('GET /origens(.json)',		 						array('OrigemController', 'getOrigens'));
 Flight::start();
 
 ?>

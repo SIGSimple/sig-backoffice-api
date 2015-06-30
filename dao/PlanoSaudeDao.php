@@ -10,12 +10,19 @@ class PlanoSaudeDao{
 	public function getPlanosSaude($busca=null){
 		$sql = "SELECT * FROM tb_plano_saude";
 		
+		$nolimit = false;
 		$limit = 5;
 		$offset = 0;
 		$order = "asc";
 		$search = "";
 
+
 		if(is_array($busca) && count($busca) > 0) {
+			if(isset($busca['nolimit'])) {
+				$nolimit = true;
+				unset($busca['nolimit']);
+			}
+
 			if(isset($busca['limit'])) {
 				$limit = $busca['limit'];
 				unset($busca['limit']);
@@ -60,7 +67,8 @@ class PlanoSaudeDao{
 
 				$sizeOfResult = count($result);
 
-				$result = array_slice($result, $offset, $limit);
+				if(!$nolimit)
+					$result = array_slice($result, $offset, $limit);
 
 				$data = array();
 				$data['total'] 	= $sizeOfResult;

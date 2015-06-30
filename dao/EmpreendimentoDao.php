@@ -47,7 +47,8 @@ class EmpreendimentoDao{
 
 				$sizeOfResult = count($result);
 
-				$result = array_slice($result, $offset, $limit);
+				if(!$nolimit)
+					$result = array_slice($result, $offset, $limit);
 
 				$data = array();
 				$data['total'] 	= $sizeOfResult;
