@@ -15,7 +15,7 @@
 		return (float)$number;
 	}
 
-	function prepareWhere($busca){
+	/*function prepareWhere($busca){
 		foreach ($busca as $key => $value) {
 			$key = str_replace("->",'.',$key);
 			if(is_array($value)){
@@ -24,6 +24,22 @@
 				$aux[] = $key." = '$value'";
 			}
 		}
+		return stripslashes(join(' AND ',$aux));
+	}*/
+
+	function prepareWhere($busca){
+		foreach ($busca as $key => $value) {
+			$key = str_replace("->",'.',$key);
+			if(is_array($value)){
+				if(array_key_exists('exp', $value))
+					$aux[] = $key.' '.$value['exp'];
+				else if(array_key_exists('literal_exp', $value))
+					$aux[] = $value['literal_exp'];
+			} else {
+				$aux[] = $key." = '$value'";
+			}
+		}
+
 		return stripslashes(join(' AND ',$aux));
 	}
 

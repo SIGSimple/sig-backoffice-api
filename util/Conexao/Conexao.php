@@ -20,7 +20,7 @@ class Conexao{
 					$db = null;
 					$counter++;
 					if ($counter == $limit)
-						throw new PDODBException($e);
+						throw new PDOException($e);
 				}
 			}
 		}

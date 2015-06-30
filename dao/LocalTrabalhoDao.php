@@ -8,7 +8,7 @@ class LocalTrabalhoDao{
 	} 
 
 	public function getLocaisTrabalho($busca=null){
-		$sql = "SELECT tlt.*, col.nme_colaborador
+		$sql = "SELECT tlt.*, col.nme_colaborador as nme_representante
 				FROM tb_local_trabalho 		as tlt
 				LEFT JOIN tb_colaborador 	as col on col.cod_colaborador = tlt.cod_representante";
 

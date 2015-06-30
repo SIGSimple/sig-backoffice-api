@@ -5,7 +5,7 @@ define('CHARSET', 'utf8');
 // Constantes de configuração do banco de dados
 if(serverName() == 'localhost') {
 	// DESENVOLVIMENTO - LOCALHOST
-	define('HOST', 		'192.168.0.12');
+	define('HOST', 		'localhost');
 	define('DBNAME', 	'bd_sig_backoffice');
 	define('USER', 		'root');
 	define('PASSWORD', 	'150679');
@@ -13,7 +13,7 @@ if(serverName() == 'localhost') {
 else
 {
 	// PRODUÇÃO - AMAZON
-	define('HOST', 		'192.168.0.12');
+	define('HOST', 		'localhost');
 	define('DBNAME', 	'bd_sig_backoffice');
 	define('USER', 		'root');
 	define('PASSWORD', 	'150679');
