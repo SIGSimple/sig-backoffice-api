@@ -16,12 +16,14 @@ class UsuarioDao {
 					per.nme_perfil, 
 					usu.cod_colaborador, 
 					emp.cod_empreendimento, 
-					emp.nme_empreendimento
+					emp.nme_empreendimento,
+					col.flg_sexo
 				FROM tb_usuario 						AS usu
 				INNER JOIN tb_usuario_empreendimento 	AS tue ON tue.cod_usuario = usu.cod_usuario
 				INNER JOIN tb_empreendimento 			AS emp ON emp.cod_empreendimento = tue.cod_empreendimento
 				INNER JOIN tb_usuario_perfil 			AS tup ON tup.cod_usuario = usu.cod_usuario
-				INNER JOIN tb_perfil 					AS per ON per.cod_perfil = tup.cod_perfil";
+				INNER JOIN tb_perfil 					AS per ON per.cod_perfil = tup.cod_perfil
+				LEFT JOIN  tb_colaborador 				AS col ON col.cod_colaborador = usu.cod_colaborador";
 		
 		$limit = 5;
 		$offset = 0;
