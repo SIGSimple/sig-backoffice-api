@@ -16,6 +16,8 @@ class TipoRegistroHorarioDao {
 			$sql .= " WHERE " . $where;
 		}
 
+		$sql .= " ORDER BY nme_tipo_registro_horario ASC";
+
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
 			if($select->rowCount()>0) {
