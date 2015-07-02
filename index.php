@@ -24,7 +24,10 @@ Flight::route('GET /sindicato/hora-extra/faixa(.json)', 			array('FaixaHoraExtra
 Flight::route('GET /funcoes(.json)', 								array('FuncaoController', 'getFuncoes'));
 Flight::route('GET /entidades(.json)', 								array('EntidadeController', 'getEntidades'));
 Flight::route('GET /planos-saude(.json)', 							array('PlanoSaudeController', 'getPlanosSaude'));
-Flight::route('GET /tipos-registro/horario(.json)', 				array('TipoRegistroHorarioController', 'getTiposRegistroHorario'));
+
+Flight::route('GET /tipos/telefone(.json)', 						array('TipoTelefoneController', 'getTiposTelefone'));
+Flight::route('GET /tipos/registro/horario(.json)', 				array('TipoRegistroHorarioController', 'getTiposRegistroHorario'));
+
 Flight::route('GET /dia-ponte/programacao(.json)', 					array('ProgramacaoDiaPonteController', 'getProgramacoesDiaPonte'));
 
 Flight::route('GET /colaborador/ultima/funcao/@cod_colaborador', 	array('FuncaoColaboradorController', 'getUltimaFuncao'));
