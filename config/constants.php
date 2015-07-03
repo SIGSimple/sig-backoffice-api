@@ -9,6 +9,7 @@ if(serverName() == 'localhost') {
 	define('DBNAME', 	'bd_sig_backoffice');
 	define('USER', 		'root');
 	define('PASSWORD', 	'150679');
+	define('PATH_UPLOAD_FILES', '/Users/filipecoelho/Sites/sig-backoffice-files/');
 }
 else
 {
@@ -17,5 +18,6 @@ else
 	define('DBNAME', 	'bd_sig_backoffice');
 	define('USER', 		'root');
 	define('PASSWORD', 	'150679');
+	define('PATH_UPLOAD_FILES', '/Users/filipecoelho/Sites/sig-backoffice-files/');
 }
 ?>

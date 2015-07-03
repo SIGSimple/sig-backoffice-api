@@ -7,11 +7,27 @@ class UsuarioDao {
 		$this->conn = Conexao::getInstance();
 	}
 
+	public function desbloquearSenhaUsuario(UsuarioTO $usuarioTO) {
+		$sql = "UPDATE tb_usuario
+				SET nme_senha 				= :nme_senha,
+					flg_senha_bloqueada 	= 0,
+					dta_ultima_alteracao 	= now()
+				WHERE cod_usuario = :cod_usuario;";
+
+		$insert = $this->conn->prepare($sql);
+
+		$insert->bindValue(':nme_senha', 	$usuarioTO->nme_senha,	 PDO::PARAM_STR);
+		$insert->bindValue(':cod_usuario', 	$usuarioTO->cod_usuario, PDO::PARAM_STR);
+
+		return $insert->execute();
+	}
+
 	public function getUsuarios($busca=null){
 		$sql = "SELECT DISTINCT 
 					usu.cod_usuario, 
 					usu.nme_usuario, 
 					usu.nme_login, 
+					usu.flg_senha_bloqueada, 
 					per.cod_perfil, 
 					per.nme_perfil, 
 					usu.cod_colaborador, 

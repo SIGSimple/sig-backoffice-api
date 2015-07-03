@@ -9,9 +9,9 @@ Flight::route('GET /', function() {
 });
 
 Flight::route('GET /usuarios', 										array('UsuarioController', 'getUsuarios'));
+Flight::route('POST /usuario/desbloquear/senha', 					array('UsuarioController', 'desbloquearSenhaUsuario'));
 Flight::route('POST /usuario', 										array('UsuarioController', 'cadastroUsuario'));
 Flight::route('POST /logar', 										array('LoginController', 'logar'));
-Flight::route('POST /horario/new', 									array('RegistroHorarioController', 'setRegistroHorario'));
 
 Flight::route('GET /feriados/@num_mes/@cod_estado/@cod_cidade', 	array('FeriadoController', 'getFeriadosByMesEstadoCidade'));
 
@@ -27,6 +27,9 @@ Flight::route('GET /planos-saude(.json)', 							array('PlanoSaudeController', '
 Flight::route('GET /tipos-registro/horario(.json)', 				array('TipoRegistroHorarioController', 'getTiposRegistroHorario'));
 Flight::route('GET /dia-ponte/programacao(.json)', 					array('ProgramacaoDiaPonteController', 'getProgramacoesDiaPonte'));
 
+Flight::route('POST /colaborador/registro/horario/update', 			array('RegistroHorarioController', 'updateRegistroHorario'));
+Flight::route('POST /colaborador/registro/horario/new', 			array('RegistroHorarioController', 'setRegistroHorario'));
+Flight::route('GET /colaborador/registros/horario', 				array('RegistroHorarioController', 'getRegistrosHorario'));
 Flight::route('GET /colaborador/ultima/funcao/@cod_colaborador', 	array('FuncaoColaboradorController', 'getUltimaFuncao'));
 Flight::route('GET /colaboradores(.json)', 							array('ColaboradorController', 'getColaboradores'));
 

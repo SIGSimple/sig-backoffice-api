@@ -51,7 +51,10 @@
 			}else{
 				if(!function_exists($tipo)){
 					if($default_tipo == null){
-						if(is_numeric($value))
+						if($value === 'true' || $value === 'false') {
+							$tipo = 'boolean';
+						}
+						elseif(is_numeric($value))
 							$tipo = 'double';
 						elseif (is_null($value)) {
 							$tipo = 'null';
@@ -63,6 +66,12 @@
 					}
 					if($arr_key == 'all' || in_array($key, $arr_key)){
 						switch($tipo){
+							case 'boolean':
+								if($value === 'true')
+									$arr[$key] = true;
+								elseif($value === 'false')
+									$arr[$key] = false;
+								break;
 							case 'float':
 								$arr[$key] = (float)$value ;
 								break;

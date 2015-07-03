@@ -9,7 +9,9 @@ class ModuloDao {
 	}
 
 	public function getModulos($busca=null) {
-		$sql = "SELECT * FROM tb_modulo ";
+		$sql = "SELECT mdl.*
+				FROM tb_modulo 				AS mdl
+				INNER JOIN tb_modulo_perfil AS tmp ON tmp.cod_modulo = mdl.cod_modulo";
 
 		if(is_array($busca) && count($busca) > 0) {
 			$where = prepareWhere($busca);
