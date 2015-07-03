@@ -3,7 +3,7 @@
 class EmpresaController {
 	public static function getEmpresas() {
 		$empresaDao = new EmpresaDao();
-		$empresa = $empresaDao->getEmpresas();
+		$empresa = $empresaDao->getEmpresas($_GET);
 		if($empresa)
 			Flight::json($empresa);
 		else
