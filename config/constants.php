@@ -5,7 +5,7 @@ define('CHARSET', 'utf8');
 // Constantes de configuração do banco de dados
 if(serverName() == 'localhost') {
 	// DESENVOLVIMENTO - LOCALHOST
-	define('HOST', 		'localhost');
+	define('HOST', 		'192.168.0.13');
 	define('DBNAME', 	'bd_sig_backoffice');
 	define('USER', 		'root');
 	define('PASSWORD', 	'150679');
