@@ -14,7 +14,7 @@ if(serverName() == 'localhost') {
 else
 {
 	// PRODUÇÃO - AMAZON
-	define('HOST', 		'Mysql@mysql01.consorciointermultip.hospedagemdesites.ws');
+	define('HOST', 		'mysql01.consorciointermultip.hospedagemdesites.ws');
 	define('DBNAME', 	'consorciointer1');
 	define('USER', 		'consorciointer1');
 	define('PASSWORD', 	'f150679@Fil');
