@@ -33,6 +33,7 @@ class RegistroHorarioController {
 				$registroHorarioTO->qtd_horas_trabalhadas				 		= $record["qtd_horas_trabalhadas"];
 				$registroHorarioTO->qtd_total_hora_extra				 		= $record["qtd_total_hora_extra"];
 				$registroHorarioTO->qtd_tempo_compensacao				 		= $record["qtd_tempo_compensacao"];
+				$registroHorarioTO->qtd_horas_negativas					 		= $record["qtd_horas_negativas"];
 				$registroHorarioTO->flg_hora_extra				 				= $record["flg_hora_extra"];
 				$registroHorarioTO->flg_terminou_mesmo_dia				 		= $record["flg_terminou_mesmo_dia"];
 				$registroHorarioTO->flg_compensacao				 				= $record["flg_compensacao"];
@@ -82,6 +83,7 @@ class RegistroHorarioController {
 				$registroHorarioTO->qtd_horas_trabalhadas				 		= $record["qtd_horas_trabalhadas"];
 				$registroHorarioTO->qtd_total_hora_extra				 		= $record["qtd_total_hora_extra"];
 				$registroHorarioTO->qtd_tempo_compensacao				 		= $record["qtd_tempo_compensacao"];
+				$registroHorarioTO->qtd_horas_negativas				 			= $record["qtd_horas_negativas"];
 				$registroHorarioTO->flg_hora_extra				 				= $record["flg_hora_extra"];
 				$registroHorarioTO->flg_terminou_mesmo_dia				 		= $record["flg_terminou_mesmo_dia"];
 				$registroHorarioTO->flg_compensacao				 				= $record["flg_compensacao"];

@@ -19,6 +19,7 @@ class RegistroHorarioTO {
 	public $qtd_horas_trabalhadas;
 	public $qtd_total_hora_extra;
 	public $qtd_tempo_compensacao;
+	public $qtd_horas_negativas;
 	public $flg_hora_extra;
 	public $flg_terminou_mesmo_dia;
 	public $flg_compensacao;

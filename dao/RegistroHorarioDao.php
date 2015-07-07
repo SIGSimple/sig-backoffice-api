@@ -28,6 +28,7 @@ class RegistroHorarioDao {
 				    qtd_horas_trabalhadas,
 				    qtd_total_hora_extra,
 				    qtd_tempo_compensacao,
+				    qtd_horas_negativas,
 				    flg_hora_extra,
 				    flg_terminou_mesmo_dia,
 				    flg_compensacao,
@@ -83,6 +84,7 @@ class RegistroHorarioDao {
 					qtd_horas_trabalhadas 			= :qtd_horas_trabalhadas,
 					qtd_total_hora_extra 			= :qtd_total_hora_extra,
 					qtd_tempo_compensacao 			= :qtd_tempo_compensacao,
+					qtd_horas_negativas 			= :qtd_horas_negativas,
 					flg_hora_extra 					= :flg_hora_extra,
 					flg_terminou_mesmo_dia 			= :flg_terminou_mesmo_dia,
 					flg_compensacao 				= :flg_compensacao,
@@ -110,6 +112,7 @@ class RegistroHorarioDao {
 		$insert->bindValue(':qtd_horas_trabalhadas', 		$registroHorarioTO->qtd_horas_trabalhadas, 			PDO::PARAM_INT);
 		$insert->bindValue(':qtd_total_hora_extra', 		$registroHorarioTO->qtd_total_hora_extra, 			PDO::PARAM_INT);
 		$insert->bindValue(':qtd_tempo_compensacao', 		$registroHorarioTO->qtd_tempo_compensacao, 			PDO::PARAM_INT);
+		$insert->bindValue(':qtd_horas_negativas', 			$registroHorarioTO->qtd_horas_negativas, 			PDO::PARAM_INT);
 		$insert->bindValue(':flg_hora_extra', 				$registroHorarioTO->flg_hora_extra, 				PDO::PARAM_BOOL);
 		$insert->bindValue(':flg_terminou_mesmo_dia', 		$registroHorarioTO->flg_terminou_mesmo_dia, 		PDO::PARAM_BOOL);
 		$insert->bindValue(':flg_compensacao', 				$registroHorarioTO->flg_compensacao, 				PDO::PARAM_BOOL);
@@ -127,12 +130,12 @@ class RegistroHorarioDao {
 		$sql = "INSERT INTO tb_registro_horario (
 					cod_colaborador, cod_tipo_registro_horario, dta_registro, hor_entrada, hor_saida_intervalo, 
 					hor_retorno_intervalo, hor_saida, hor_extra, dta_lancamento, qtd_hora_adicional_noturno, 
-					qtd_hora_extra_dia_inicio, qtd_hora_extra_dia_fim, qtd_horas_trabalhadas, qtd_total_hora_extra, qtd_tempo_compensacao, flg_hora_extra, 
+					qtd_hora_extra_dia_inicio, qtd_hora_extra_dia_fim, qtd_horas_trabalhadas, qtd_total_hora_extra, qtd_tempo_compensacao, qtd_horas_negativas, flg_hora_extra, 
 					flg_terminou_mesmo_dia, flg_compensacao, flg_feriado, flg_registrado, flg_fim_semana, nme_anexo, pth_anexo, dsc_tipo_anexo, dta_ultima_alteracao
 				) VALUES (
 					:cod_colaborador, :cod_tipo_registro_horario, :dta_registro, :hor_entrada, :hor_saida_intervalo, 
 					:hor_retorno_intervalo, :hor_saida, :hor_extra, now(), :qtd_hora_adicional_noturno, 
-					:qtd_hora_extra_dia_inicio, :qtd_hora_extra_dia_fim, :qtd_horas_trabalhadas, :qtd_total_hora_extra, :qtd_tempo_compensacao, :flg_hora_extra, 
+					:qtd_hora_extra_dia_inicio, :qtd_hora_extra_dia_fim, :qtd_horas_trabalhadas, :qtd_total_hora_extra, :qtd_tempo_compensacao, :qtd_horas_negativas, :flg_hora_extra, 
 					:flg_terminou_mesmo_dia, :flg_compensacao, :flg_feriado, :flg_registrado, :flg_fim_semana, :nme_anexo, :pth_anexo, :dsc_tipo_anexo, now()
 				);";
 
@@ -152,6 +155,7 @@ class RegistroHorarioDao {
 		$insert->bindValue(':qtd_horas_trabalhadas', 		$registroHorarioTO->qtd_horas_trabalhadas, 			PDO::PARAM_INT);
 		$insert->bindValue(':qtd_total_hora_extra', 		$registroHorarioTO->qtd_total_hora_extra, 			PDO::PARAM_INT);
 		$insert->bindValue(':qtd_tempo_compensacao', 		$registroHorarioTO->qtd_tempo_compensacao, 			PDO::PARAM_INT);
+		$insert->bindValue(':qtd_horas_negativas', 			$registroHorarioTO->qtd_horas_negativas, 			PDO::PARAM_INT);
 		$insert->bindValue(':flg_hora_extra', 				$registroHorarioTO->flg_hora_extra, 				PDO::PARAM_BOOL);
 		$insert->bindValue(':flg_terminou_mesmo_dia', 		$registroHorarioTO->flg_terminou_mesmo_dia, 		PDO::PARAM_BOOL);
 		$insert->bindValue(':flg_compensacao', 				$registroHorarioTO->flg_compensacao, 				PDO::PARAM_BOOL);
