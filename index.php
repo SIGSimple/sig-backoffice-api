@@ -30,6 +30,9 @@ Flight::route('GET /tipos/registro/horario(.json)', 				array('TipoRegistroHorar
 
 Flight::route('GET /dia-ponte/programacao(.json)', 					array('ProgramacaoDiaPonteController', 'getProgramacoesDiaPonte'));
 
+Flight::route('GET /colaborador/dependentes',						array('DependenteController', 'getDependentes'));
+Flight::route('GET /colaborador/telefones',							array('TelefoneController', 'getTelefones'));
+Flight::route('GET /colaborador/emails',							array('EmailController', 'getEmails'));
 Flight::route('POST /colaborador/registro/horario/update', 			array('RegistroHorarioController', 'updateRegistroHorario'));
 Flight::route('POST /colaborador/registro/horario/new', 			array('RegistroHorarioController', 'setRegistroHorario'));
 Flight::route('GET /colaborador/registros/horario', 				array('RegistroHorarioController', 'getRegistrosHorario'));
