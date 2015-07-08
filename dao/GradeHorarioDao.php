@@ -8,7 +8,12 @@ class GradeHorarioDao{
 	} 
 
 	public function getGradeHorarios($busca=null){
-		$sql = "SELECT * FROM tb_grade_horario";
+		$sql = "SELECT
+					cod_grade_horario,
+					nme_grade_horario,
+					cod_empreendimento,
+					CAST(flg_ativo AS UNSIGNED) AS flg_ativo
+				FROM tb_grade_horario";
 		
 		$nolimit = false;
 		$limit = 5;
