@@ -13,7 +13,7 @@ class ColaboradorDao{
 				col.cod_colaborador, 
 			    col.num_matricula, 
 			    col.nme_colaborador, 
-			    col.flg_portador_necessidades_especiais, 
+			    CAST(col.flg_portador_necessidades_especiais AS UNSIGNED) AS col.flg_portador_necessidades_especiais,
 			    col.cod_empresa_contratante,
 			    col.cod_contrato,
 			    emp.nme_fantasia,
@@ -28,10 +28,10 @@ class ColaboradorDao{
 			    ltr.nme_local_trabalho,
 			    col.cod_grade_horario,
 			    grh.nme_grade_horario,
-			    col.flg_ativo, 
-			    col.flg_trabalho_fim_semana,
-			    col.flg_trabalho_feriado,
-			    col.flg_ajusta_folha_ponto,
+			    CAST(col.flg_ativo AS UNSIGNED) AS col.flg_ativo,
+			    CAST(col.flg_trabalho_fim_semana AS UNSIGNED) AS col.flg_trabalho_fim_semana,
+			    CAST(col.flg_trabalho_feriado AS UNSIGNED) AS col.flg_trabalho_feriado,
+			    CAST(col.flg_ajusta_folha_ponto AS UNSIGNED) AS col.flg_ajusta_folha_ponto,
 			    col.dta_admissao,
 			    col.dta_demissao,
 			    col.num_ctps,
@@ -86,7 +86,10 @@ class ColaboradorDao{
 			    col.cod_entidade,
 			    ent.nme_entidade,
 			    col.num_entidade,
-			    col.qtd_horas_contratadas
+			    col.qtd_horas_contratadas,
+			    CAST(col.flg_hora_extra AS UNSIGNED) AS col.flg_hora_extra,
+			    CAST(col.flg_ensino_superior AS UNSIGNED) AS col.flg_ensino_superior
+
 			FROM tb_colaborador 			AS col
 			LEFT JOIN tb_empresa 			AS emp 			ON emp.cod_empresa 						= col.cod_empresa_contratante
 			LEFT JOIN tb_origem 			AS org			ON org.cod_origem 						= col.cod_contrato
