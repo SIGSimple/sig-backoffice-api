@@ -14,9 +14,9 @@ if(serverName() == 'localhost') {
 else
 {
 	// PRODUÇÃO - AMAZON
-	define('HOST', 		'mysql01.consorciointermultip.hospedagemdesites.ws');
-	define('DBNAME', 	'consorciointer1');
-	define('USER', 		'consorciointer1');
+	define('HOST', 		'mysql02.consorciointermultip.hospedagemdesites.ws');
+	define('DBNAME', 	'consorciointer2');
+	define('USER', 		'consorciointer2');
 	define('PASSWORD', 	'f150679@Fil');
 	define('PATH_UPLOAD_FILES', '/home/consorciointermultip/public_html/files/');
 }

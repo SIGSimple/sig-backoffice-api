@@ -9,7 +9,7 @@ class ModuloDao {
 	}
 
 	public function getModulos($busca=null) {
-		$sql = "SELECT mdl.*
+		$sql = "SELECT distinct mdl.*
 				FROM tb_modulo 				AS mdl
 				INNER JOIN tb_modulo_perfil AS tmp ON tmp.cod_modulo = mdl.cod_modulo";
 
