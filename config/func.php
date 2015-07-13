@@ -138,12 +138,12 @@
 		$mail = new PHPMailer();
 		$mail->IsSMTP();
 		$mail->IsHTML(true);
-		$mail->CharSet = "text/html; charset=UTF-8;";
-		$mail->Host     = "email-ssl.com.br";                  
+		$mail->CharSet = "UTF-8";
+		$mail->Host     = "smtp.consorciointermultiplas.com.br";                  
 		$mail->SMTPAuth = true;
 		$mail->Username = 'no-reply@consorciointermultiplas.com.br';
 		$mail->Password = '*Cons@InterM!*';
-		$mail->Port     = 995;
+		$mail->Port     = 587;
 		$mail->From     = 'no-reply@consorciointermultiplas.com.br';
 		$mail->Sender   = "no-reply@consorciointermultiplas.com.br";
 		$mail->FromName = 'SIG BackOffice'; 

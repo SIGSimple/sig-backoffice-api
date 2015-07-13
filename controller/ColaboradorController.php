@@ -12,11 +12,11 @@ class ColaboradorController {
 
 	public static function sendDataToUpdate() {
 		$destinatarios[] = array(
-			"nome"	=> "Filipe Mendonça Coelho",
-			"email"	=> "filipe.mendonca.coelho@gmail.com"
+			"nome"	=> "Lucilia Soares",
+			"email"	=> "lucilia.soares@intermultiplas.com.br"
 		);
         
-        if(sendMail('SIG BackOffice - Solicitação de Alteração de Dados', 'conferencia_dados.php', $destinatarios, $_POST))
+        if(sendMail('[SIG BackOffice] Solicitação de Alteração de Dados', 'conferencia_dados.php', $destinatarios, $_POST))
         	Flight::halt(200, '');
         else
         	Flight::halt(500, 'Ocorreu algum erro ao tentar enviar o e-mail!<br/>Tente novamente.');
