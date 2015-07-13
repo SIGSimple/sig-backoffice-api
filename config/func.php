@@ -127,51 +127,49 @@
 		return date("d",$data-1);
 	}
 
-	 function sendMail($assunto,$corpo,$destinatarios=array(0=>array("nome"=>"", "email"=>"")),$form_data=array()){
-	        if(is_array($form_data)):
-                //extract($form_data);
-                foreach($form_data as $var=>$value):
-                        ${"$var"} = $value;
-                endforeach;
-	        endif;
+	 function sendMail($assunto, $corpo, $destinatarios=array(0=>array("nome"=>"", "email"=>"")), $form_data=array()) {
+		//extract($form_data);
+		foreach($form_data as $var => $value):
+			${"$var"} = $value;
+		endforeach;
 
-	        unset($form_data);
+		unset($form_data);
 
-	        $mail = new PHPMailer();
-	        $mail->IsSMTP();
-	        $mail->IsHTML(true);
-			$mail->CharSet = "text/html; charset=UTF-8;";
-	        $mail->Host     = "mail.hageerp.com.br";                  
-	        $mail->SMTPAuth = true;
-	        $mail->Username = 'sistema@hageerp.com.br';
-	        $mail->Password = 'hage@erp';
-	        $mail->Port     = 587;
-	        $mail->From     = 'sistema@hageerp.com.br';
-	        $mail->Sender   = "sistema@hageerp.com.br";
-	        $mail->FromName = 'HageERP'; 
+		$mail = new PHPMailer();
+		$mail->IsSMTP();
+		$mail->IsHTML(true);
+		$mail->CharSet = "text/html; charset=UTF-8;";
+		$mail->Host     = "email-ssl.com.br";                  
+		$mail->SMTPAuth = true;
+		$mail->Username = 'no-reply@consorciointermultiplas.com.br';
+		$mail->Password = '*Cons@InterM!*';
+		$mail->Port     = 995;
+		$mail->From     = 'no-reply@consorciointermultiplas.com.br';
+		$mail->Sender   = "no-reply@consorciointermultiplas.com.br";
+		$mail->FromName = 'SIG BackOffice'; 
 
-	        foreach($destinatarios as $var=>$value):
-	                $mail->AddAddress($value['email'], $value['nome']);
-	        endforeach;
+		foreach($destinatarios as $var=>$value):
+			$mail->AddAddress($value['email'], $value['nome']);
+		endforeach;
 
-	        ob_start();
-	                include("util/email_templates/".$corpo);
-	                $body = ob_get_contents();
-	        ob_end_clean();
+		ob_start();
+		include("util/email_templates/".$corpo);
+		$body = ob_get_contents();
+		ob_end_clean();
 
-	        $mail->Subject  = $assunto; 
-	        $mail->Body 	= $body   ;
-	       
-	        $enviado = $mail->Send();
+		$mail->Subject  = $assunto; 
+		$mail->Body 	= $body   ;
 
-	        $mail->ClearAllRecipients();
-	        $mail->ClearAttachments();
+		$enviado = $mail->Send();
 
-	        if ($enviado):
-	                return true;
-	        else:
-	                return false;
-	        endif;
+		$mail->ClearAllRecipients();
+		$mail->ClearAttachments();
+
+		if ($enviado):
+			return true;
+		else:
+			return false;
+		endif;
     }
 
     function mascara_string($mascara,$string)
