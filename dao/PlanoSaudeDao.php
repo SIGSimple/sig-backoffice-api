@@ -8,7 +8,10 @@ class PlanoSaudeDao{
 	} 
 
 	public function getPlanosSaude($busca=null){
-		$sql = "SELECT * FROM tb_plano_saude";
+		$sql = "SELECT tpl.*, emp.nme_fantasia
+				FROM tb_plano_saude as tpl
+				LEFT JOIN tb_empresa as emp
+				on emp.cod_empresa = tpl.cod_empresa";
 		
 		$nolimit = false;
 		$limit = 5;
