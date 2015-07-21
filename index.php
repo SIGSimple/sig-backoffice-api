@@ -25,6 +25,7 @@ Flight::route('GET /funcoes(.json)', 								array('FuncaoController', 'getFunco
 Flight::route('GET /entidades(.json)', 								array('EntidadeController', 'getEntidades'));
 Flight::route('GET /planos-saude(.json)', 							array('PlanoSaudeController', 'getPlanosSaude'));
 
+Flight::route('GET /tipos/dependencia(.json)', 						array('TipoDependenciaController', 'getTiposDependencia'));
 Flight::route('GET /tipos/telefone(.json)', 						array('TipoTelefoneController', 'getTiposTelefone'));
 Flight::route('GET /tipos/registro/horario(.json)', 				array('TipoRegistroHorarioController', 'getTiposRegistroHorario'));
 
