@@ -6,7 +6,7 @@ define('CHARSET', 'utf8');
 if(serverName() == 'localhost') {
 	// DESENVOLVIMENTO - LOCALHOST
 	define('HOST', 		'192.168.0.10');
-	define('DBNAME', 	'bd_sig_backoffice');
+	define('DBNAME', 	'consorciointer2');
 	define('USER', 		'root');
 	define('PASSWORD', 	'150679');
 	define('PATH_UPLOAD_FILES', '/Users/filipecoelho/Sites/sig-backoffice-files/');

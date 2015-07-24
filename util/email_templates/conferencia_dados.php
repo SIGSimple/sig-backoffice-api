@@ -432,13 +432,33 @@
 		<?php
 			if(isset($cooperator['dependentes'])) {
 				foreach ($cooperator['dependentes'] as $key => $value) {
+					$nmeTipoDependencia = "";
+
+					if(isset($value['tipoDependencia']))
+						$nmeTipoDependencia = $value['tipoDependencia']['nme_tipo_dependencia'];
+					else if(isset($value['nme_tipo_dependencia']))
+						$nmeTipoDependencia = $value['nme_tipo_dependencia'];
+
+					$nmePlanoSaude = "";
+
+					if(isset($value['planoSaude']))
+						$nmePlanoSaude = $value['planoSaude']['nme_plano_saude'];
+					else if(isset($value['nme_plano_saude']))
+						$nmePlanoSaude = $value['nme_plano_saude'];
+					else
+						$nmePlanoSaude = 'Não optante';
+
+					$flgCursoSuperior = "Não";
+
+					if(isset($value['flg_curso_superior']))
+						$flgCursoSuperior = "Sim";
 		?>
 		<tr>
 			<td style="border: 1px solid #ccc;" class="text-middle"><?=($value['nme_dependente'])?></td>
-			<td style="border: 1px solid #ccc;" class="text-center text-middle"><?=($value['nme_tipo_dependencia'])?></td>
+			<td style="border: 1px solid #ccc;" class="text-center text-middle"><?=($nmeTipoDependencia)?></td>
 			<td style="border: 1px solid #ccc;" class="text-center text-middle"><?=($value['dta_nascimento'])?></td>
-			<td style="border: 1px solid #ccc;" class="text-center text-middle"><?=((isset($value['flg_plano_saude']) && $value['flg_plano_saude'] == 1) ? 'Sim' : 'Não')?></td>
-			<td style="border: 1px solid #ccc;" class="text-center text-middle"><?=((isset($value['flg_curso_superior']) && $value['flg_curso_superior'] == 1) ? 'Sim' : 'Não')?></td>
+			<td style="border: 1px solid #ccc;" class="text-center text-middle"><?=($nmePlanoSaude)?></td>
+			<td style="border: 1px solid #ccc;" class="text-center text-middle"><?=($flgCursoSuperior)?></td>
 		</tr>
 		<?php
 				}
