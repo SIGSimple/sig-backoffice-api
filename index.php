@@ -51,6 +51,7 @@ Flight::route('GET /departamentos(.json)',		 					array('DepartamentoController'
 Flight::route('GET /bancos(.json)',		 							array('BancoController', 'getBancos'));
 Flight::route('GET /origens(.json)',		 						array('OrigemController', 'getOrigens'));
 Flight::route('GET /alteracao/funcao/motivos(.json)',		 		array('MotivoAlteracaoFuncaoController', 'getMotivosAlteracaoFuncao'));
+Flight::route('GET /terceiros(.json)',		 						array('TerceiroController', 'getTerceiros'));
 
 Flight::start();
 
