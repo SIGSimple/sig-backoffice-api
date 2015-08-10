@@ -33,7 +33,9 @@ class UsuarioDao {
 					usu.cod_colaborador, 
 					emp.cod_empreendimento, 
 					emp.nme_empreendimento,
-					col.flg_sexo
+					col.flg_sexo,
+					col.num_matricula,
+					col.pth_arquivo_foto
 				FROM tb_usuario 						AS usu
 				INNER JOIN tb_usuario_empreendimento 	AS tue ON tue.cod_usuario = usu.cod_usuario
 				INNER JOIN tb_empreendimento 			AS emp ON emp.cod_empreendimento = tue.cod_empreendimento
