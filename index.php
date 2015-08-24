@@ -41,7 +41,7 @@ Flight::route('GET /colaborador/registros/horario', 				array('RegistroHorarioCo
 Flight::route('GET /colaborador/ultima/funcao/@cod_colaborador', 	array('FuncaoColaboradorController', 'getUltimaFuncao'));
 Flight::route('GET /colaboradores/emails/mensagem',					array('EmailController', 'getEmailsMensagem'));
 Flight::route('GET /colaboradores(.json)', 							array('ColaboradorController', 'getColaboradores'));
-
+								
 Flight::route('GET /empreendimentos(.json)', 						array('EmpreendimentoController', 'getEmpreendimentos'));
 Flight::route('GET /empresas(.json)', 								array('EmpresaController', 'getEmpresas'));
 Flight::route('GET /modulos(.json)', 								array('ModuloController', 'getModulos'));
