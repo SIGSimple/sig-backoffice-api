@@ -7,7 +7,6 @@ class ColaboradorTO {
 	public $flg_portador_necessidades_especiais;
 	public $cod_empresa_contratante;
 	public $cod_contrato;
-	public $cod_contrato;
 	public $cod_regime_contratacao;
 	public $cod_departamento;
 	public $flg_cm;
@@ -33,11 +32,10 @@ class ColaboradorTO {
 	public $dsc_complemento;
 	public $cod_cidade_moradia;
 	public $cod_estado_moradia;
-	public $cod_cidade_naturalidade;
-	public $cod_estado_naturalidade;
-	public $cod_estado_moradia;
 	public $num_cep;
 	public $dta_nascimento;
+	public $cod_cidade_naturalidade;
+	public $cod_estado_naturalidade;
 	public $num_cnh;
 	public $nme_categoria_cnh;
 	public $dta_validade_cnh;
@@ -55,8 +53,27 @@ class ColaboradorTO {
 	public $pth_arquivo_entidade;
 	public $pth_arquivo_curriculo;
 	public $pth_arquivo_reservista;
+	public $pth_arquivo_aso;
+	public $pth_arquivo_ensino_superior;
+	public $pth_arquivo_titulo_eleitor;
+	public $pth_arquivo_ctps;
+	public $pth_arquivo_certidao;
+	public $pth_arquivo_comprovante_bancario;
+	public $pth_arquivo_comprovante_endereco;
+	public $pth_arquivo_carta_referencia;
+	public $pth_arquivo_pis;
+	public $pth_arquivo_sus;
+	public $dta_aso;
 	public $cod_entidade;
 	public $num_entidade;
+	public $qtd_horas_contratadas;
+	public $cod_empreendimento;
+	public $flg_hora_extra;
+	public $flg_trabalho_fim_semana;
+	public $flg_trabalho_feriado;
+	public $flg_ajusta_folha_ponto;
+	public $flg_ensino_superior;
+	public $dta_ultima_atualizacao;
 }
 
 ?>
