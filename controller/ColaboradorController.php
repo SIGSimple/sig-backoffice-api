@@ -76,6 +76,8 @@ class ColaboradorController {
 		$colTO->flg_ajusta_folha_ponto 				= (isset($_POST['flg_ajusta_folha_ponto'])) ? $_POST['flg_ajusta_folha_ponto'] : "";
 		$colTO->flg_ensino_superior 				= (isset($_POST['flg_ensino_superior'])) ? $_POST['flg_ensino_superior'] : "";
 
+		$telefones = (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
+
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
 
@@ -242,6 +244,19 @@ class ColaboradorController {
 		$validator->set_msg('As Horas Contratadas são obrigatórias')
 				  ->set('qtd_horas_contratadas', $colTO->qtd_horas_contratadas)
 				  ->is_required();
+
+		$validator->set_msg('O número é obrigatório')
+				  ->set('num_entidade', $colTO->num_entidade)
+				  ->is_required();
+
+		$validator->set_msg('O sexo é obrigatório')
+				  ->set('flg_sexo', $colTO->flg_sexo)
+				  ->is_required();	
+
+		$validator->set_msg('Insira pelo menos um telefone')
+				  ->set('telefones', $telefones)
+				  ->is_required();	
+		  
 
 		if(!$validator->validate()){
 			Flight::response()->status(406)
