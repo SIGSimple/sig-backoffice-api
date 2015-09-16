@@ -75,7 +75,6 @@ class ColaboradorController {
 		$colTO->flg_trabalho_feriado 				= (isset($_POST['flg_trabalho_feriado'])) ? $_POST['flg_trabalho_feriado'] : "";
 		$colTO->flg_ajusta_folha_ponto 				= (isset($_POST['flg_ajusta_folha_ponto'])) ? $_POST['flg_ajusta_folha_ponto'] : "";
 		$colTO->flg_ensino_superior 				= (isset($_POST['flg_ensino_superior'])) ? $_POST['flg_ensino_superior'] : "";
-		$colTO->dta_ultima_atualizacao 				= new Date();
 
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
@@ -205,7 +204,7 @@ class ColaboradorController {
 				  ->is_required();
 
 		$validator->set_msg('O Banco é obrigatório')
-				  ->set('banco', $colTO->banco)
+				  ->set('banco', $colTO->cod_banco)
 				  ->is_required();
 
 		$validator->set_msg('O Número da Agência é obrigatório')
