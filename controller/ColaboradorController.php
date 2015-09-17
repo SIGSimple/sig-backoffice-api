@@ -283,13 +283,77 @@ class ColaboradorController {
 			"nome"	=> "Filipe Coelho",
 			"email"	=> "filipe.coelho@intermultiplas.com.br"
 		);
-		/*$destinatarios[] = array(
-			"nome"	=> "Rinaldo Gualdani Neto",
-			"email"	=> "rinaldo.neto@intermultiplas.com.br"
-		);*/
+		
+		$telefoneDao = new TelefoneDao();
+		
+		// Atualiza a lista de telefones do colaborador
+		foreach ($_POST['cooperator']['telefones'] as $key => $telefone) {
+			if(isset($telefone['flg_removido']) && $telefone['flg_removido'] === "true") {
+				if(!$telefoneDao->deleteTelefone($telefone['cod_telefone'])) {
+					Flight::halt(500, 'Erro ao excluir o telefone [('. $telefone['num_ddd'].') '. $telefone['num_telefone'] .']');
+					die;
+				}
+			}
+			else if(isset($telefone['cod_telefone'])) {
+				$telefoneTO = new TelefoneTO();
+				$telefoneTO->cod_telefone 		= $telefone['cod_telefone'];
+				$telefoneTO->num_ddd 			= $telefone['num_ddd'];
+				$telefoneTO->num_telefone 		= $telefone['num_telefone'];
+				$telefoneTO->cod_tipo_telefone 	= $telefone['cod_tipo_telefone'];
+				
+				if(!$telefoneDao->updateTelefone($telefoneTO)) {
+					Flight::halt(500, 'Erro ao atualizar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
+					die;
+				}
+			}
+			else if(isset($_POST['cooperator']['cod_colaborador'])) {
+				$telefoneTO = new TelefoneTO();
+				$telefoneTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
+				$telefoneTO->num_ddd 			= $telefone['num_ddd'];
+				$telefoneTO->num_telefone 		= $telefone['num_telefone'];
+				$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
+				
+				if(!$telefoneDao->saveTelefone($telefoneTO)) {
+					Flight::halt(500, 'Erro ao salvar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
+					die;
+				}
+			}
+		}
+
+		$emailDao = new EmailDao();
+
+		// Atualiza a lista de e-mails do colaborador
+		foreach ($_POST['cooperator']['emails'] as $key => $email) {
+			if(isset($email['flg_removido']) && $email['flg_removido'] === "true") {
+				if(!$emailDao->deleteEmail($email['cod_email'])) {
+					Flight::halt(500, 'Erro ao excluir o email ['. $emailTO->end_email .']');
+					die;
+				}
+			}
+			else if(isset($email['cod_email'])) {
+				$emailTO = new EmailTO();
+				$emailTO->cod_email 	= $email['cod_email'];
+				$emailTO->end_email 	= $email['end_email'];
+				
+				if(!$emailDao->updateEmail($emailTO)) {
+					Flight::halt(500, 'Erro ao atualizar o email ['. $emailTO->end_email .']');
+					die;
+				}
+			}
+			else if(isset($_POST['cooperator']['cod_colaborador'])) {
+				$emailTO = new EmailTO();
+				$emailTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
+				$emailTO->end_email 		= $email['end_email'];
+				
+				if(!$emailDao->saveEmail($emailTO)) {
+					Flight::halt(500, 'Erro ao salvar o email ['. $emailTO->end_email .']');
+					die;
+				}
+			}
+		}
         
         if(sendMail('[SIG BackOffice] Solicitação de Alteração de Dados', 'conferencia_dados.php', $destinatarios, $_POST))
-        	Flight::halt(200, 'Dados enviado com sucesso!');
+        	Flight::halt(200, 'Dados enviado com sucesso!<br/>Alterações como E-mail e Telefone serão atualizadas no próximo login.');
         else
         	Flight::halt(500, 'Ocorreu algum erro ao tentar enviar o e-mail!<br/>Tente novamente.');
 	}
