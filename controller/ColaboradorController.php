@@ -57,13 +57,13 @@ class ColaboradorController {
 		$colTO->pth_arquivo_reservista 				= (isset($_POST['pth_arquivo_reservista'])) ? $_POST['pth_arquivo_reservista'] : "";
 		//$colTO->pth_arquivo_aso 					= (isset($_POST['pth_arquivo_aso'])) ? $_POST['pth_arquivo_aso'] : "";
 		//$colTO->pth_arquivo_ensino_superior 		= (isset($_POST['pth_arquivo_ensino_superior'])) ? $_POST['pth_arquivo_ensino_superior'] : "";
-		//$colTO->pth_arquivo_titulo_eleitor 		= (isset($_POST['pth_arquivo_titulo_eleitor'])) ? $_POST['pth_arquivo_titulo_eleitor'] : "";
-		//$colTO->pth_arquivo_ctps 					= (isset($_POST['pth_arquivo_ctps'])) ? $_POST['pth_arquivo_ctps'] : "";
+		$colTO->pth_arquivo_titulo_eleitor 		= (isset($_POST['pth_arquivo_titulo_eleitor'])) ? $_POST['pth_arquivo_titulo_eleitor'] : "";
+		$colTO->pth_arquivo_ctps 					= (isset($_POST['pth_arquivo_ctps'])) ? $_POST['pth_arquivo_ctps'] : "";
 		//$colTO->pth_arquivo_certidao 				= (isset($_POST['pth_arquivo_certidao'])) ? $_POST['pth_arquivo_certidao'] : "";
 		//$colTO->pth_arquivo_comprovante_bancario 	= (isset($_POST['pth_arquivo_comprovante_bancario'])) ? $_POST['pth_arquivo_comprovante_bancario'] : "";
 		//$colTO->pth_arquivo_comprovante_endereco 	= (isset($_POST['pth_arquivo_comprovante_endereco'])) ? $_POST['pth_arquivo_comprovante_endereco'] : "";
 		//$colTO->pth_arquivo_carta_referencia 		= (isset($_POST['pth_arquivo_carta_referencia'])) ? $_POST['pth_arquivo_carta_referencia'] : "";
-		//$colTO->pth_arquivo_pis 					= (isset($_POST['pth_arquivo_pis'])) ? $_POST['pth_arquivo_pis'] : "";
+		$colTO->pth_arquivo_pis 					= (isset($_POST['pth_arquivo_pis'])) ? $_POST['pth_arquivo_pis'] : "";
 		//$colTO->pth_arquivo_sus 					= (isset($_POST['pth_arquivo_sus'])) ? $_POST['pth_arquivo_sus'] : "";
 		//$colTO->dta_aso 							= (isset($_POST['dta_aso'])) ? $_POST['dta_aso'] : "";
 		$colTO->cod_entidade 						= (isset($_POST['entidade'])) ? $_POST['entidade']['cod_entidade'] : "";
@@ -77,6 +77,8 @@ class ColaboradorController {
 		$colTO->flg_ensino_superior 				= (isset($_POST['flg_ensino_superior'])) ? $_POST['flg_ensino_superior'] : "";
 
 		$telefones = (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
+		$funcoes = (isset($_POST['funcoes'])) ? $_POST['funcoes'] : array();
+
 
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
@@ -256,8 +258,38 @@ class ColaboradorController {
 		$validator->set_msg('Insira pelo menos um telefone')
 				  ->set('telefones', $telefones)
 				  ->is_required();	
-		  
 
+		$validator->set_msg('Insira pelo menos uma função')
+				  ->set('funcoes', $funcoes)
+				  ->is_required();
+
+		$validator->set_msg('Selecione uma cópia do documento [RG]')
+				  ->set('pth_arquivo_rg', $colTO->pth_arquivo_rg)
+				  ->is_required();	
+
+		$validator->set_msg('Selecione uma cópia do documento [CPF]')
+				  ->set('pth_arquivo_cpf', $colTO->pth_arquivo_cpf)
+				  ->is_required();
+
+		$validator->set_msg('Selecione uma cópia do documento [PIS]')
+				  ->set('pth_arquivo_pis', $colTO->pth_arquivo_pis)
+				  ->is_required();		
+
+		$validator->set_msg('Selecione uma cópia do documento [Título de eleitor]')
+				  ->set('pth_arquivo_titulo_eleitor', $colTO->pth_arquivo_titulo_eleitor)
+				  ->is_required();	
+	
+		$validator->set_msg('Selecione uma cópia do documento [CNH]')
+				  ->set('pth_arquivo_cnh', $colTO->pth_arquivo_cnh)
+				  ->is_required();	
+
+		$validator->set_msg('Selecione uma cópia do documento [Reservista]')
+				  ->set('pth_arquivo_reservista', $colTO->pth_arquivo_reservista)
+				  ->is_required();			  
+
+		
+
+	
 		if(!$validator->validate()){
 			Flight::response()->status(406)
 							  ->header('Content-Type', 'application/json')
