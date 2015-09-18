@@ -57,7 +57,7 @@ class ColaboradorController {
 		$colTO->pth_arquivo_reservista 				= (isset($_POST['pth_arquivo_reservista'])) ? $_POST['pth_arquivo_reservista'] : "";
 		//$colTO->pth_arquivo_aso 					= (isset($_POST['pth_arquivo_aso'])) ? $_POST['pth_arquivo_aso'] : "";
 		//$colTO->pth_arquivo_ensino_superior 		= (isset($_POST['pth_arquivo_ensino_superior'])) ? $_POST['pth_arquivo_ensino_superior'] : "";
-		$colTO->pth_arquivo_titulo_eleitor 		= (isset($_POST['pth_arquivo_titulo_eleitor'])) ? $_POST['pth_arquivo_titulo_eleitor'] : "";
+		$colTO->pth_arquivo_titulo_eleitor 			= (isset($_POST['pth_arquivo_titulo_eleitor'])) ? $_POST['pth_arquivo_titulo_eleitor'] : "";
 		$colTO->pth_arquivo_ctps 					= (isset($_POST['pth_arquivo_ctps'])) ? $_POST['pth_arquivo_ctps'] : "";
 		//$colTO->pth_arquivo_certidao 				= (isset($_POST['pth_arquivo_certidao'])) ? $_POST['pth_arquivo_certidao'] : "";
 		//$colTO->pth_arquivo_comprovante_bancario 	= (isset($_POST['pth_arquivo_comprovante_bancario'])) ? $_POST['pth_arquivo_comprovante_bancario'] : "";
