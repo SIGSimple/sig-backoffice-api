@@ -76,9 +76,8 @@ class ColaboradorController {
 		$colTO->flg_ajusta_folha_ponto 				= (isset($_POST['flg_ajusta_folha_ponto'])) ? $_POST['flg_ajusta_folha_ponto'] : "";
 		$colTO->flg_ensino_superior 				= (isset($_POST['flg_ensino_superior'])) ? $_POST['flg_ensino_superior'] : "";
 
-		$telefones = (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
-		$funcoes = (isset($_POST['funcoes'])) ? $_POST['funcoes'] : array();
-
+		$telefones 	= (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
+		$funcoes 	= (isset($_POST['funcoes'])) ? $_POST['funcoes'] : array();
 
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
@@ -286,9 +285,6 @@ class ColaboradorController {
 		$validator->set_msg('Selecione uma cópia do documento [Reservista]')
 				  ->set('pth_arquivo_reservista', $colTO->pth_arquivo_reservista)
 				  ->is_required();			  
-
-		
-
 	
 		if(!$validator->validate()){
 			Flight::response()->status(406)
@@ -297,6 +293,9 @@ class ColaboradorController {
 							  ->send();
 			return ;
 		}
+
+		$colaboradorDao = new ColaboradorDao();
+		$colTO->cod_colaborador = $colaboradorDao->saveColaborador($colTO);
 
 	}
 
