@@ -76,6 +76,7 @@ class ColaboradorController {
 		$colTO->flg_ajusta_folha_ponto 				= (isset($_POST['flg_ajusta_folha_ponto'])) ? $_POST['flg_ajusta_folha_ponto'] : "";
 		$colTO->flg_ensino_superior 				= (isset($_POST['flg_ensino_superior'])) ? $_POST['flg_ensino_superior'] : "";
 
+		// Arrays auxiliares de telefones e funções
 		$telefones 	= (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
 		$funcoes 	= (isset($_POST['funcoes'])) ? $_POST['funcoes'] : array();
 
@@ -261,32 +262,10 @@ class ColaboradorController {
 		$validator->set_msg('Insira pelo menos uma função')
 				  ->set('funcoes', $funcoes)
 				  ->is_required();
-
-		$validator->set_msg('Selecione uma cópia do documento [RG]')
-				  ->set('pth_arquivo_rg', $colTO->pth_arquivo_rg)
-				  ->is_required();	
-
-		$validator->set_msg('Selecione uma cópia do documento [CPF]')
-				  ->set('pth_arquivo_cpf', $colTO->pth_arquivo_cpf)
-				  ->is_required();
-
-		$validator->set_msg('Selecione uma cópia do documento [PIS]')
-				  ->set('pth_arquivo_pis', $colTO->pth_arquivo_pis)
-				  ->is_required();		
-
-		$validator->set_msg('Selecione uma cópia do documento [Título de eleitor]')
-				  ->set('pth_arquivo_titulo_eleitor', $colTO->pth_arquivo_titulo_eleitor)
-				  ->is_required();	
+		  
 	
-		$validator->set_msg('Selecione uma cópia do documento [CNH]')
-				  ->set('pth_arquivo_cnh', $colTO->pth_arquivo_cnh)
-				  ->is_required();	
-
-		$validator->set_msg('Selecione uma cópia do documento [Reservista]')
-				  ->set('pth_arquivo_reservista', $colTO->pth_arquivo_reservista)
-				  ->is_required();			  
-	
-		if(!$validator->validate()){
+		if(!$validator->validate()){ // Se retornar false, significa que algum campo obrigatório não foi preenchido
+			// Envia os campos não preenchidos com a respectiva mensagem de erro para o front-end
 			Flight::response()->status(406)
 							  ->header('Content-Type', 'application/json')
 							  ->write(json_encode($validator->get_errors()))
@@ -297,6 +276,10 @@ class ColaboradorController {
 		$colaboradorDao = new ColaboradorDao();
 		$colTO->cod_colaborador = $colaboradorDao->saveColaborador($colTO);
 
+		// TODO: Salvar os telefones do colaborador
+		// TODO: Salvar as funções do colaborador
+
+		Flight::halt(200, 'Colaborador salvo com sucesso!');
 	}
 
 

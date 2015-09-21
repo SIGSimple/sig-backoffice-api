@@ -10,7 +10,7 @@ if(serverName() == 'localhost')
 	define('HOST', 		'localhost');
 	define('DBNAME', 	'consorciointer2');
 	define('USER', 		'root');
-	define('PASSWORD', 	'150679');
+	define('PASSWORD', 	'');
 	define('PATH_UPLOAD_FILES', '/home/consorciointermultip/public_html/files/');
 }
 else
@@ -19,7 +19,7 @@ else
 	define('HOST', 		'localhost');
 	define('DBNAME', 	'consorciointer2');
 	define('USER', 		'root');
-	define('PASSWORD', 	'150679');
+	define('PASSWORD', 	'');
 	define('PATH_UPLOAD_FILES', '/home/consorciointermultip/public_html/files/');
 	
 	// PRODUÇÃO - AMAZON
