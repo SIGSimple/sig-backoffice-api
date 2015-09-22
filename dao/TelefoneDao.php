@@ -13,11 +13,11 @@ class TelefoneDao{
 				VALUES (:cod_colaborador, :num_ddd, :num_telefone, :cod_tipo_telefone);";
 
 		$insert = $this->conn->prepare($sql);
-
+		
 		$insert->bindValue(':cod_colaborador', 		$telefoneTO->cod_colaborador,	PDO::PARAM_INT);
 		$insert->bindValue(':num_ddd', 				$telefoneTO->num_ddd,	 		PDO::PARAM_STR);
 		$insert->bindValue(':num_telefone', 		$telefoneTO->num_telefone,	 	PDO::PARAM_STR);
-		$insert->bindValue(':cod_tipo_telefone', 	$telefoneTO->cod_tipo_telefone, 	PDO::PARAM_INT);
+		$insert->bindValue(':cod_tipo_telefone', 	$telefoneTO->cod_tipo_telefone, PDO::PARAM_INT);
 
 		return $insert->execute();
 	}

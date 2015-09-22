@@ -7,6 +7,21 @@ class FuncaoDao{
 		$this->conn = Conexao::getInstance();
 	} 
 
+
+	public function saveFuncao(FuncaoTO $funcaoTO) {
+		$sql = "INSERT INTO tb_funcao (num_funcao, nme_funcao, dsc_funcao, cod_empreendimento) 
+				VALUES (:num_funcao, :nme_funcao, :dsc_funcao, :cod_empreendimento);";
+
+		$insert = $this->conn->prepare($sql);
+		
+		$insert->bindValue(':num_funcao', 			$funcaoTO->num_funcao,	 		PDO::PARAM_STR);
+		$insert->bindValue(':nme_funcao', 			$funcaoTO->nme_funcao,	 		PDO::PARAM_STR);
+		$insert->bindValue(':dsc_funcao', 			$funcaoTO->dsc_funcao, 			PDO::PARAM_STR);
+		$insert->bindValue(':cod_empreendimento', 	$funcaoTO->cod_empreendimento,	PDO::PARAM_INT);
+
+		return $insert->execute();
+	}
+
 	public function getFuncoes($busca=null){
 		$sql = "SELECT * FROM tb_funcao";
 		

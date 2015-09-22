@@ -7,6 +7,21 @@ class FuncaoColaboradorDao {
 		$this->conn = Conexao::getInstance();
 	} 
 
+	public function saveFuncaoColaborador(FuncaoColaboradorTO $funcaoColaboradorTO) {
+		$sql = "INSERT INTO tb_alteracao_funcao_colaborador (cod_colaborador, cod_funcao, vlr_salario, cod_motivo_alteracao_funcao, dta_alteracao) 
+				VALUES (:cod_colaborador, :cod_funcao, :vlr_salario, :cod_motivo_alteracao_funcao, :dta_alteracao);";
+
+		$insert = $this->conn->prepare($sql);
+		
+		$insert->bindValue(':cod_colaborador', 						$funcaoColaboradorTO->cod_colaborador,						PDO::PARAM_INT);
+		$insert->bindValue(':cod_funcao', 							$funcaoColaboradorTO->cod_funcao,	 						PDO::PARAM_INT);
+		$insert->bindValue(':vlr_salario', 							$funcaoColaboradorTO->vlr_salario,	 						PDO::PARAM_STR);
+		$insert->bindValue(':cod_motivo_alteracao_funcao', 			$funcaoColaboradorTO->cod_motivo_alteracao_funcao, 			PDO::PARAM_INT);
+		$insert->bindValue(':dta_alteracao', 						$funcaoColaboradorTO->dta_alteracao,						PDO::PARAM_STR);
+
+		return $insert->execute();
+	}	
+
 	public function getUltimaFuncao($cod_colaborador){
 		$sql = "SELECT nme_funcao, vlr_salario, dta_alteracao
 				FROM tb_alteracao_funcao_colaborador 	AS afc
