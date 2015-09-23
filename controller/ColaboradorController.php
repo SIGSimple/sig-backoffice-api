@@ -263,7 +263,6 @@ class ColaboradorController {
 				  ->set('funcoes', $funcoes)
 				  ->is_required();
 		  
-	
 		if(!$validator->validate()){ // Se retornar false, significa que algum campo obrigatório não foi preenchido
 			// Envia os campos não preenchidos com a respectiva mensagem de erro para o front-end
 			Flight::response()->status(406)
@@ -273,30 +272,32 @@ class ColaboradorController {
 			return ;
 		}
 
+		// Grava os dados do colaborador
 		$colaboradorDao = new ColaboradorDao();
-		//$colTO->cod_colaborador = $colaboradorDao->saveColaborador($colTO);
+		$colTO->cod_colaborador = $colaboradorDao->saveColaborador($colTO);
 
-		// TODO: Salvar os telefones do colaborador
+		// Grava os telefones do colaborador
 		$telefoneDao = new TelefoneDao();
-		/*foreach ($telefones as $index => $telefone) {
+		foreach ($telefones as $index => $telefone) {
 			$telefoneTO = new TelefoneTO();
 			$telefoneTO->cod_colaborador	= $colTO->cod_colaborador;
 			$telefoneTO->num_ddd 			= $telefone['num_ddd'];
 			$telefoneTO->num_telefone 		= $telefone['num_telefone'];
 			$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
-			// $telefoneDao->saveTelefone($telefoneTO);
-		}*/
+			$telefoneDao->saveTelefone($telefoneTO);
+		}
 
-		// TODO: Salvar as funções do colaborador
-		/*foreach ($funcoes as $index => $funcao) {
+		// Grava as funções do colaborador
+		$funColDao = new FuncaoColaboradorDao();
+		foreach ($funcoes as $index => $funcao) {
 			$funColTO = new FuncaoColaboradorTO();
 			$funColTO->cod_colaborador 				= $colTO->cod_colaborador;
-			$funColTO->cod_funcao 					= $funcao['cod_funcao'];
+			$funColTO->cod_funcao 					= $funcao['funcao']['cod_funcao'];
 			$funColTO->vlr_salario 					= $funcao['vlr_salario'];
-			$funColTO->cod_motivo_alteracao_funcao 	= $funcao['cod_motivo_alteracao_funcao'];
+			$funColTO->cod_motivo_alteracao_funcao 	= $funcao['motivoAlteracaoFuncao']['cod_motivo_alteracao_funcao'];
 			$funColTO->dta_alteracao 				= $funcao['dta_alteracao'];
-			var_dump($funColTO); die;
-		}*/
+			$funColDao->saveFuncaoColaborador($funColTO);
+		}
 
 		Flight::halt(200, 'Colaborador salvo com sucesso!');
 	}
