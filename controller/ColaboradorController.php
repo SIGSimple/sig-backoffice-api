@@ -278,17 +278,17 @@ class ColaboradorController {
 
 		// TODO: Salvar os telefones do colaborador
 		$telefoneDao = new TelefoneDao();
-		foreach ($telefones as $index => $telefone) {
+		/*foreach ($telefones as $index => $telefone) {
 			$telefoneTO = new TelefoneTO();
 			$telefoneTO->cod_colaborador	= $colTO->cod_colaborador;
 			$telefoneTO->num_ddd 			= $telefone['num_ddd'];
 			$telefoneTO->num_telefone 		= $telefone['num_telefone'];
 			$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
 			// $telefoneDao->saveTelefone($telefoneTO);
-		}
+		}*/
 
 		// TODO: Salvar as funções do colaborador
-		foreach ($funcoes as $index => $funcao) {
+		/*foreach ($funcoes as $index => $funcao) {
 			$funColTO = new FuncaoColaboradorTO();
 			$funColTO->cod_colaborador 				= $colTO->cod_colaborador;
 			$funColTO->cod_funcao 					= $funcao['cod_funcao'];
@@ -296,7 +296,7 @@ class ColaboradorController {
 			$funColTO->cod_motivo_alteracao_funcao 	= $funcao['cod_motivo_alteracao_funcao'];
 			$funColTO->dta_alteracao 				= $funcao['dta_alteracao'];
 			var_dump($funColTO); die;
-		}
+		}*/
 
 		Flight::halt(200, 'Colaborador salvo com sucesso!');
 	}
@@ -317,70 +317,75 @@ class ColaboradorController {
 			"email"	=> "filipe.coelho@intermultiplas.com.br"
 		);
 		
-		$telefoneDao = new TelefoneDao();
 		
 		// Atualiza a lista de telefones do colaborador
-		foreach ($_POST['cooperator']['telefones'] as $key => $telefone) {
-			if(isset($telefone['flg_removido']) && $telefone['flg_removido'] === "true") {
-				if(!$telefoneDao->deleteTelefone($telefone['cod_telefone'])) {
-					Flight::halt(500, 'Erro ao excluir o telefone [('. $telefone['num_ddd'].') '. $telefone['num_telefone'] .']');
-					die;
+		if(isset($_POST['cooperator']['telefones'])) {
+			$telefoneDao = new TelefoneDao();
+
+			foreach ($_POST['cooperator']['telefones'] as $key => $telefone) {
+				if(isset($telefone['flg_removido']) && $telefone['flg_removido'] === "true") {
+					if(!$telefoneDao->deleteTelefone($telefone['cod_telefone'])) {
+						Flight::halt(500, 'Erro ao excluir o telefone [('. $telefone['num_ddd'].') '. $telefone['num_telefone'] .']');
+						die;
+					}
 				}
-			}
-			else if(isset($telefone['cod_telefone'])) {
-				$telefoneTO = new TelefoneTO();
-				$telefoneTO->cod_telefone 		= $telefone['cod_telefone'];
-				$telefoneTO->num_ddd 			= $telefone['num_ddd'];
-				$telefoneTO->num_telefone 		= $telefone['num_telefone'];
-				$telefoneTO->cod_tipo_telefone 	= $telefone['cod_tipo_telefone'];
-				
-				if(!$telefoneDao->updateTelefone($telefoneTO)) {
-					Flight::halt(500, 'Erro ao atualizar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
-					die;
+				else if(isset($telefone['cod_telefone'])) {
+					$telefoneTO = new TelefoneTO();
+					$telefoneTO->cod_telefone 		= $telefone['cod_telefone'];
+					$telefoneTO->num_ddd 			= $telefone['num_ddd'];
+					$telefoneTO->num_telefone 		= $telefone['num_telefone'];
+					$telefoneTO->cod_tipo_telefone 	= $telefone['cod_tipo_telefone'];
+					
+					if(!$telefoneDao->updateTelefone($telefoneTO)) {
+						Flight::halt(500, 'Erro ao atualizar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
+						die;
+					}
 				}
-			}
-			else if(isset($_POST['cooperator']['cod_colaborador'])) {
-				$telefoneTO = new TelefoneTO();
-				$telefoneTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
-				$telefoneTO->num_ddd 			= $telefone['num_ddd'];
-				$telefoneTO->num_telefone 		= $telefone['num_telefone'];
-				$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
-				
-				if(!$telefoneDao->saveTelefone($telefoneTO)) {
-					Flight::halt(500, 'Erro ao salvar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
-					die;
+				else if(isset($_POST['cooperator']['cod_colaborador'])) {
+					$telefoneTO = new TelefoneTO();
+					$telefoneTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
+					$telefoneTO->num_ddd 			= $telefone['num_ddd'];
+					$telefoneTO->num_telefone 		= $telefone['num_telefone'];
+					$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
+					
+					if(!$telefoneDao->saveTelefone($telefoneTO)) {
+						Flight::halt(500, 'Erro ao salvar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
+						die;
+					}
 				}
 			}
 		}
 
-		$emailDao = new EmailDao();
 
 		// Atualiza a lista de e-mails do colaborador
-		foreach ($_POST['cooperator']['emails'] as $key => $email) {
-			if(isset($email['flg_removido']) && $email['flg_removido'] === "true") {
-				if(!$emailDao->deleteEmail($email['cod_email'])) {
-					Flight::halt(500, 'Erro ao excluir o email ['. $emailTO->end_email .']');
-					die;
+		if(isset($_POST['cooperator']['emails'])) {
+			$emailDao = new EmailDao();
+			foreach ($_POST['cooperator']['emails'] as $key => $email) {
+				if(isset($email['flg_removido']) && $email['flg_removido'] === "true") {
+					if(!$emailDao->deleteEmail($email['cod_email'])) {
+						Flight::halt(500, 'Erro ao excluir o email ['. $emailTO->end_email .']');
+						die;
+					}
 				}
-			}
-			else if(isset($email['cod_email'])) {
-				$emailTO = new EmailTO();
-				$emailTO->cod_email 	= $email['cod_email'];
-				$emailTO->end_email 	= $email['end_email'];
-				
-				if(!$emailDao->updateEmail($emailTO)) {
-					Flight::halt(500, 'Erro ao atualizar o email ['. $emailTO->end_email .']');
-					die;
+				else if(isset($email['cod_email'])) {
+					$emailTO = new EmailTO();
+					$emailTO->cod_email 	= $email['cod_email'];
+					$emailTO->end_email 	= $email['end_email'];
+					
+					if(!$emailDao->updateEmail($emailTO)) {
+						Flight::halt(500, 'Erro ao atualizar o email ['. $emailTO->end_email .']');
+						die;
+					}
 				}
-			}
-			else if(isset($_POST['cooperator']['cod_colaborador'])) {
-				$emailTO = new EmailTO();
-				$emailTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
-				$emailTO->end_email 		= $email['end_email'];
-				
-				if(!$emailDao->saveEmail($emailTO)) {
-					Flight::halt(500, 'Erro ao salvar o email ['. $emailTO->end_email .']');
-					die;
+				else if(isset($_POST['cooperator']['cod_colaborador'])) {
+					$emailTO = new EmailTO();
+					$emailTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
+					$emailTO->end_email 		= $email['end_email'];
+					
+					if(!$emailDao->saveEmail($emailTO)) {
+						Flight::halt(500, 'Erro ao salvar o email ['. $emailTO->end_email .']');
+						die;
+					}
 				}
 			}
 		}
