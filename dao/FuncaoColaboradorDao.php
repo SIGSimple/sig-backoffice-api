@@ -41,6 +41,37 @@ class FuncaoColaboradorDao {
 		}
 		else
 			return false;
+	}
+
+	public function getFuncoesColaborador($cod_colaborador){		
+		$sql = "SELECT
+					afc.cod_alteracao_funcao,
+					fun.cod_funcao,
+					fun.num_funcao,
+					fun.nme_funcao, 
+    				afc.vlr_salario, 
+    				afc.dta_alteracao,
+    				maf.cod_motivo_alteracao_funcao,
+    				maf.nme_motivo_alteracao_funcao
+    				
+				FROM tb_alteracao_funcao_colaborador 	AS afc
+				INNER JOIN tb_funcao 					AS fun ON fun.cod_funcao = afc.cod_funcao
+				INNER JOIN tb_colaborador 				AS col ON col.cod_colaborador = afc.cod_colaborador
+				INNER JOIN tb_motivo_alteracao_funcao 	AS maf ON maf.cod_motivo_alteracao_funcao = afc.cod_motivo_alteracao_funcao
+
+				WHERE col.cod_colaborador = $cod_colaborador";
+				
+
+		$select = $this->conn->prepare($sql);
+		if($select->execute()){
+			if($select->rowCount() > 0 && $select->rowCount() == 1) {
+				return parse_arr_values($select->fetchALL(PDO::FETCH_ASSOC), "all");
+			}
+			else
+				return false;
+		}
+		else
+			return false;
 
 	}
 }
