@@ -16,18 +16,20 @@ if(serverName() == 'localhost')
 else
 {
 	// DESENVOLVIMENTO - LOCALHOST
+	/*
 	define('HOST', 		'localhost');
 	define('DBNAME', 	'consorciointer2');
 	define('USER', 		'root');
 	define('PASSWORD', 	'');
 	define('PATH_UPLOAD_FILES', '/home/consorciointermultip/public_html/files/');
+	*/
 	
 	// PRODUÇÃO - AMAZON
-	/*define('HOST', 		'mysql02.consorciointermultip.hospedagemdesites.ws');
+	define('HOST', 		'mysql02.consorciointermultip.hospedagemdesites.ws');
 	define('DBNAME', 	'consorciointer2');
 	define('USER', 		'consorciointer2');
 	define('PASSWORD', 	'f150679@Fil');
-	define('PATH_UPLOAD_FILES', '/home/consorciointermultip/public_html/files/');*/
+	define('PATH_UPLOAD_FILES', '/home/consorciointermultip/public_html/files/');
 }
 
 ?>
