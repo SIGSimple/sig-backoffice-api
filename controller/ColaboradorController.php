@@ -274,30 +274,41 @@ class ColaboradorController {
 
 		// Grava os dados do colaborador
 		$colaboradorDao = new ColaboradorDao();
-		$colTO->cod_colaborador = $colaboradorDao->saveColaborador($colTO);
+		if(!$colTO->cod_colaborador) {
+			$colTO->cod_colaborador = $colaboradorDao->saveColaborador($colTO);
+			
+			// Grava os telefones do colaborador
+			$telefoneDao = new TelefoneDao();
+			foreach ($telefones as $index => $telefone) {
+				$telefoneTO = new TelefoneTO();
+				$telefoneTO->cod_colaborador	= $colTO->cod_colaborador;
+				$telefoneTO->num_ddd 			= $telefone['num_ddd'];
+				$telefoneTO->num_telefone 		= $telefone['num_telefone'];
+				$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
+				$telefoneDao->saveTelefone($telefoneTO);
+			}
 
-		// Grava os telefones do colaborador
-		$telefoneDao = new TelefoneDao();
-		foreach ($telefones as $index => $telefone) {
+			// Grava as funções do colaborador
+			$funColDao = new FuncaoColaboradorDao();
+			foreach ($funcoes as $index => $funcao) {
+				$funColTO = new FuncaoColaboradorTO();
+				$funColTO->cod_colaborador 				= $colTO->cod_colaborador;
+				$funColTO->cod_funcao 					= $funcao['funcao']['cod_funcao'];
+				$funColTO->vlr_salario 					= $funcao['vlr_salario'];
+				$funColTO->cod_motivo_alteracao_funcao 	= $funcao['motivoAlteracaoFuncao']['cod_motivo_alteracao_funcao'];
+				$funColTO->dta_alteracao 				= $funcao['dta_alteracao'];
+				$funColDao->saveFuncaoColaborador($funColTO);
+			}
+		}
+		else {
+			$colTO->cod_colaborador = $colaboradorDao->updateColaborador($colTO);
 			$telefoneTO = new TelefoneTO();
-			$telefoneTO->cod_colaborador	= $colTO->cod_colaborador;
-			$telefoneTO->num_ddd 			= $telefone['num_ddd'];
-			$telefoneTO->num_telefone 		= $telefone['num_telefone'];
-			$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
-			$telefoneDao->saveTelefone($telefoneTO);
+					$telefoneTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
+					$telefoneTO->num_ddd 			= $telefone['num_ddd'];
+					$telefoneTO->num_telefone 		= $telefone['num_telefone'];
+					$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
 		}
 
-		// Grava as funções do colaborador
-		$funColDao = new FuncaoColaboradorDao();
-		foreach ($funcoes as $index => $funcao) {
-			$funColTO = new FuncaoColaboradorTO();
-			$funColTO->cod_colaborador 				= $colTO->cod_colaborador;
-			$funColTO->cod_funcao 					= $funcao['funcao']['cod_funcao'];
-			$funColTO->vlr_salario 					= $funcao['vlr_salario'];
-			$funColTO->cod_motivo_alteracao_funcao 	= $funcao['motivoAlteracaoFuncao']['cod_motivo_alteracao_funcao'];
-			$funColTO->dta_alteracao 				= $funcao['dta_alteracao'];
-			$funColDao->saveFuncaoColaborador($funColTO);
-		}
 
 		Flight::halt(200, 'Colaborador salvo com sucesso!');
 	}
