@@ -4,6 +4,7 @@ class ColaboradorController {
 	public static function addNewColaborador() {
 		// Capturando os valores do front-end
 		$colTO = new ColaboradorTO();
+		$colTO->cod_colaborador 					= (isset($_POST['cod_colaborador'])) ? $_POST['cod_colaborador'] : "";
 		$colTO->num_matricula 						= (isset($_POST['num_matricula'])) ? $_POST['num_matricula'] : "";
 		$colTO->nme_colaborador 					= (isset($_POST['nme_colaborador'])) ? $_POST['nme_colaborador'] : "";
 		$colTO->flg_portador_necessidades_especiais = (isset($_POST['flg_portador_necessidades_especiais'])) ? $_POST['flg_portador_necessidades_especiais'] : "";
@@ -105,10 +106,6 @@ class ColaboradorController {
 
 		$validator->set_msg('A data de Admissão é obrigatória')
 				  ->set('dta_admissao', $colTO->dta_admissao)
-				  ->is_required();
-
-		$validator->set_msg('A data de Demissão é obrigatória')
-				  ->set('dta_demissao', $colTO->dta_demissao)
 				  ->is_required();
 
 		$validator->set_msg('O número da CTPS é obrigatório')
@@ -302,11 +299,70 @@ class ColaboradorController {
 		}
 		else {
 			$colTO->cod_colaborador = $colaboradorDao->updateColaborador($colTO);
-			$telefoneTO = new TelefoneTO();
-					$telefoneTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
+
+			$telefoneDao = new TelefoneDao();
+			foreach ($telefones as $key => $telefone) {
+				if(isset($telefone['flg_removido']) && $telefone['flg_removido'] === "true") {
+					if(!$telefoneDao->deleteTelefone($telefone['cod_telefone'])) {
+						Flight::halt(500, 'Erro ao excluir o telefone [('. $telefone['num_ddd'].') '. $telefone['num_telefone'] .']');
+						die;
+					}
+				}
+				else if(isset($telefone['cod_telefone'])) {
+					$telefoneTO = new TelefoneTO();
+					$telefoneTO->cod_telefone 		= $telefone['cod_telefone'];
 					$telefoneTO->num_ddd 			= $telefone['num_ddd'];
 					$telefoneTO->num_telefone 		= $telefone['num_telefone'];
 					$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
+					
+					if(!$telefoneDao->updateTelefone($telefoneTO)) {
+						Flight::halt(500, 'Erro ao atualizar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
+						die;
+					}
+				}
+				else {
+					$telefoneTO = new TelefoneTO();
+					$telefoneTO->cod_colaborador 	= $colTO->cod_colaborador;
+					$telefoneTO->num_ddd 			= $telefone['num_ddd'];
+					$telefoneTO->num_telefone 		= $telefone['num_telefone'];
+					$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
+					
+					if(!$telefoneDao->saveTelefone($telefoneTO)) {
+						Flight::halt(500, 'Erro ao salvar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
+						die;
+					}
+				}
+			}
+
+			/*$emailDao = new EmailDao();
+			foreach ($emails as $key => $email) {
+				if(isset($email['flg_removido']) && $email['flg_removido'] === "true") {
+					if(!$emailDao->deleteEmail($email['cod_email'])) {
+						Flight::halt(500, 'Erro ao excluir o email ['. $emailTO->end_email .']');
+						die;
+					}
+				}
+				else if(isset($email['cod_email'])) {
+					$emailTO = new EmailTO();
+					$emailTO->cod_email 	= $email['cod_email'];
+					$emailTO->end_email 	= $email['end_email'];
+					
+					if(!$emailDao->updateEmail($emailTO)) {
+						Flight::halt(500, 'Erro ao atualizar o email ['. $emailTO->end_email .']');
+						die;
+					}
+				}
+				else if(isset($_POST['cooperator']['cod_colaborador'])) {
+					$emailTO = new EmailTO();
+					$emailTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
+					$emailTO->end_email 		= $email['end_email'];
+					
+					if(!$emailDao->saveEmail($emailTO)) {
+						Flight::halt(500, 'Erro ao salvar o email ['. $emailTO->end_email .']');
+						die;
+					}
+				}
+			}*/
 		}
 
 
@@ -333,7 +389,6 @@ class ColaboradorController {
 		// Atualiza a lista de telefones do colaborador
 		if(isset($_POST['cooperator']['telefones'])) {
 			$telefoneDao = new TelefoneDao();
-
 			foreach ($_POST['cooperator']['telefones'] as $key => $telefone) {
 				if(isset($telefone['flg_removido']) && $telefone['flg_removido'] === "true") {
 					if(!$telefoneDao->deleteTelefone($telefone['cod_telefone'])) {
