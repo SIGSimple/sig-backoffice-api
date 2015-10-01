@@ -80,6 +80,7 @@ class ColaboradorController {
 		// Arrays auxiliares de telefones e funções
 		$telefones 	= (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
 		$funcoes 	= (isset($_POST['funcoes'])) ? $_POST['funcoes'] : array();
+		$emails 	= (isset($_POST['emails'])) ? $_POST['emails'] : array();
 
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
@@ -285,14 +286,24 @@ class ColaboradorController {
 				$telefoneDao->saveTelefone($telefoneTO);
 			}
 
+			// Grava os emails do colaborador
+			$emailDao = new EmailDao();
+			foreach ($emails as $index => $email) {
+				$emailTO = new EmailTO();
+				$emailTO->cod_colaborador		= $colTO->cod_colaborador;
+				$emailTO->end_email 			= $email['end_email'];
+				$emailDao->saveEmail($emailTO);
+			}
+
 			// Grava as funções do colaborador
 			$funColDao = new FuncaoColaboradorDao();
 			foreach ($funcoes as $index => $funcao) {
 				$funColTO = new FuncaoColaboradorTO();
 				$funColTO->cod_colaborador 				= $colTO->cod_colaborador;
-				$funColTO->cod_funcao 					= $funcao['funcao']['cod_funcao'];
+				$funColTO->num_funcao 					= $funcao['funcao']['num_funcao'];
+				$funColTO->nme_funcao 					= $funcao['funcao']['nme_funcao'];
 				$funColTO->vlr_salario 					= $funcao['vlr_salario'];
-				$funColTO->cod_motivo_alteracao_funcao 	= $funcao['motivoAlteracaoFuncao']['cod_motivo_alteracao_funcao'];
+				$funColTO->nme_motivo_alteracao_funcao 	= $funcao['motivoAlteracaoFuncao']['nme_motivo_alteracao_funcao'];
 				$funColTO->dta_alteracao 				= $funcao['dta_alteracao'];
 				$funColDao->saveFuncaoColaborador($funColTO);
 			}
@@ -334,7 +345,7 @@ class ColaboradorController {
 				}
 			}
 
-			/*$emailDao = new EmailDao();
+			$emailDao = new EmailDao();
 			foreach ($emails as $key => $email) {
 				if(isset($email['flg_removido']) && $email['flg_removido'] === "true") {
 					if(!$emailDao->deleteEmail($email['cod_email'])) {
@@ -362,9 +373,28 @@ class ColaboradorController {
 						die;
 					}
 				}
-			}*/
-		}
+			}
 
+			$funcaoDao = new FuncaoColaboradorDao();
+			foreach ($funcoes as $key => $funcao) {  
+				if(!isset($funcao['cod_alteracao_funcao'])){
+					$funColTO = new FuncaoColaboradorTO();
+					$funColTO->cod_colaborador 					= $colTO->cod_colaborador;
+					$funColTO->cod_funcao 						= $funcao['cod_funcao'];
+					$funColTO->num_funcao 						= $funcao['funcao']['num_funcao'];
+					$funColTO->nme_funcao 						= $funcao['funcao']['nme_funcao'];
+					$funColTO->vlr_salario 						= $funcao['vlr_salario'];
+					$funColTO->nme_motivo_alteracao_funcao 		= $funcao['motivoAlteracaoFuncao']['nme_motivo_alteracao_funcao'];
+					$funColTO->dta_alteracao 					= $funcao['dta_alteracao'];
+					
+					if(!$funcaoDao->saveFuncaoColaborador($funColTO)) {
+						Flight::halt(500, 'Erro ao salvar a funcao [('. $funColTO->num_funcao.') '. $funColTO->nme_funcao .']');
+						die;
+					}
+				}
+			}
+
+		
 
 		Flight::halt(200, 'Colaborador salvo com sucesso!');
 	}
