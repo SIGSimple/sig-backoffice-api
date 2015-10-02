@@ -300,8 +300,7 @@ class ColaboradorController {
 			foreach ($funcoes as $index => $funcao) {
 				$funColTO = new FuncaoColaboradorTO();
 				$funColTO->cod_colaborador 				= $colTO->cod_colaborador;
-				$funColTO->num_funcao 					= $funcao['funcao']['num_funcao'];
-				$funColTO->nme_funcao 					= $funcao['funcao']['nme_funcao'];
+				$funColTO->cod_funcao 					= $funcao['funcao']['cod_funcao'];
 				$funColTO->vlr_salario 					= $funcao['vlr_salario'];
 				$funColTO->nme_motivo_alteracao_funcao 	= $funcao['motivoAlteracaoFuncao']['nme_motivo_alteracao_funcao'];
 				$funColTO->dta_alteracao 				= $funcao['dta_alteracao'];
@@ -380,20 +379,18 @@ class ColaboradorController {
 				if(!isset($funcao['cod_alteracao_funcao'])){
 					$funColTO = new FuncaoColaboradorTO();
 					$funColTO->cod_colaborador 					= $colTO->cod_colaborador;
-					$funColTO->cod_funcao 						= $funcao['cod_funcao'];
-					$funColTO->num_funcao 						= $funcao['funcao']['num_funcao'];
-					$funColTO->nme_funcao 						= $funcao['funcao']['nme_funcao'];
+					$funColTO->cod_funcao 						= $funcao['funcao']['cod_funcao'];
 					$funColTO->vlr_salario 						= $funcao['vlr_salario'];
 					$funColTO->nme_motivo_alteracao_funcao 		= $funcao['motivoAlteracaoFuncao']['nme_motivo_alteracao_funcao'];
 					$funColTO->dta_alteracao 					= $funcao['dta_alteracao'];
 					
 					if(!$funcaoDao->saveFuncaoColaborador($funColTO)) {
-						Flight::halt(500, 'Erro ao salvar a funcao [('. $funColTO->num_funcao.') '. $funColTO->nme_funcao .']');
+						Flight::halt(500, 'Erro ao salvar a funcao [('. $funColTO->cod_funcao.') ');
 						die;
 					}
 				}
 			}
-
+		}
 		
 
 		Flight::halt(200, 'Colaborador salvo com sucesso!');
