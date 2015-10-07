@@ -9,7 +9,7 @@ class ColaboradorController {
 		$colTO->nme_colaborador 					= (isset($_POST['nme_colaborador'])) ? $_POST['nme_colaborador'] : "";
 		$colTO->flg_portador_necessidades_especiais = (isset($_POST['flg_portador_necessidades_especiais'])) ? $_POST['flg_portador_necessidades_especiais'] : "";
 		$colTO->cod_empresa_contratante 			= (isset($_POST['empresaContratante'])) ? $_POST['empresaContratante']['cod_empresa'] : "";
-		//$colTO->cod_contrato 						= (isset($_POST['cod_contrato'])) ? $_POST['cod_contrato'] : "";
+		$colTO->cod_contrato 						= (isset($_POST['contrato'])) ? $_POST['contrato']['cod_origem'] : "";
 		$colTO->cod_regime_contratacao 				= (isset($_POST['cod_regime_contratacao'])) ? $_POST['cod_regime_contratacao'] : "";
 		$colTO->cod_departamento 					= (isset($_POST['cod_departamento'])) ? $_POST['cod_departamento'] : "";
 		$colTO->flg_cm 								= (isset($_POST['flg_cm'])) ? $_POST['flg_cm'] : "";
@@ -259,6 +259,10 @@ class ColaboradorController {
 
 		$validator->set_msg('Insira pelo menos uma função')
 				  ->set('funcoes', $funcoes)
+				  ->is_required();
+
+		$validator->set_msg('O Contrato é obrigatório')
+				  ->set('contrato', $colTO->cod_contrato)
 				  ->is_required();
 		  
 		if(!$validator->validate()){ // Se retornar false, significa que algum campo obrigatório não foi preenchido
