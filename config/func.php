@@ -150,7 +150,7 @@
 		return date("d",$data-1);
 	}
 
-	 function sendMail($assunto, $corpo, $destinatarios=array(0=>array("nome"=>"", "email"=>"")), $form_data=array()) {
+	 function sendMail($assunto, $corpo, $destinatarios=array(0=>array("nome"=>"", "email"=>"")), $form_data=array(), $bodyContent=false) {
 		//extract($form_data);
 		foreach($form_data as $var => $value):
 			${"$var"} = $value;
@@ -175,10 +175,14 @@
 			$mail->AddAddress($value['email'], $value['nome']);
 		endforeach;
 
-		ob_start();
-		include("util/email_templates/".$corpo);
-		$body = ob_get_contents();
-		ob_end_clean();
+		$body = $corpo;
+
+		if(!$bodyContent) {
+			ob_start();
+			include("util/email_templates/".$corpo);
+			$body = ob_get_contents();
+			ob_end_clean();
+		}
 
 		$mail->Subject  = $assunto; 
 		$mail->Body 	= $body   ;
