@@ -145,7 +145,7 @@ class ColaboradorDao{
 			}
 
 			if($search != "") {
-				$sql .= " WHERE nme_colaborador LIKE '%$search%' OR nme_fantasia LIKE '%$search%' OR nme_departamento LIKE '%$search%'";
+				$sql .= " WHERE col.flg_excluido = 0 AND nme_colaborador LIKE '%$search%' OR nme_fantasia LIKE '%$search%' OR nme_departamento LIKE '%$search%'";
 
 				if(count($busca) > 0) {
 					$where = prepareWhere($busca);
@@ -155,8 +155,13 @@ class ColaboradorDao{
 			else if(count($busca) > 0) {
 				$where = prepareWhere($busca);
 				$sql .= " WHERE " . $where;
+				$sql .= " AND col.flg_excluido = 0";
 			}
+			else
+				$sql .= " WHERE col.flg_excluido = 0";
 		}
+
+		$sql .= " ORDER BY col.nme_colaborador ASC";
 
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
@@ -270,6 +275,17 @@ class ColaboradorDao{
 		
 		return $update->execute();
 
+	}
+
+	public function deleteColaborador($cod_colaborador, $cod_usuario){
+		$sql = "UPDATE tb_colaborador
+				SET flg_excluido = 1, 
+					cod_usuario_ultima_atualizacao = $cod_usuario
+				WHERE cod_colaborador = $cod_colaborador";
+
+		$delete = $this->conn->prepare($sql);
+
+		return $delete->execute();
 	}
 }
 ?>

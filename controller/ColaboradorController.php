@@ -400,7 +400,6 @@ class ColaboradorController {
 		Flight::halt(200, 'Colaborador salvo com sucesso!');
 	}
 
-
 	public static function getColaboradores() {
 		$colaboradorDao = new ColaboradorDao();
 		$colaborador = $colaboradorDao->getColaboradores($_GET);
@@ -488,10 +487,22 @@ class ColaboradorController {
 			}
 		}
         
+
+
+
         if(sendMail('[SIG BackOffice] Solicitação de Alteração de Dados', 'conferencia_dados.php', $destinatarios, $_POST))
         	Flight::halt(200, 'Dados enviado com sucesso!<br/>Alterações como E-mail e Telefone serão atualizadas no próximo login.');
         else
         	Flight::halt(500, 'Ocorreu algum erro ao tentar enviar o e-mail!<br/>Tente novamente.');
+	}
+
+	public static function deleteColaborador() {
+		$colaboradorDao = new ColaboradorDao();
+		
+		if($colaboradorDao->deleteColaborador($_GET['cod_colaborador'], $_GET['cod_usuario']))
+			Flight::halt(200, 'Colaborador excluído com sucesso!');
+		else
+			Flight::halt(500, 'Falha ao excluir colaborador! Contate o administrador do sistema.');
 	}
 }
 

@@ -31,7 +31,8 @@ Flight::route('GET /tipos/registro/horario(.json)', 				array('TipoRegistroHorar
 
 Flight::route('GET /dia-ponte/programacao(.json)', 					array('ProgramacaoDiaPonteController', 'getProgramacoesDiaPonte'));
 
-Flight::route('POST /colaborador/new', 								array('ColaboradorController', 'addNewColaborador'));
+Flight::route('POST /colaborador', 									array('ColaboradorController', 'addNewColaborador'));
+Flight::route('DELETE /colaborador',								array('ColaboradorController', 'deleteColaborador'));
 Flight::route('POST /colaborador/conferencia/dados', 				array('ColaboradorController', 'sendDataToUpdate'));
 Flight::route('GET /colaborador/dependentes',						array('DependenteController', 'getDependentes'));
 Flight::route('GET /colaborador/telefones',							array('TelefoneController', 'getTelefones'));
@@ -43,6 +44,7 @@ Flight::route('GET /colaborador/ultima/funcao/@cod_colaborador', 	array('FuncaoC
 Flight::route('GET /colaboradores/emails/mensagem',					array('EmailController', 'getEmailsMensagem'));
 Flight::route('GET /colaboradores(.json)', 							array('ColaboradorController', 'getColaboradores'));
 Flight::route('GET /colaborador/funcoes/@cod_colaborador',			array('FuncaoColaboradorController', 'getFuncoesColaborador'));
+
 								
 Flight::route('GET /empreendimentos(.json)', 						array('EmpreendimentoController', 'getEmpreendimentos'));
 Flight::route('GET /empresas(.json)', 								array('EmpresaController', 'getEmpresas'));
