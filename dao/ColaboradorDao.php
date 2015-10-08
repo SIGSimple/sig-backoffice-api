@@ -145,7 +145,7 @@ class ColaboradorDao{
 			}
 
 			if($search != "") {
-				$sql .= " WHERE nme_colaborador LIKE '%$search%' OR nme_fantasia LIKE '%$search%' OR nme_departamento LIKE '%$search%'";
+				$sql .= " WHERE col.flg_excluido = 0 AND nme_colaborador LIKE '%$search%' OR nme_fantasia LIKE '%$search%' OR nme_departamento LIKE '%$search%'";
 
 				if(count($busca) > 0) {
 					$where = prepareWhere($busca);
@@ -155,8 +155,13 @@ class ColaboradorDao{
 			else if(count($busca) > 0) {
 				$where = prepareWhere($busca);
 				$sql .= " WHERE " . $where;
+				$sql .= " AND col.flg_excluido = 0";
 			}
+			else
+				$sql .= " WHERE col.flg_excluido = 0";
 		}
+
+		$sql .= " ORDER BY col.nme_colaborador ASC";
 
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
@@ -186,8 +191,8 @@ class ColaboradorDao{
 	}
 
 	public function saveColaborador(ColaboradorTO $colTO) {
-		$sql = "INSERT INTO tb_colaborador (num_matricula, nme_colaborador, flg_portador_necessidades_especiais, cod_empresa_contratante, cod_regime_contratacao, cod_departamento, flg_cm, cod_local_trabalho, cod_grade_horario, flg_ativo, dta_admissao, dta_demissao, num_ctps, num_serie_ctps, cod_estado_ctps, dta_emissao_ctps, num_rg, num_cpf, num_pis, num_titulo_eleitor, num_zona_eleitoral, num_secao_eleitoral, num_reservista, dsc_endereco, num_endereco, nme_bairro, dsc_complemento, cod_cidade_moradia, cod_estado_moradia, num_cep, dta_nascimento, cod_cidade_naturalidade, cod_estado_naturalidade, num_cnh, nme_categoria_cnh, dta_validade_cnh, flg_sexo, cod_banco, num_agencia, num_digito_agencia, num_conta_corrente, num_digito_conta_corrente, cod_sindicato, pth_arquivo_cnh, pth_arquivo_rg, pth_arquivo_foto, pth_arquivo_cpf, pth_arquivo_entidade, pth_arquivo_curriculo, pth_arquivo_reservista, pth_arquivo_titulo_eleitor, pth_arquivo_ctps, pth_arquivo_pis, cod_entidade, num_entidade, qtd_horas_contratadas, cod_empreendimento, flg_hora_extra, flg_trabalho_fim_semana, flg_trabalho_feriado, flg_ajusta_folha_ponto, flg_ensino_superior, dta_aso) 
-				VALUES ('". $colTO->num_matricula ."', '". $colTO->nme_colaborador ."', ". $colTO->flg_portador_necessidades_especiais .", ". $colTO->cod_empresa_contratante .", ". $colTO->cod_regime_contratacao .", ". $colTO->cod_departamento .", '". $colTO->flg_cm ."', ". $colTO->cod_local_trabalho .", ". $colTO->cod_grade_horario .", ". $colTO->flg_ativo .", '". $colTO->dta_admissao ."', '". $colTO->dta_demissao ."', '". $colTO->num_ctps ."', '". $colTO->num_serie_ctps ."', ". $colTO->cod_estado_ctps .", '". $colTO->dta_emissao_ctps ."', '". $colTO->num_rg ."', '". $colTO->num_cpf ."', '". $colTO->num_pis ."', '". $colTO->num_titulo_eleitor ."', '". $colTO->num_zona_eleitoral ."', '". $colTO->num_secao_eleitoral ."', '". $colTO->num_reservista ."', '". $colTO->dsc_endereco ."', '". $colTO->num_endereco ."', '". $colTO->nme_bairro ."', '". $colTO->dsc_complemento ."', ". $colTO->cod_cidade_moradia .", ". $colTO->cod_estado_moradia .", '". $colTO->num_cep ."', '". $colTO->dta_nascimento ."', ". $colTO->cod_cidade_naturalidade .", ". $colTO->cod_estado_naturalidade .", '". $colTO->num_cnh ."', '". $colTO->nme_categoria_cnh ."', '". $colTO->dta_validade_cnh ."', '". $colTO->flg_sexo ."', ". $colTO->cod_banco .", '". $colTO->num_agencia ."', '". $colTO->num_digito_agencia ."', '". $colTO->num_conta_corrente ."', '". $colTO->num_digito_conta_corrente ."', ". $colTO->cod_sindicato .", '". $colTO->pth_arquivo_cnh ."', '". $colTO->pth_arquivo_rg ."', '". $colTO->pth_arquivo_foto ."', '". $colTO->pth_arquivo_cpf ."', '". $colTO->pth_arquivo_entidade ."', '". $colTO->pth_arquivo_curriculo ."', '". $colTO->pth_arquivo_reservista ."', '". $colTO->pth_arquivo_titulo_eleitor ."', '". $colTO->pth_arquivo_ctps ."', '". $colTO->pth_arquivo_pis ."', ". $colTO->cod_entidade .", '". $colTO->num_entidade ."', ". $colTO->qtd_horas_contratadas .", ". $colTO->cod_empreendimento .", ". $colTO->flg_hora_extra .", ". $colTO->flg_trabalho_fim_semana .", ". $colTO->flg_trabalho_feriado .", ". $colTO->flg_ajusta_folha_ponto .", ". $colTO->flg_ensino_superior .", ". $colTO->dta_aso .");";
+		$sql = "INSERT INTO tb_colaborador (num_matricula, nme_colaborador, flg_portador_necessidades_especiais, cod_empresa_contratante, cod_regime_contratacao, cod_departamento, flg_cm, cod_local_trabalho, cod_grade_horario, flg_ativo, dta_admissao, dta_demissao, num_ctps, num_serie_ctps, cod_estado_ctps, dta_emissao_ctps, num_rg, num_cpf, num_pis, num_titulo_eleitor, num_zona_eleitoral, num_secao_eleitoral, num_reservista, dsc_endereco, num_endereco, nme_bairro, dsc_complemento, cod_cidade_moradia, cod_estado_moradia, num_cep, dta_nascimento, cod_cidade_naturalidade, cod_estado_naturalidade, num_cnh, nme_categoria_cnh, dta_validade_cnh, flg_sexo, cod_banco, num_agencia, num_digito_agencia, num_conta_corrente, num_digito_conta_corrente, cod_sindicato, pth_arquivo_cnh, pth_arquivo_rg, pth_arquivo_foto, pth_arquivo_cpf, pth_arquivo_entidade, pth_arquivo_curriculo, pth_arquivo_reservista, pth_arquivo_titulo_eleitor, pth_arquivo_ctps, pth_arquivo_pis, cod_entidade, num_entidade, qtd_horas_contratadas, cod_empreendimento, flg_hora_extra, flg_trabalho_fim_semana, flg_trabalho_feriado, flg_ajusta_folha_ponto, flg_ensino_superior, dta_aso, cod_contrato) 
+				VALUES ('". $colTO->num_matricula ."', '". $colTO->nme_colaborador ."', ". $colTO->flg_portador_necessidades_especiais .", ". $colTO->cod_empresa_contratante .", ". $colTO->cod_regime_contratacao .", ". $colTO->cod_departamento .", '". $colTO->flg_cm ."', ". $colTO->cod_local_trabalho .", ". $colTO->cod_grade_horario .", ". $colTO->flg_ativo .", '". $colTO->dta_admissao ."', '". $colTO->dta_demissao ."', '". $colTO->num_ctps ."', '". $colTO->num_serie_ctps ."', ". $colTO->cod_estado_ctps .", '". $colTO->dta_emissao_ctps ."', '". $colTO->num_rg ."', '". $colTO->num_cpf ."', '". $colTO->num_pis ."', '". $colTO->num_titulo_eleitor ."', '". $colTO->num_zona_eleitoral ."', '". $colTO->num_secao_eleitoral ."', '". $colTO->num_reservista ."', '". $colTO->dsc_endereco ."', '". $colTO->num_endereco ."', '". $colTO->nme_bairro ."', '". $colTO->dsc_complemento ."', ". $colTO->cod_cidade_moradia .", ". $colTO->cod_estado_moradia .", '". $colTO->num_cep ."', '". $colTO->dta_nascimento ."', ". $colTO->cod_cidade_naturalidade .", ". $colTO->cod_estado_naturalidade .", '". $colTO->num_cnh ."', '". $colTO->nme_categoria_cnh ."', '". $colTO->dta_validade_cnh ."', '". $colTO->flg_sexo ."', ". $colTO->cod_banco .", '". $colTO->num_agencia ."', '". $colTO->num_digito_agencia ."', '". $colTO->num_conta_corrente ."', '". $colTO->num_digito_conta_corrente ."', ". $colTO->cod_sindicato .", '". $colTO->pth_arquivo_cnh ."', '". $colTO->pth_arquivo_rg ."', '". $colTO->pth_arquivo_foto ."', '". $colTO->pth_arquivo_cpf ."', '". $colTO->pth_arquivo_entidade ."', '". $colTO->pth_arquivo_curriculo ."', '". $colTO->pth_arquivo_reservista ."', '". $colTO->pth_arquivo_titulo_eleitor ."', '". $colTO->pth_arquivo_ctps ."', '". $colTO->pth_arquivo_pis ."', ". $colTO->cod_entidade .", '". $colTO->num_entidade ."', ". $colTO->qtd_horas_contratadas .", ". $colTO->cod_empreendimento .", ". $colTO->flg_hora_extra .", ". $colTO->flg_trabalho_fim_semana .", ". $colTO->flg_trabalho_feriado .", ". $colTO->flg_ajusta_folha_ponto .", ". $colTO->flg_ensino_superior .", ". $colTO->dta_aso .", ". $colTO->cod_contrato .");";
 
 		$insert = $this->conn->prepare($sql);
 
@@ -200,139 +205,87 @@ class ColaboradorDao{
 	public function updateColaborador(ColaboradorTO $colTO) {
 
 		$sql = "UPDATE tb_colaborador
-				SET num_matricula 							= :num_matricula,
-					nme_colaborador 						= :nme_colaborador,
-					flg_portador_necessidades_especiais 	= :flg_portador_necessidades_especiais,
-					cod_empresa_contratante 				= :cod_empresa_contratante,
-					cod_regime_contratacao					= :cod_regime_contratacao,
-					cod_departamento						= :cod_departamento,
-					flg_cm									= :flg_cm,
-					cod_local_trabalho						= :cod_local_trabalho,
-					cod_grade_horario						= :cod_grade_horario,
-					flg_ativo								= :flg_ativo,
-					dta_admissao							= :dta_admissao,
-					dta_demissao							= :dta_demissao,
-					num_ctps								= :num_ctps,
-					num_serie_ctps							= :num_serie_ctps,
-					cod_estado_ctps							= :cod_estado_ctps,
-					dta_emissao_ctps						= :dta_emissao_ctps,
-					num_rg 									= :num_rg,
-					num_cpf									= :num_cpf,
-					num_pis									= :num_pis,
-					num_titulo_eleitor						= :num_titulo_eleitor,
-					num_zona_eleitoral						= :num_zona_eleitoral,
-					num_secao_eleitoral						= :num_secao_eleitoral,
-					num_reservista							= :num_reservista,
-					dsc_endereco							= :dsc_endereco,
-					num_endereco							= :num_endereco,
-					nme_bairro								= :nme_bairro,
-					dsc_complemento							= :dsc_complemento,
-					cod_cidade_moradia						= :cod_cidade_moradia,
-					cod_estado_moradia						= :cod_estado_moradia,
-					num_cep									= :num_cep,
-					dta_nascimento							= :dta_nascimento,
-					cod_cidade_naturalidade					= :cod_cidade_naturalidade,
-					cod_estado_naturalidade					= :cod_estado_naturalidade,
-					num_cnh									= :num_cnh,
-					nme_categoria_cnh						= :nme_categoria_cnh,
-					dta_validade_cnh						= :dta_validade_cnh,
-					flg_sexo								= :flg_sexo,
-					cod_banco								= :cod_banco,
-					num_agencia 							= :num_agencia,
-					num_digito_agencia						= :num_digito_agencia,
-					num_conta_corrente 						= :num_conta_corrente,
-					num_digito_conta_corrente				= :num_digito_conta_corrente,
-					cod_sindicato							= :cod_sindicato,
-					pth_arquivo_cnh							= :pth_arquivo_cnh,
-					pth_arquivo_rg							= :pth_arquivo_rg,
-					pth_arquivo_foto						= :pth_arquivo_foto,
-					pth_arquivo_cpf							= :pth_arquivo_cpf,
-					pth_arquivo_entidade					= :pth_arquivo_entidade,
-					pth_arquivo_curriculo					= :pth_arquivo_curriculo,
-					pth_arquivo_reservista					= :pth_arquivo_reservista,
-					pth_arquivo_titulo_eleitor				= :pth_arquivo_titulo_eleitor,
-					pth_arquivo_ctps						= :pth_arquivo_ctps,
-					pth_arquivo_pis							= :pth_arquivo_pis,
-					cod_entidade 							= :cod_entidade,
-					num_entidade							= :num_entidade,
-					qtd_horas_contratadas					= :qtd_horas_contratadas,
-					cod_empreendimento						= :cod_empreendimento,
-					flg_hora_extra							= :flg_hora_extra,
-					flg_trabalho_fim_semana					= :flg_trabalho_fim_semana,
-					flg_trabalho_feriado					= :flg_trabalho_feriado,
-					flg_ajusta_folha_ponto					= :flg_ajusta_folha_ponto,
-					flg_ensino_superior						= :flg_ensino_superior,
-					dta_aso 								= :dta_aso
-				WHERE cod_colaborador = :cod_colaborador;";
+				SET num_matricula 							= '". $colTO->num_matricula ."',
+					nme_colaborador 						= '". $colTO->nme_colaborador ."',
+					flg_portador_necessidades_especiais 	= ". $colTO->flg_portador_necessidades_especiais .",
+					cod_empresa_contratante 				= ". $colTO->cod_empresa_contratante .",
+					cod_regime_contratacao					= ". $colTO->cod_regime_contratacao .",
+					cod_departamento						= ". $colTO->cod_departamento .",
+					flg_cm									= '". $colTO->flg_cm ."',
+					cod_local_trabalho						= ". $colTO->cod_local_trabalho .",
+					cod_grade_horario						= ". $colTO->cod_grade_horario .",
+					flg_ativo								= ". $colTO->flg_ativo .",
+					dta_admissao							= '". $colTO->dta_admissao ."',
+					dta_demissao							= '". $colTO->dta_demissao ."',
+					num_ctps								= '". $colTO->num_ctps ."',
+					num_serie_ctps							= '". $colTO->num_serie_ctps ."',
+					cod_estado_ctps							= ". $colTO->cod_estado_ctps .",
+					dta_emissao_ctps						= '". $colTO->dta_emissao_ctps ."',
+					num_rg 									= '". $colTO->num_rg ."',
+					num_cpf									= '". $colTO->num_cpf ."',
+					num_pis									= '". $colTO->num_pis ."',
+					num_titulo_eleitor						= '". $colTO->num_titulo_eleitor ."',
+					num_zona_eleitoral						= '". $colTO->num_zona_eleitoral ."',
+					num_secao_eleitoral						= '". $colTO->num_secao_eleitoral ."',
+					num_reservista							= '". $colTO->num_reservista ."',
+					dsc_endereco							= '". $colTO->dsc_endereco ."',
+					num_endereco							= '". $colTO->num_endereco ."',
+					nme_bairro								= '". $colTO->nme_bairro ."',
+					dsc_complemento							= '". $colTO->dsc_complemento ."',
+					cod_cidade_moradia						= ". $colTO->cod_cidade_moradia .",
+					cod_estado_moradia						= ". $colTO->cod_estado_moradia .",
+					num_cep									= '". $colTO->num_cep ."',
+					dta_nascimento							= '". $colTO->dta_nascimento ."',
+					cod_cidade_naturalidade					= ". $colTO->cod_cidade_naturalidade .",
+					cod_estado_naturalidade					= ". $colTO->cod_estado_naturalidade .",
+					num_cnh									= '". $colTO->num_cnh ."',
+					nme_categoria_cnh						= '". $colTO->nme_categoria_cnh ."',
+					dta_validade_cnh						= '". $colTO->dta_validade_cnh ."',
+					flg_sexo								= '". $colTO->flg_sexo ."',
+					cod_banco								= ". $colTO->cod_banco .",
+					num_agencia 							= '". $colTO->num_agencia ."',
+					num_digito_agencia						= '". $colTO->num_digito_agencia ."',
+					num_conta_corrente 						= '". $colTO->num_conta_corrente ."',
+					num_digito_conta_corrente				= '". $colTO->num_digito_conta_corrente ."',
+					cod_sindicato							= ". $colTO->cod_sindicato .",
+					pth_arquivo_cnh							= '". $colTO->pth_arquivo_cnh ."',
+					pth_arquivo_rg							= '". $colTO->pth_arquivo_rg ."',
+					pth_arquivo_foto						= '". $colTO->pth_arquivo_foto ."',
+					pth_arquivo_cpf							= '". $colTO->pth_arquivo_cpf ."',
+					pth_arquivo_entidade					= '". $colTO->pth_arquivo_entidade ."',
+					pth_arquivo_curriculo					= '". $colTO->pth_arquivo_curriculo ."',
+					pth_arquivo_reservista					= '". $colTO->pth_arquivo_reservista ."',
+					pth_arquivo_titulo_eleitor				= '". $colTO->pth_arquivo_titulo_eleitor ."',
+					pth_arquivo_ctps						= '". $colTO->pth_arquivo_ctps ."',
+					pth_arquivo_pis							= '". $colTO->pth_arquivo_pis ."',
+					cod_entidade 							= ". $colTO->cod_entidade .",
+					num_entidade							= '". $colTO->num_entidade ."',
+					qtd_horas_contratadas					= '". $colTO->qtd_horas_contratadas ."',
+					cod_empreendimento						= ". $colTO->cod_empreendimento .",
+					flg_hora_extra							= ". $colTO->flg_hora_extra .",
+					flg_trabalho_fim_semana					= ". $colTO->flg_trabalho_fim_semana .",
+					flg_trabalho_feriado					= ". $colTO->flg_trabalho_feriado .",
+					flg_ajusta_folha_ponto					= ". $colTO->flg_ajusta_folha_ponto .",
+					flg_ensino_superior						= ". $colTO->flg_ensino_superior .",
+					dta_aso 								= '". $colTO->dta_aso ."',
+					cod_contrato 							= '". $colTO->cod_contrato ."'
+				WHERE cod_colaborador = ". $colTO->cod_colaborador .";";
 
-
-		$insert = $this->conn->prepare($sql);
-
-		$insert->bindValue(':num_matricula', 										$colTO->num_matricula, 							PDO::PARAM_STR);
-		$insert->bindValue(':nme_colaborador', 										$colTO->nme_colaborador, 						PDO::PARAM_STR);
-		$insert->bindValue(':flg_portador_necessidades_especiais', 					$colTO->flg_portador_necessidades_especiais, 	PDO::PARAM_INT);
-		$insert->bindValue(':cod_empresa_contratante', 								$colTO->cod_empresa_contratante, 				PDO::PARAM_INT);
-		$insert->bindValue(':cod_regime_contratacao', 								$colTO->cod_regime_contratacao, 				PDO::PARAM_INT);
-		$insert->bindValue(':cod_departamento', 									$colTO->cod_departamento, 						PDO::PARAM_INT);
-		$insert->bindValue(':flg_cm', 												$colTO->flg_cm, 								PDO::PARAM_STR);
-		$insert->bindValue(':cod_local_trabalho', 									$colTO->cod_local_trabalho, 					PDO::PARAM_INT);
-		$insert->bindValue(':cod_grade_horario', 									$colTO->cod_grade_horario, 						PDO::PARAM_INT);
-		$insert->bindValue(':flg_ativo', 											$colTO->flg_ativo, 								PDO::PARAM_INT);
-		$insert->bindValue(':dta_admissao', 										$colTO->dta_admissao, 							PDO::PARAM_STR);
-		$insert->bindValue(':dta_demissao', 										$colTO->dta_demissao, 							PDO::PARAM_STR);
-		$insert->bindValue(':num_ctps', 											$colTO->num_ctps, 								PDO::PARAM_STR);
-		$insert->bindValue(':num_serie_ctps', 										$colTO->num_serie_ctps, 						PDO::PARAM_STR);
-		$insert->bindValue(':dta_emissao_ctps', 									$colTO->dta_emissao_ctps, 						PDO::PARAM_STR);
-		$insert->bindValue(':num_rg', 												$colTO->num_rg, 								PDO::PARAM_STR);
-		$insert->bindValue(':num_cpf', 												$colTO->num_cpf, 								PDO::PARAM_STR);
-		$insert->bindValue(':num_pis', 												$colTO->num_pis, 								PDO::PARAM_STR);
-		$insert->bindValue(':num_titulo_eleitor', 									$colTO->num_titulo_eleitor, 					PDO::PARAM_STR);
-		$insert->bindValue(':num_zona_eleitoral', 									$colTO->num_zona_eleitoral, 					PDO::PARAM_STR);
-		$insert->bindValue(':num_secao_eleitoral', 									$colTO->num_secao_eleitoral, 					PDO::PARAM_STR);
-		$insert->bindValue(':num_reservista', 										$colTO->num_reservista, 						PDO::PARAM_STR);
-		$insert->bindValue(':dsc_endereco', 										$colTO->dsc_endereco, 							PDO::PARAM_STR);
-		$insert->bindValue(':num_endereco', 										$colTO->num_endereco, 							PDO::PARAM_STR);
-		$insert->bindValue(':nme_bairro', 											$colTO->nme_bairro, 							PDO::PARAM_STR);
-		$insert->bindValue(':dsc_complemento', 										$colTO->dsc_complemento, 						PDO::PARAM_STR);
-		$insert->bindValue(':cod_cidade_moradia', 									$colTO->cod_cidade_moradia, 					PDO::PARAM_INT);
-		$insert->bindValue(':cod_estado_moradia', 									$colTO->cod_estado_moradia, 					PDO::PARAM_INT);
-		$insert->bindValue(':num_cep', 												$colTO->num_cep, 								PDO::PARAM_STR);
-		$insert->bindValue(':dta_nascimento', 										$colTO->dta_nascimento, 						PDO::PARAM_STR);
-		$insert->bindValue(':cod_cidade_naturalidade', 								$colTO->cod_cidade_naturalidade, 				PDO::PARAM_INT);
-		$insert->bindValue(':cod_estado_naturalidade', 								$colTO->cod_estado_naturalidade, 				PDO::PARAM_INT);
-		$insert->bindValue(':num_cnh', 												$colTO->num_cnh, 								PDO::PARAM_STR);
-		$insert->bindValue(':nme_categoria_cnh', 									$colTO->nme_categoria_cnh, 						PDO::PARAM_STR);
-		$insert->bindValue(':dta_validade_cnh', 									$colTO->dta_validade_cnh, 						PDO::PARAM_STR);
-		$insert->bindValue(':flg_sexo', 											$colTO->flg_sexo, 								PDO::PARAM_STR);
-		$insert->bindValue(':cod_banco', 											$colTO->cod_banco, 								PDO::PARAM_INT);
-		$insert->bindValue(':num_agencia', 											$colTO->num_agencia, 							PDO::PARAM_STR);
-		$insert->bindValue(':num_digito_agencia', 									$colTO->num_digito_agencia, 					PDO::PARAM_STR);
-		$insert->bindValue(':num_conta_corrente', 									$colTO->num_conta_corrente, 					PDO::PARAM_STR);
-		$insert->bindValue(':num_digito_conta_corrente', 							$colTO->num_digito_conta_corrente, 				PDO::PARAM_STR);
-		$insert->bindValue(':cod_sindicato', 										$colTO->cod_sindicato, 							PDO::PARAM_INT);
-		$insert->bindValue(':pth_arquivo_cnh', 										$colTO->pth_arquivo_cnh, 						PDO::PARAM_STR);
-		$insert->bindValue(':pth_arquivo_rg', 										$colTO->pth_arquivo_rg, 						PDO::PARAM_STR);
-		$insert->bindValue(':pth_arquivo_foto', 									$colTO->pth_arquivo_foto, 						PDO::PARAM_STR);
-		$insert->bindValue(':pth_arquivo_cpf', 										$colTO->pth_arquivo_cpf, 						PDO::PARAM_STR);
-		$insert->bindValue(':pth_arquivo_entidade', 								$colTO->pth_arquivo_entidade, 					PDO::PARAM_STR);
-		$insert->bindValue(':pth_arquivo_curriculo', 								$colTO->pth_arquivo_curriculo, 					PDO::PARAM_STR);
-		$insert->bindValue(':pth_arquivo_reservista', 								$colTO->pth_arquivo_reservista, 				PDO::PARAM_STR);
-		$insert->bindValue(':pth_arquivo_titulo_eleitor', 							$colTO->pth_arquivo_titulo_eleitor, 			PDO::PARAM_STR);
-		$insert->bindValue(':pth_arquivo_ctps', 									$colTO->pth_arquivo_ctps, 						PDO::PARAM_STR);
-		$insert->bindValue(':pth_arquivo_pis', 										$colTO->pth_arquivo_pis, 						PDO::PARAM_STR);
-		$insert->bindValue(':cod_entidade', 										$colTO->cod_entidade, 							PDO::PARAM_INT);
-		$insert->bindValue(':num_entidade', 										$colTO->num_entidade, 							PDO::PARAM_STR);
-		$insert->bindValue(':qtd_horas_contratadas', 								$colTO->qtd_horas_contratadas, 					PDO::PARAM_STR);
-		$insert->bindValue(':cod_empreendimento', 									$colTO->cod_empreendimento, 					PDO::PARAM_INT);
-		$insert->bindValue(':flg_hora_extra', 										$colTO->flg_hora_extra, 						PDO::PARAM_STR);
-		$insert->bindValue(':flg_trabalho_fim_semana', 								$colTO->flg_trabalho_fim_semana, 				PDO::PARAM_STR);
-		$insert->bindValue(':flg_trabalho_feriado', 								$colTO->flg_trabalho_feriado, 					PDO::PARAM_STR);
-		$insert->bindValue(':flg_ajusta_folha_ponto', 								$colTO->flg_ajusta_folha_ponto, 				PDO::PARAM_STR);
-		$insert->bindValue(':flg_ensino_superior', 									$colTO->flg_ensino_superior, 					PDO::PARAM_STR);
-		$insert->bindValue(':dta_aso', 												$colTO->dta_aso, 								PDO::PARAM_STR);
+		$update = $this->conn->prepare($sql);
 		
-		return $insert->execute();
+		return $update->execute();
 
+	}
+
+	public function deleteColaborador($cod_colaborador, $cod_usuario){
+		$sql = "UPDATE tb_colaborador
+				SET flg_excluido = 1, 
+					cod_usuario_ultima_atualizacao = $cod_usuario
+				WHERE cod_colaborador = $cod_colaborador";
+
+		$delete = $this->conn->prepare($sql);
+
+		return $delete->execute();
 	}
 }
 ?>

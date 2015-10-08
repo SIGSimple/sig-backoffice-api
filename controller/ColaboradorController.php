@@ -4,11 +4,12 @@ class ColaboradorController {
 	public static function addNewColaborador() {
 		// Capturando os valores do front-end
 		$colTO = new ColaboradorTO();
+		$colTO->cod_colaborador 					= (isset($_POST['cod_colaborador'])) ? $_POST['cod_colaborador'] : "";
 		$colTO->num_matricula 						= (isset($_POST['num_matricula'])) ? $_POST['num_matricula'] : "";
 		$colTO->nme_colaborador 					= (isset($_POST['nme_colaborador'])) ? $_POST['nme_colaborador'] : "";
 		$colTO->flg_portador_necessidades_especiais = (isset($_POST['flg_portador_necessidades_especiais'])) ? $_POST['flg_portador_necessidades_especiais'] : "";
 		$colTO->cod_empresa_contratante 			= (isset($_POST['empresaContratante'])) ? $_POST['empresaContratante']['cod_empresa'] : "";
-		//$colTO->cod_contrato 						= (isset($_POST['cod_contrato'])) ? $_POST['cod_contrato'] : "";
+		$colTO->cod_contrato 						= (isset($_POST['contrato'])) ? $_POST['contrato']['cod_origem'] : "";
 		$colTO->cod_regime_contratacao 				= (isset($_POST['cod_regime_contratacao'])) ? $_POST['cod_regime_contratacao'] : "";
 		$colTO->cod_departamento 					= (isset($_POST['cod_departamento'])) ? $_POST['cod_departamento'] : "";
 		$colTO->flg_cm 								= (isset($_POST['flg_cm'])) ? $_POST['flg_cm'] : "";
@@ -79,6 +80,7 @@ class ColaboradorController {
 		// Arrays auxiliares de telefones e funções
 		$telefones 	= (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
 		$funcoes 	= (isset($_POST['funcoes'])) ? $_POST['funcoes'] : array();
+		$emails 	= (isset($_POST['emails'])) ? $_POST['emails'] : array();
 
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
@@ -105,10 +107,6 @@ class ColaboradorController {
 
 		$validator->set_msg('A data de Admissão é obrigatória')
 				  ->set('dta_admissao', $colTO->dta_admissao)
-				  ->is_required();
-
-		$validator->set_msg('A data de Demissão é obrigatória')
-				  ->set('dta_demissao', $colTO->dta_demissao)
 				  ->is_required();
 
 		$validator->set_msg('O número da CTPS é obrigatório')
@@ -262,6 +260,10 @@ class ColaboradorController {
 		$validator->set_msg('Insira pelo menos uma função')
 				  ->set('funcoes', $funcoes)
 				  ->is_required();
+
+		$validator->set_msg('O Contrato é obrigatório')
+				  ->set('contrato', $colTO->cod_contrato)
+				  ->is_required();
 		  
 		if(!$validator->validate()){ // Se retornar false, significa que algum campo obrigatório não foi preenchido
 			// Envia os campos não preenchidos com a respectiva mensagem de erro para o front-end
@@ -288,6 +290,15 @@ class ColaboradorController {
 				$telefoneDao->saveTelefone($telefoneTO);
 			}
 
+			// Grava os emails do colaborador
+			$emailDao = new EmailDao();
+			foreach ($emails as $index => $email) {
+				$emailTO = new EmailTO();
+				$emailTO->cod_colaborador		= $colTO->cod_colaborador;
+				$emailTO->end_email 			= $email['end_email'];
+				$emailDao->saveEmail($emailTO);
+			}
+
 			// Grava as funções do colaborador
 			$funColDao = new FuncaoColaboradorDao();
 			foreach ($funcoes as $index => $funcao) {
@@ -295,24 +306,99 @@ class ColaboradorController {
 				$funColTO->cod_colaborador 				= $colTO->cod_colaborador;
 				$funColTO->cod_funcao 					= $funcao['funcao']['cod_funcao'];
 				$funColTO->vlr_salario 					= $funcao['vlr_salario'];
-				$funColTO->cod_motivo_alteracao_funcao 	= $funcao['motivoAlteracaoFuncao']['cod_motivo_alteracao_funcao'];
+				$funColTO->nme_motivo_alteracao_funcao 	= $funcao['motivoAlteracaoFuncao']['nme_motivo_alteracao_funcao'];
 				$funColTO->dta_alteracao 				= $funcao['dta_alteracao'];
 				$funColDao->saveFuncaoColaborador($funColTO);
 			}
 		}
 		else {
-			$colTO->cod_colaborador = $colaboradorDao->updateColaborador($colTO);
-			$telefoneTO = new TelefoneTO();
-					$telefoneTO->cod_colaborador 	= $_POST['cooperator']['cod_colaborador'];
+			$colaboradorDao->updateColaborador($colTO);
+
+			$telefoneDao = new TelefoneDao();
+			foreach ($telefones as $key => $telefone) {
+				if(isset($telefone['flg_removido']) && $telefone['flg_removido'] === "true") {
+					if(!$telefoneDao->deleteTelefone($telefone['cod_telefone'])) {
+						Flight::halt(500, 'Erro ao excluir o telefone [('. $telefone['num_ddd'].') '. $telefone['num_telefone'] .']');
+						die;
+					}
+				}
+				else if(isset($telefone['cod_telefone'])) {
+					$telefoneTO = new TelefoneTO();
+					$telefoneTO->cod_telefone 		= $telefone['cod_telefone'];
 					$telefoneTO->num_ddd 			= $telefone['num_ddd'];
 					$telefoneTO->num_telefone 		= $telefone['num_telefone'];
 					$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
-		}
+					
+					if(!$telefoneDao->updateTelefone($telefoneTO)) {
+						Flight::halt(500, 'Erro ao atualizar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
+						die;
+					}
+				}
+				else {
+					$telefoneTO = new TelefoneTO();
+					$telefoneTO->cod_colaborador 	= $colTO->cod_colaborador;
+					$telefoneTO->num_ddd 			= $telefone['num_ddd'];
+					$telefoneTO->num_telefone 		= $telefone['num_telefone'];
+					$telefoneTO->cod_tipo_telefone 	= $telefone['tipoTelefone']['cod_tipo_telefone'];
+					
+					if(!$telefoneDao->saveTelefone($telefoneTO)) {
+						Flight::halt(500, 'Erro ao salvar o telefone [('. $telefoneTO->num_ddd.') '. $telefoneTO->num_telefone .']');
+						die;
+					}
+				}
+			}
 
+			$emailDao = new EmailDao();
+			foreach ($emails as $key => $email) {
+				if(isset($email['flg_removido']) && $email['flg_removido'] === "true") {
+					if(!$emailDao->deleteEmail($email['cod_email'])) {
+						Flight::halt(500, 'Erro ao excluir o email ['. $emailTO->end_email .']');
+						die;
+					}
+				}
+				else if(isset($email['cod_email'])) {
+					$emailTO = new EmailTO();
+					$emailTO->cod_email 	= $email['cod_email'];
+					$emailTO->end_email 	= $email['end_email'];
+					
+					if(!$emailDao->updateEmail($emailTO)) {
+						Flight::halt(500, 'Erro ao atualizar o email ['. $emailTO->end_email .']');
+						die;
+					}
+				}
+				else {
+					$emailTO = new EmailTO();
+					$emailTO->cod_colaborador 	= $colTO->cod_colaborador;
+					$emailTO->end_email 		= $email['end_email'];
+					
+					if(!$emailDao->saveEmail($emailTO)) {
+						Flight::halt(500, 'Erro ao salvar o email ['. $emailTO->end_email .']');
+						die;
+					}
+				}
+			}
+
+			$funcaoDao = new FuncaoColaboradorDao();
+
+			foreach ($funcoes as $key => $funcao) { 
+				if(!isset($funcao['cod_alteracao_funcao'])){
+					$funColTO = new FuncaoColaboradorTO();
+					$funColTO->cod_colaborador 					= $colTO->cod_colaborador;
+					$funColTO->cod_funcao 						= $funcao['funcao']['cod_funcao'];
+					$funColTO->vlr_salario 						= $funcao['vlr_salario'];
+					$funColTO->cod_motivo_alteracao_funcao 		= $funcao['motivoAlteracaoFuncao']['cod_motivo_alteracao_funcao'];
+					
+					if(!$funcaoDao->saveFuncaoColaborador($funColTO)) {
+						Flight::halt(500, 'Erro ao salvar a funcao [('. $funColTO->cod_funcao.') ');
+						die;
+					}
+				}
+			}
+		}
+		
 
 		Flight::halt(200, 'Colaborador salvo com sucesso!');
 	}
-
 
 	public static function getColaboradores() {
 		$colaboradorDao = new ColaboradorDao();
@@ -333,7 +419,6 @@ class ColaboradorController {
 		// Atualiza a lista de telefones do colaborador
 		if(isset($_POST['cooperator']['telefones'])) {
 			$telefoneDao = new TelefoneDao();
-
 			foreach ($_POST['cooperator']['telefones'] as $key => $telefone) {
 				if(isset($telefone['flg_removido']) && $telefone['flg_removido'] === "true") {
 					if(!$telefoneDao->deleteTelefone($telefone['cod_telefone'])) {
@@ -402,10 +487,22 @@ class ColaboradorController {
 			}
 		}
         
+
+
+
         if(sendMail('[SIG BackOffice] Solicitação de Alteração de Dados', 'conferencia_dados.php', $destinatarios, $_POST))
         	Flight::halt(200, 'Dados enviado com sucesso!<br/>Alterações como E-mail e Telefone serão atualizadas no próximo login.');
         else
         	Flight::halt(500, 'Ocorreu algum erro ao tentar enviar o e-mail!<br/>Tente novamente.');
+	}
+
+	public static function deleteColaborador() {
+		$colaboradorDao = new ColaboradorDao();
+		
+		if($colaboradorDao->deleteColaborador($_GET['cod_colaborador'], $_GET['cod_usuario']))
+			Flight::halt(200, 'Colaborador excluído com sucesso!');
+		else
+			Flight::halt(500, 'Falha ao excluir colaborador! Contate o administrador do sistema.');
 	}
 }
 
