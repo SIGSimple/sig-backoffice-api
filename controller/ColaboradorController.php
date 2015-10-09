@@ -149,10 +149,6 @@ class ColaboradorController {
 				  ->set('num_secao_eleitoral', $colTO->num_secao_eleitoral)
 				  ->is_required();
 
-		$validator->set_msg('O número de Reservista é obrigatório')
-				  ->set('num_reservista', $colTO->num_reservista)
-				  ->is_required();
-
 		$validator->set_msg('O Endereço é obrigatório')
 				  ->set('dsc_endereco', $colTO->dsc_endereco)
 				  ->is_required();
