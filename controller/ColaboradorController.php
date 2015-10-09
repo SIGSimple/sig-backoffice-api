@@ -165,10 +165,6 @@ class ColaboradorController {
 				  ->set('nme_bairro', $colTO->nme_bairro)
 				  ->is_required();
 
-		$validator->set_msg('O Complemento é obrigatório')
-				  ->set('dsc_complemento', $colTO->dsc_complemento)
-				  ->is_required();
-
 		$validator->set_msg('A Cidade é obrigatória')
 				  ->set('cod_cidade_moradia', $colTO->cod_cidade_moradia)
 				  ->is_required();
@@ -193,28 +189,12 @@ class ColaboradorController {
 				  ->set('cod_estado_naturalidade', $colTO->cod_estado_naturalidade)
 				  ->is_required();
 
-		$validator->set_msg('A CNH é obrigatória')
-				  ->set('num_cnh', $colTO->num_cnh)
-				  ->is_required();
-
-		$validator->set_msg('A Categoria é obrigatória')
-				  ->set('nme_categoria_cnh', $colTO->nme_categoria_cnh)
-				  ->is_required();
-
-		$validator->set_msg('A Data de Validade é obrigatória')
-				  ->set('dta_validade_cnh', $colTO->dta_validade_cnh)
-				  ->is_required();
-
 		$validator->set_msg('O Banco é obrigatório')
 				  ->set('banco', $colTO->cod_banco)
 				  ->is_required();
 
 		$validator->set_msg('O Número da Agência é obrigatório')
 				  ->set('num_agencia', $colTO->num_agencia)
-				  ->is_required();
-
-		$validator->set_msg('O Dígito é obrigatório')
-				  ->set('num_digito_agencia', $colTO->num_digito_agencia)
 				  ->is_required();
 
 		$validator->set_msg('A Conta é obrigatória')
@@ -237,16 +217,8 @@ class ColaboradorController {
 				  ->set('localTrabalho', $colTO->cod_local_trabalho)
 				  ->is_required();
 
-		 $validator->set_msg('A Entidade é obrigatória')
-				  ->set('entidade', $colTO->cod_entidade)
-				  ->is_required();
-
 		$validator->set_msg('As Horas Contratadas são obrigatórias')
 				  ->set('qtd_horas_contratadas', $colTO->qtd_horas_contratadas)
-				  ->is_required();
-
-		$validator->set_msg('O número é obrigatório')
-				  ->set('num_entidade', $colTO->num_entidade)
 				  ->is_required();
 
 		$validator->set_msg('O sexo é obrigatório')
@@ -387,6 +359,7 @@ class ColaboradorController {
 					$funColTO->cod_funcao 						= $funcao['funcao']['cod_funcao'];
 					$funColTO->vlr_salario 						= $funcao['vlr_salario'];
 					$funColTO->cod_motivo_alteracao_funcao 		= $funcao['motivoAlteracaoFuncao']['cod_motivo_alteracao_funcao'];
+					$funColTO->dta_aletracao 					= $funcao['dta_aletracao'];
 					
 					if(!$funcaoDao->saveFuncaoColaborador($funColTO)) {
 						Flight::halt(500, 'Erro ao salvar a funcao [('. $funColTO->cod_funcao.') ');
