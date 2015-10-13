@@ -43,6 +43,16 @@ class FuncaoColaboradorDao {
 			return false;
 	}
 
+	public function deleteFuncaoColaborador($cod_alteracao_funcao) {
+		$sql = "DELETE FROM tb_alteracao_funcao_colaborador WHERE cod_alteracao_funcao = :cod_alteracao_funcao;";
+
+		$insert = $this->conn->prepare($sql);
+
+		$insert->bindValue(':cod_alteracao_funcao', $cod_alteracao_funcao, PDO::PARAM_INT);
+
+		return $insert->execute();
+	}
+
 	public function getFuncoesColaborador($cod_colaborador){		
 		$sql = "SELECT
 					afc.cod_alteracao_funcao,

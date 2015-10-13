@@ -10,6 +10,7 @@ class DependenteDao {
 
 	public function getDependentes($busca=null){
 		$sql = "SELECT 
+					dep.cod_dependente,
 					dep.cod_tipo_dependencia,
 					ttd.nme_tipo_dependencia,
 					dep.nme_dependente,

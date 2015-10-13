@@ -207,6 +207,37 @@ class ColaboradorDao{
 		if(!$colTO->cod_entidade)
 			$colTO->cod_entidade = 'NULL';
 
+		if(!$colTO->dta_admissao)
+			$colTO->dta_admissao = 'NULL';
+		else
+			$colTO->dta_admissao = "'". $colTO->dta_admissao . "'";
+
+		if(!$colTO->dta_demissao)
+			$colTO->dta_demissao = 'NULL';
+		else
+			$colTO->dta_demissao = "'". $colTO->dta_demissao . "'";
+
+		if(!$colTO->dta_emissao_ctps)
+			$colTO->dta_emissao_ctps = 'NULL';
+		else
+			$colTO->dta_emissao_ctps = "'". $colTO->dta_emissao_ctps . "'";
+
+		if(!$colTO->dta_nascimento)
+			$colTO->dta_nascimento = 'NULL';
+		else
+			$colTO->dta_nascimento = "'". $colTO->dta_nascimento . "'";
+
+		if(!$colTO->dta_validade_cnh)
+			$colTO->dta_validade_cnh = 'NULL';
+		else
+			$colTO->dta_validade_cnh = "'". $colTO->dta_validade_cnh . "'";
+
+		if(!$colTO->dta_aso)
+			$colTO->dta_aso = 'NULL';
+		else
+			$colTO->dta_aso = "'". $colTO->dta_aso . "'";
+
+
 		$sql = "UPDATE tb_colaborador
 				SET num_matricula 							= '". $colTO->num_matricula ."',
 					nme_colaborador 						= '". $colTO->nme_colaborador ."',
@@ -218,12 +249,12 @@ class ColaboradorDao{
 					cod_local_trabalho						= ". $colTO->cod_local_trabalho .",
 					cod_grade_horario						= ". $colTO->cod_grade_horario .",
 					flg_ativo								= ". $colTO->flg_ativo .",
-					dta_admissao							= '". $colTO->dta_admissao ."',
-					dta_demissao							= '". $colTO->dta_demissao ."',
+					dta_admissao							= ". $colTO->dta_admissao .",
+					dta_demissao							= ". $colTO->dta_demissao .",
 					num_ctps								= '". $colTO->num_ctps ."',
 					num_serie_ctps							= '". $colTO->num_serie_ctps ."',
 					cod_estado_ctps							= ". $colTO->cod_estado_ctps .",
-					dta_emissao_ctps						= '". $colTO->dta_emissao_ctps ."',
+					dta_emissao_ctps						= ". $colTO->dta_emissao_ctps .",
 					num_rg 									= '". $colTO->num_rg ."',
 					num_cpf									= '". $colTO->num_cpf ."',
 					num_pis									= '". $colTO->num_pis ."',
@@ -238,12 +269,12 @@ class ColaboradorDao{
 					cod_cidade_moradia						= ". $colTO->cod_cidade_moradia .",
 					cod_estado_moradia						= ". $colTO->cod_estado_moradia .",
 					num_cep									= '". $colTO->num_cep ."',
-					dta_nascimento							= '". $colTO->dta_nascimento ."',
-					cod_cidade_naturalidade					= ". $colTO->cod_cidade_naturalidade .",
+					dta_nascimento							= ". $colTO->dta_nascimento .",
 					cod_estado_naturalidade					= ". $colTO->cod_estado_naturalidade .",
+					cod_cidade_naturalidade					= ". $colTO->cod_cidade_naturalidade .",
 					num_cnh									= '". $colTO->num_cnh ."',
 					nme_categoria_cnh						= '". $colTO->nme_categoria_cnh ."',
-					dta_validade_cnh						= '". $colTO->dta_validade_cnh ."',
+					dta_validade_cnh						= ". $colTO->dta_validade_cnh .",
 					flg_sexo								= '". $colTO->flg_sexo ."',
 					cod_banco								= ". $colTO->cod_banco .",
 					num_agencia 							= '". $colTO->num_agencia ."',
@@ -270,7 +301,7 @@ class ColaboradorDao{
 					flg_trabalho_feriado					= ". $colTO->flg_trabalho_feriado .",
 					flg_ajusta_folha_ponto					= ". $colTO->flg_ajusta_folha_ponto .",
 					flg_ensino_superior						= ". $colTO->flg_ensino_superior .",
-					dta_aso 								= '". $colTO->dta_aso ."',
+					dta_aso 								= ". $colTO->dta_aso .",
 					cod_contrato 							= '". $colTO->cod_contrato ."'
 				WHERE cod_colaborador = ". $colTO->cod_colaborador .";";
 

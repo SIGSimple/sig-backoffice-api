@@ -349,13 +349,19 @@ class ColaboradorController {
 			$funcaoDao = new FuncaoColaboradorDao();
 
 			foreach ($funcoes as $key => $funcao) { 
-				if(!isset($funcao['cod_alteracao_funcao'])){
+				if(isset($funcao['flg_removido']) && $funcao['flg_removido'] === "true") {
+					if(!$funcaoDao->deleteFuncaoColaborador($funcao['cod_alteracao_funcao'])) {
+						Flight::halt(500, 'Erro ao excluir a função ['. $funcao['funcao']['nme_funcao'] .']');
+						die;
+					}
+				}
+				else if(!isset($funcao['cod_alteracao_funcao'])){
 					$funColTO = new FuncaoColaboradorTO();
 					$funColTO->cod_colaborador 					= $colTO->cod_colaborador;
 					$funColTO->cod_funcao 						= $funcao['funcao']['cod_funcao'];
 					$funColTO->vlr_salario 						= $funcao['vlr_salario'];
 					$funColTO->cod_motivo_alteracao_funcao 		= $funcao['motivoAlteracaoFuncao']['cod_motivo_alteracao_funcao'];
-					$funColTO->dta_aletracao 					= $funcao['dta_aletracao'];
+					$funColTO->dta_alteracao 					= $funcao['dta_alteracao'];
 					
 					if(!$funcaoDao->saveFuncaoColaborador($funColTO)) {
 						Flight::halt(500, 'Erro ao salvar a funcao [('. $funColTO->cod_funcao.') ');
