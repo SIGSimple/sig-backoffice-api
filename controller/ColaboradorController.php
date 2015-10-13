@@ -78,9 +78,10 @@ class ColaboradorController {
 		$colTO->flg_ensino_superior 				= (isset($_POST['flg_ensino_superior'])) ? $_POST['flg_ensino_superior'] : "";
 
 		// Arrays auxiliares de telefones e funções
-		$telefones 	= (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
-		$funcoes 	= (isset($_POST['funcoes'])) ? $_POST['funcoes'] : array();
-		$emails 	= (isset($_POST['emails'])) ? $_POST['emails'] : array();
+		$telefones 		= (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
+		$funcoes 		= (isset($_POST['funcoes'])) ? $_POST['funcoes'] : array();
+		$emails 		= (isset($_POST['emails'])) ? $_POST['emails'] : array();
+		$dependentes 	= (isset($_POST['dependentes'])) ? $_POST['dependentes'] : array();
 
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
@@ -223,7 +224,7 @@ class ColaboradorController {
 
 		$validator->set_msg('Insira pelo menos um telefone')
 				  ->set('telefones', $telefones)
-				  ->is_required();	
+				  ->is_required();
 
 		$validator->set_msg('Insira pelo menos uma função')
 				  ->set('funcoes', $funcoes)
@@ -278,10 +279,27 @@ class ColaboradorController {
 				$funColTO->dta_alteracao 				= $funcao['dta_alteracao'];
 				$funColDao->saveFuncaoColaborador($funColTO);
 			}
+
+			// Grava os dependentes do colaborador
+			$depDao = new DependenteDao();
+			foreach ($dependentes as $index => $dependente) {
+				$depTO = new DependenteTO();
+				$depTO->cod_colaborador 				= $colTO->cod_colaborador;
+				$depTO->cod_tipo_dependencia 			= $dependente['tipoDependencia']['cod_tipo_dependencia'];
+				$depTO->nme_dependente 					= $dependente['nme_dependente'];
+				$depTO->pth_documento 					= $dependente['pth_documento'];
+				$depTO->dta_nascimento 					= $dependente['dta_nascimento'];
+				$depTO->flg_plano_saude 				= $dependente['flg_plano_saude'];
+				$depTO->cod_plano_saude 				= $dependente['cod_plano_saude'];
+				$depTO->flg_deduz_irrf 					= $dependente['flg_deduz_irrf'];
+				$depTO->flg_curso_superior 				= $dependente['flg_curso_superior'];
+				$depDao->saveDependente($depTO);
+			}
 		}
 		else {
 			$colaboradorDao->updateColaborador($colTO);
 
+			// Atualizando os telefones do colaborador
 			$telefoneDao = new TelefoneDao();
 			foreach ($telefones as $key => $telefone) {
 				if(isset($telefone['flg_removido']) && $telefone['flg_removido'] === "true") {
@@ -316,11 +334,12 @@ class ColaboradorController {
 				}
 			}
 
+			// Atualizando os e-mails do colaborador
 			$emailDao = new EmailDao();
 			foreach ($emails as $key => $email) {
 				if(isset($email['flg_removido']) && $email['flg_removido'] === "true") {
 					if(!$emailDao->deleteEmail($email['cod_email'])) {
-						Flight::halt(500, 'Erro ao excluir o email ['. $emailTO->end_email .']');
+						Flight::halt(500, 'Erro ao excluir o email ['. $email['end_email'] .']');
 						die;
 					}
 				}
@@ -346,8 +365,8 @@ class ColaboradorController {
 				}
 			}
 
+			// Atualizando as funções do colaborador
 			$funcaoDao = new FuncaoColaboradorDao();
-
 			foreach ($funcoes as $key => $funcao) { 
 				if(isset($funcao['flg_removido']) && $funcao['flg_removido'] === "true") {
 					if(!$funcaoDao->deleteFuncaoColaborador($funcao['cod_alteracao_funcao'])) {
@@ -369,8 +388,52 @@ class ColaboradorController {
 					}
 				}
 			}
+
+			// Atualizando os dependentes do colaborador
+			$depDao = new DependenteDao();
+			foreach ($dependentes as $key => $dep) {
+				if(isset($dep['flg_removido']) && $dep['flg_removido'] === "true") {
+					if(!$depDao->deleteDependente($dep['cod_dependente'])) {
+						Flight::halt(500, 'Erro ao excluir o dependente ['. $dep['nme_dependente'] .']');
+						die;
+					}
+				}
+				else if(isset($dep['cod_dependente'])) {
+					$depTO = new DependenteTO();
+					$depTO->cod_dependente 					= $dep['cod_dependente'];
+					$depTO->cod_tipo_dependencia 			= $dep['tipoDependencia']['cod_tipo_dependencia'];
+					$depTO->nme_dependente 					= $dep['nme_dependente'];
+					$depTO->pth_documento 					= $dep['pth_documento'];
+					$depTO->dta_nascimento 					= $dep['dta_nascimento'];
+					$depTO->flg_plano_saude 				= $dep['flg_plano_saude'];
+					$depTO->cod_plano_saude 				= $dep['cod_plano_saude'];
+					$depTO->flg_deduz_irrf 					= $dep['flg_deduz_irrf'];
+					$depTO->flg_curso_superior 				= $dep['flg_curso_superior'];
+					
+					if(!$depDao->updateDependente($depTO)) {
+						Flight::halt(500, 'Erro ao atualizar o dependente ['. $depTO->nme_dependente .']');
+						die;
+					}
+				}
+				else {
+					$depTO = new DependenteTO();
+					$depTO->cod_colaborador 	= $colTO->cod_colaborador;
+					$depTO->cod_tipo_dependencia 			= $dep['tipoDependencia']['cod_tipo_dependencia'];
+					$depTO->nme_dependente 					= $dep['nme_dependente'];
+					$depTO->pth_documento 					= $dep['pth_documento'];
+					$depTO->dta_nascimento 					= $dep['dta_nascimento'];
+					$depTO->flg_plano_saude 				= $dep['flg_plano_saude'];
+					$depTO->cod_plano_saude 				= $dep['cod_plano_saude'];
+					$depTO->flg_deduz_irrf 					= $dep['flg_deduz_irrf'];
+					$depTO->flg_curso_superior 				= $dep['flg_curso_superior'];
+					
+					if(!$depDao->saveDependente($depTO)) {
+						Flight::halt(500, 'Erro ao salvar o dependente ['. $depTO->nme_dependente .']');
+						die;
+					}
+				}
+			}
 		}
-		
 
 		Flight::halt(200, 'Colaborador salvo com sucesso!');
 	}
