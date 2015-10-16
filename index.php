@@ -34,16 +34,17 @@ Flight::route('GET /dia-ponte/programacao(.json)', 					array('ProgramacaoDiaPon
 Flight::route('POST /colaborador', 									array('ColaboradorController', 'addNewColaborador'));
 Flight::route('DELETE /colaborador',								array('ColaboradorController', 'deleteColaborador'));
 Flight::route('POST /colaborador/conferencia/dados', 				array('ColaboradorController', 'sendDataToUpdate'));
-Flight::route('GET /colaborador/dependentes',						array('DependenteController', 'getDependentes'));
-Flight::route('GET /colaborador/telefones',							array('TelefoneController', 'getTelefones'));
-Flight::route('GET /colaborador/emails',							array('EmailController', 'getEmails'));
-Flight::route('POST /colaborador/registro/horario/update', 			array('RegistroHorarioController', 'updateRegistroHorario'));
 Flight::route('POST /colaborador/registro/horario/new', 			array('RegistroHorarioController', 'setRegistroHorario'));
+Flight::route('POST /colaborador/registro/horario/update', 			array('RegistroHorarioController', 'updateRegistroHorario'));
+Flight::route('GET /colaborador/dependentes',						array('DependenteController', 'getDependentes'));
 Flight::route('GET /colaborador/registros/horario', 				array('RegistroHorarioController', 'getRegistrosHorario'));
 Flight::route('GET /colaborador/ultima/funcao/@cod_colaborador', 	array('FuncaoColaboradorController', 'getUltimaFuncao'));
+Flight::route('GET /colaborador/funcoes/@cod_colaborador',			array('FuncaoColaboradorController', 'getFuncoesColaborador'));
+Flight::route('GET /colaborador/telefones',							array('TelefoneController', 'getTelefones'));
+Flight::route('GET /colaborador/beneficios',						array('BeneficioController', 'getBeneficiosColaborador'));
+Flight::route('GET /colaborador/emails',							array('EmailController', 'getEmails'));
 Flight::route('GET /colaboradores/emails/mensagem',					array('EmailController', 'getEmailsMensagem'));
 Flight::route('GET /colaboradores(.json)', 							array('ColaboradorController', 'getColaboradores'));
-Flight::route('GET /colaborador/funcoes/@cod_colaborador',			array('FuncaoColaboradorController', 'getFuncoesColaborador'));
 
 								
 Flight::route('GET /empreendimentos(.json)', 						array('EmpreendimentoController', 'getEmpreendimentos'));

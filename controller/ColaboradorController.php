@@ -83,6 +83,14 @@ class ColaboradorController {
 		$emails 		= (isset($_POST['emails'])) ? $_POST['emails'] : array();
 		$dependentes 	= (isset($_POST['dependentes'])) ? $_POST['dependentes'] : array();
 
+		// Plano de Saúde
+		$beneficioTO = null;
+		if(isset($_POST['planoSaude'])) {
+			$beneficioTO = new BeneficioTO();
+			$beneficioTO->cod_tipo_beneficio = 9; // ASSISTÊNCIA MÉDICA
+			$beneficioTO->cod_referencia_beneficio = $_POST['planoSaude']['cod_plano_saude'];
+		}
+
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
 
@@ -282,18 +290,26 @@ class ColaboradorController {
 
 			// Grava os dependentes do colaborador
 			$depDao = new DependenteDao();
-			foreach ($dependentes as $index => $dependente) {
+			foreach ($dependentes as $index => $dep) {
 				$depTO = new DependenteTO();
 				$depTO->cod_colaborador 				= $colTO->cod_colaborador;
-				$depTO->cod_tipo_dependencia 			= $dependente['tipoDependencia']['cod_tipo_dependencia'];
-				$depTO->nme_dependente 					= $dependente['nme_dependente'];
-				$depTO->pth_documento 					= $dependente['pth_documento'];
-				$depTO->dta_nascimento 					= $dependente['dta_nascimento'];
-				$depTO->flg_plano_saude 				= $dependente['flg_plano_saude'];
-				$depTO->cod_plano_saude 				= $dependente['cod_plano_saude'];
-				$depTO->flg_deduz_irrf 					= $dependente['flg_deduz_irrf'];
-				$depTO->flg_curso_superior 				= $dependente['flg_curso_superior'];
+				$depTO->cod_tipo_dependencia 			= $dep['tipoDependencia']['cod_tipo_dependencia'];
+				$depTO->nme_dependente 					= $dep['nme_dependente'];
+				// $depTO->pth_documento 					= $dep['pth_documento'];
+				$depTO->dta_nascimento 					= $dep['dta_nascimento'];
+				$depTO->flg_plano_saude 				= $dep['flg_plano_saude'];
+				$depTO->cod_plano_saude 				= (isset($dep['planoSaude'])) ? $dep['planoSaude']['cod_plano_saude']: NULL;
+				$depTO->flg_deduz_irrf 					= $dep['flg_deduz_irrf'];
+				$depTO->flg_curso_superior 				= (isset($dep['flg_curso_superior'])) ? $dep['flg_curso_superior'] : 0;
 				$depDao->saveDependente($depTO);
+			}
+
+			// Salva o plano de saúde do colaborador
+			if($beneficioTO != null) {
+				$beneficioTO->cod_colaborador = $colTO->cod_colaborador;
+				$benDao = new BeneficioDao();
+				if(!$benDao->saveBeneficio($beneficioTO))
+					Flight::halt(500, 'Erro ao salvar o plano de saúde ['. $_POST['planoSaude']['nme_plano_saude'] .'] de ['. $colTO->nme_colaborador .']');
 			}
 		}
 		else {
@@ -398,40 +414,48 @@ class ColaboradorController {
 						die;
 					}
 				}
-				else if(isset($dep['cod_dependente'])) {
+				else if(isset($dep['flg_atualizado']) && $dep['flg_atualizado'] === "true") {
 					$depTO = new DependenteTO();
 					$depTO->cod_dependente 					= $dep['cod_dependente'];
 					$depTO->cod_tipo_dependencia 			= $dep['tipoDependencia']['cod_tipo_dependencia'];
 					$depTO->nme_dependente 					= $dep['nme_dependente'];
-					$depTO->pth_documento 					= $dep['pth_documento'];
+					// $depTO->pth_documento 					= $dep['pth_documento'];
 					$depTO->dta_nascimento 					= $dep['dta_nascimento'];
 					$depTO->flg_plano_saude 				= $dep['flg_plano_saude'];
-					$depTO->cod_plano_saude 				= $dep['cod_plano_saude'];
+					$depTO->cod_plano_saude 				= (isset($dep['planoSaude'])) ? $dep['planoSaude']['cod_plano_saude']: NULL;
 					$depTO->flg_deduz_irrf 					= $dep['flg_deduz_irrf'];
-					$depTO->flg_curso_superior 				= $dep['flg_curso_superior'];
+					$depTO->flg_curso_superior 				= (isset($dep['flg_curso_superior'])) ? $dep['flg_curso_superior'] : 0;
 					
-					if(!$depDao->updateDependente($depTO)) {
+					if($depDao->updateDependente($depTO) === false) {
 						Flight::halt(500, 'Erro ao atualizar o dependente ['. $depTO->nme_dependente .']');
 						die;
 					}
 				}
-				else {
+				else if(!isset($dep['cod_dependente'])) {
 					$depTO = new DependenteTO();
-					$depTO->cod_colaborador 	= $colTO->cod_colaborador;
+					$depTO->cod_colaborador 				= $colTO->cod_colaborador;
 					$depTO->cod_tipo_dependencia 			= $dep['tipoDependencia']['cod_tipo_dependencia'];
 					$depTO->nme_dependente 					= $dep['nme_dependente'];
-					$depTO->pth_documento 					= $dep['pth_documento'];
+					// $depTO->pth_documento 					= $dep['pth_documento'];
 					$depTO->dta_nascimento 					= $dep['dta_nascimento'];
 					$depTO->flg_plano_saude 				= $dep['flg_plano_saude'];
-					$depTO->cod_plano_saude 				= $dep['cod_plano_saude'];
+					$depTO->cod_plano_saude 				= (isset($dep['planoSaude'])) ? $dep['planoSaude']['cod_plano_saude']: NULL;
 					$depTO->flg_deduz_irrf 					= $dep['flg_deduz_irrf'];
-					$depTO->flg_curso_superior 				= $dep['flg_curso_superior'];
+					$depTO->flg_curso_superior 				= (isset($dep['flg_curso_superior'])) ? $dep['flg_curso_superior'] : 0;
 					
 					if(!$depDao->saveDependente($depTO)) {
 						Flight::halt(500, 'Erro ao salvar o dependente ['. $depTO->nme_dependente .']');
 						die;
 					}
 				}
+			}
+
+			// Salva o plano de saúde do colaborador
+			if($beneficioTO != null) {
+				$beneficioTO->cod_colaborador = $colTO->cod_colaborador;
+				$benDao = new BeneficioDao();
+				if(!$benDao->updateBeneficio($beneficioTO))
+					Flight::halt(500, 'Erro ao atualizar o plano de saúde ['. $_POST['planoSaude']['nme_plano_saude'] .'] de ['. $colTO->nme_colaborador .']');
 			}
 		}
 

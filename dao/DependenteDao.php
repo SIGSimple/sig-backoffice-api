@@ -28,37 +28,33 @@ class DependenteDao {
 	}
 
 	public function updateDependente(DependenteTO $depTO) {
+		if(!$depTO->pth_documento)
+			$depTO->pth_documento = 'NULL';
+
+		if(!$depTO->cod_plano_saude)
+			$depTO->cod_plano_saude = 'NULL';
+
 		$sql = "UPDATE tb_dependente
-				SET cod_tipo_dependencia 	= :cod_tipo_dependencia,
-					nme_dependente 			= :nme_dependente,
-					pth_documento 			= :pth_documento,
-					dta_nascimento 			= :dta_nascimento,
-					flg_plano_saude 		= :flg_plano_saude,
-					cod_plano_saude 		= :cod_plano_saude,
-					flg_deduz_irrf 			= :flg_deduz_irrf,
-					flg_curso_superior 		= :flg_curso_superior
-				WHERE cod_dependente = :cod_dependente;";
+				SET cod_tipo_dependencia 	= ". $depTO->cod_tipo_dependencia .",
+					nme_dependente 			= '". $depTO->nme_dependente ."',
+					pth_documento 			= ". $depTO->pth_documento . ",
+					dta_nascimento 			= '". $depTO->dta_nascimento ."',
+					flg_plano_saude 		= ". $depTO->flg_plano_saude .",
+					cod_plano_saude 		= ". $depTO->cod_plano_saude .",
+					flg_deduz_irrf 			= ". $depTO->flg_deduz_irrf .",
+					flg_curso_superior 		= ". $depTO->flg_curso_superior ."
+				WHERE cod_dependente = ". $depTO->cod_dependente .";";
 
-		$insert = $this->conn->prepare($sql);
+		$update = $this->conn->prepare($sql);
 
-		$insert->bindValue(':cod_dependente', 		$depTO->cod_dependente,			PDO::PARAM_INT);
-		$insert->bindValue(':cod_tipo_dependencia', $depTO->cod_tipo_dependencia,	PDO::PARAM_INT);
-		$insert->bindValue(':nme_dependente', 		$depTO->nme_dependente,	 		PDO::PARAM_STR);
-		$insert->bindValue(':pth_documento', 		$depTO->pth_documento, 			PDO::PARAM_STR);
-		$insert->bindValue(':dta_nascimento', 		$depTO->dta_nascimento, 		PDO::PARAM_STR);
-		$insert->bindValue(':flg_plano_saude', 		$depTO->flg_plano_saude, 		PDO::PARAM_INT);
-		$insert->bindValue(':cod_plano_saude', 		$depTO->cod_plano_saude, 		PDO::PARAM_INT);
-		$insert->bindValue(':flg_deduz_irrf', 		$depTO->flg_deduz_irrf, 		PDO::PARAM_INT);
-		$insert->bindValue(':flg_curso_superior', 	$depTO->flg_curso_superior, 	PDO::PARAM_INT);
-
-		return $insert->execute();
+		return $update->execute();
 	}
 
 	public function deleteDependente($cod_dependente) {
 		$sql = "DELETE FROM tb_dependente WHERE cod_dependente = :cod_dependente;";
-		$insert = $this->conn->prepare($sql);
-		$insert->bindValue(':cod_dependente', $cod_telefone, PDO::PARAM_INT);
-		return $insert->execute();
+		$delete = $this->conn->prepare($sql);
+		$delete->bindValue(':cod_dependente', $cod_telefone, PDO::PARAM_INT);
+		return $delete->execute();
 	}
 
 	public function getDependentes($busca=null){
