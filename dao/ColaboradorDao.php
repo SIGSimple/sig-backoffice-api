@@ -156,7 +156,7 @@ class ColaboradorDao{
 			}
 
 			if($search != "") {
-				$sql .= " WHERE col.flg_excluido = 0 AND col.flg_ativo = 1 AND nme_colaborador LIKE '%$search%' OR nme_fantasia LIKE '%$search%' OR nme_departamento LIKE '%$search%'";
+				$sql .= " WHERE col.flg_excluido = 0 AND nme_colaborador LIKE '%$search%' OR nme_fantasia LIKE '%$search%' OR nme_departamento LIKE '%$search%'";
 
 				if(count($busca) > 0) {
 					$where = prepareWhere($busca);
@@ -166,10 +166,10 @@ class ColaboradorDao{
 			else if(count($busca) > 0) {
 				$where = prepareWhere($busca);
 				$sql .= " WHERE " . $where;
-				$sql .= " AND col.flg_excluido = 0 AND col.flg_ativo = 1";
+				$sql .= " AND col.flg_excluido = 0";
 			}
 			else
-				$sql .= " WHERE col.flg_excluido = 0 AND col.flg_ativo = 1";
+				$sql .= " WHERE col.flg_excluido = 0";
 		}
 
 		$sql .= " ORDER BY col.nme_colaborador ASC";
