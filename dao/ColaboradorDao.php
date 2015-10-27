@@ -115,6 +115,7 @@ class ColaboradorDao{
 		$nolimit = false;
 		$limit = 5;
 		$offset = 0;
+		$sort = "";
 		$order = "asc";
 		$search = "";
 
@@ -134,9 +135,19 @@ class ColaboradorDao{
 				unset($busca['offset']);
 			}	
 
+			if(isset($busca['sort'])) {
+				$sort = $busca['sort'];
+				unset($busca['sort']);
+			}	
+
 			if(isset($busca['order'])) {
 				$order = $busca['order'];
 				unset($busca['order']);
+
+				if($order == "asc")
+					$order = SORT_ASC;
+				else if($order == "desc")
+					$order = SORT_DESC;
 			}	
 
 			if(isset($busca['search'])) {
@@ -162,20 +173,18 @@ class ColaboradorDao{
 		}
 
 		$sql .= " ORDER BY col.nme_colaborador ASC";
-
+		
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
 			if($select->rowCount()>0) {
-				$result = $select->fetchALL(PDO::FETCH_ASSOC);
-
-				if($order != "asc")
-					$result = array_reverse($result);
+				if($sort != "")
+					$result = $this->array_orderby($select->fetchALL(PDO::FETCH_ASSOC), $sort, $order);
+				else
+					$result = $select->fetchALL(PDO::FETCH_ASSOC);
 
 				$sizeOfResult = count($result);
-
 				if(!$nolimit)
 					$result = array_slice($result, $offset, $limit);
-
 				$data = array();
 				$data['total'] 	= $sizeOfResult;
 				$data['rows'] 	= $result;
@@ -188,6 +197,22 @@ class ColaboradorDao{
 		else
 			return false;
 
+	}
+
+	function array_orderby() {
+		$args = func_get_args();
+		$data = array_shift($args);
+		foreach ($args as $n => $field) {
+			if(is_string($field)) {
+				$tmp = array();
+				foreach ($data as $key => $row)
+					$tmp[$key] = $row[$field];
+				$args[$n] = $tmp;
+			}
+		}
+		$args[] = &$data;
+		call_user_func_array('array_multisort', $args);
+		return array_pop($args);
 	}
 
 	public function saveColaborador(ColaboradorTO $colTO) {
