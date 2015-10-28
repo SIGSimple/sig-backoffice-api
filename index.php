@@ -54,6 +54,7 @@ Flight::route('GET /modulos/funcionalidades(.json)', 				array('FuncionalidadeCo
 Flight::route('GET /estados(.json)', 								array('EstadoController', 'getEstados'));
 Flight::route('GET /cidades(.json)', 								array('CidadeController', 'getCidades'));
 Flight::route('GET /regimes-contratacao(.json)', 					array('RegimeContratacaoController', 'getRegimesContratacao'));
+Flight::route('GET /estados-civis(.json)', 							array('EstadoCivilController', 'getEstadosCivis'));
 Flight::route('GET /departamentos(.json)',		 					array('DepartamentoController', 'getDepartamentos'));
 Flight::route('GET /bancos(.json)',		 							array('BancoController', 'getBancos'));
 Flight::route('GET /origens(.json)',		 						array('OrigemController', 'getOrigens'));

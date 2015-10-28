@@ -12,6 +12,7 @@ class ColaboradorController {
 		$colTO->cod_contrato 						= (isset($_POST['contrato'])) ? $_POST['contrato']['cod_origem'] : "";
 		$colTO->cod_regime_contratacao 				= (isset($_POST['cod_regime_contratacao'])) ? $_POST['cod_regime_contratacao'] : "";
 		$colTO->cod_departamento 					= (isset($_POST['cod_departamento'])) ? $_POST['cod_departamento'] : "";
+		$colTO->cod_estado_civil 					= (isset($_POST['cod_estado_civil'])) ? $_POST['cod_estado_civil'] : "";
 		$colTO->flg_cm 								= (isset($_POST['flg_cm'])) ? $_POST['flg_cm'] : "";
 		$colTO->cod_local_trabalho 					= (isset($_POST['localTrabalho'])) ? $_POST['localTrabalho']['cod_local_trabalho'] : "";
 		$colTO->cod_grade_horario 					= (isset($_POST['gradeHorario'])) ? $_POST['gradeHorario']['cod_grade_horario'] : "";
@@ -112,6 +113,10 @@ class ColaboradorController {
 
 		$validator->set_msg('O Departamento é obrigatório')
 				  ->set('cod_departamento', $colTO->cod_departamento)
+				  ->is_required();
+
+		$validator->set_msg('O Estado Civil é obrigatório')
+				  ->set('cod_estado_civil', $colTO->cod_estado_civil)
 				  ->is_required();
 
 		$validator->set_msg('A data de Admissão é obrigatória')
