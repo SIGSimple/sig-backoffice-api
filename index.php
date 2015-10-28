@@ -50,6 +50,7 @@ Flight::route('GET /colaboradores(.json)', 							array('ColaboradorController',
 Flight::route('GET /empreendimentos(.json)', 						array('EmpreendimentoController', 'getEmpreendimentos'));
 Flight::route('GET /empresas(.json)', 								array('EmpresaController', 'getEmpresas'));
 Flight::route('GET /modulos(.json)', 								array('ModuloController', 'getModulos'));
+Flight::route('GET /modulos/funcionalidades(.json)', 				array('FuncionalidadeController', 'getFuncionalidades'));
 Flight::route('GET /estados(.json)', 								array('EstadoController', 'getEstados'));
 Flight::route('GET /cidades(.json)', 								array('CidadeController', 'getCidades'));
 Flight::route('GET /regimes-contratacao(.json)', 					array('RegimeContratacaoController', 'getRegimesContratacao'));

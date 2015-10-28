@@ -91,8 +91,7 @@ class ColaboradorDao{
 				    CAST(col.flg_ensino_superior AS UNSIGNED) AS flg_ensino_superior,
 				    vfm.nme_funcao as nme_funcao_medicao,
 				    vfc.nme_funcao as nme_funcao_clt,
-				    vfc.vlr_salario as vlr_slario_clt,
-				    col.dta_aso
+				    vfc.vlr_salario as vlr_slario_clt
 
 				FROM tb_colaborador 			AS col
 				LEFT JOIN tb_empresa 			AS emp 			ON emp.cod_empresa 						= col.cod_empresa_contratante
@@ -173,7 +172,7 @@ class ColaboradorDao{
 		}
 
 		$sql .= " ORDER BY col.nme_colaborador ASC";
-		
+
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
 			if($select->rowCount()>0) {
@@ -216,8 +215,8 @@ class ColaboradorDao{
 	}
 
 	public function saveColaborador(ColaboradorTO $colTO) {
-		$sql = "INSERT INTO tb_colaborador (num_matricula, nme_colaborador, flg_portador_necessidades_especiais, cod_empresa_contratante, cod_regime_contratacao, cod_departamento, flg_cm, cod_local_trabalho, cod_grade_horario, flg_ativo, dta_admissao, dta_demissao, num_ctps, num_serie_ctps, cod_estado_ctps, dta_emissao_ctps, num_rg, num_cpf, num_pis, num_titulo_eleitor, num_zona_eleitoral, num_secao_eleitoral, num_reservista, dsc_endereco, num_endereco, nme_bairro, dsc_complemento, cod_cidade_moradia, cod_estado_moradia, num_cep, dta_nascimento, cod_cidade_naturalidade, cod_estado_naturalidade, num_cnh, nme_categoria_cnh, dta_validade_cnh, flg_sexo, cod_banco, num_agencia, num_digito_agencia, num_conta_corrente, num_digito_conta_corrente, cod_sindicato, pth_arquivo_cnh, pth_arquivo_rg, pth_arquivo_foto, pth_arquivo_cpf, pth_arquivo_entidade, pth_arquivo_curriculo, pth_arquivo_reservista, pth_arquivo_titulo_eleitor, pth_arquivo_ctps, pth_arquivo_pis, cod_entidade, num_entidade, qtd_horas_contratadas, cod_empreendimento, flg_hora_extra, flg_trabalho_fim_semana, flg_trabalho_feriado, flg_ajusta_folha_ponto, flg_ensino_superior, dta_aso, cod_contrato) 
-				VALUES ('". $colTO->num_matricula ."', '". $colTO->nme_colaborador ."', ". $colTO->flg_portador_necessidades_especiais .", ". $colTO->cod_empresa_contratante .", ". $colTO->cod_regime_contratacao .", ". $colTO->cod_departamento .", '". $colTO->flg_cm ."', ". $colTO->cod_local_trabalho .", ". $colTO->cod_grade_horario .", ". $colTO->flg_ativo .", '". $colTO->dta_admissao ."', '". $colTO->dta_demissao ."', '". $colTO->num_ctps ."', '". $colTO->num_serie_ctps ."', ". $colTO->cod_estado_ctps .", '". $colTO->dta_emissao_ctps ."', '". $colTO->num_rg ."', '". $colTO->num_cpf ."', '". $colTO->num_pis ."', '". $colTO->num_titulo_eleitor ."', '". $colTO->num_zona_eleitoral ."', '". $colTO->num_secao_eleitoral ."', '". $colTO->num_reservista ."', '". $colTO->dsc_endereco ."', '". $colTO->num_endereco ."', '". $colTO->nme_bairro ."', '". $colTO->dsc_complemento ."', ". $colTO->cod_cidade_moradia .", ". $colTO->cod_estado_moradia .", '". $colTO->num_cep ."', '". $colTO->dta_nascimento ."', ". $colTO->cod_cidade_naturalidade .", ". $colTO->cod_estado_naturalidade .", '". $colTO->num_cnh ."', '". $colTO->nme_categoria_cnh ."', '". $colTO->dta_validade_cnh ."', '". $colTO->flg_sexo ."', ". $colTO->cod_banco .", '". $colTO->num_agencia ."', '". $colTO->num_digito_agencia ."', '". $colTO->num_conta_corrente ."', '". $colTO->num_digito_conta_corrente ."', ". $colTO->cod_sindicato .", '". $colTO->pth_arquivo_cnh ."', '". $colTO->pth_arquivo_rg ."', '". $colTO->pth_arquivo_foto ."', '". $colTO->pth_arquivo_cpf ."', '". $colTO->pth_arquivo_entidade ."', '". $colTO->pth_arquivo_curriculo ."', '". $colTO->pth_arquivo_reservista ."', '". $colTO->pth_arquivo_titulo_eleitor ."', '". $colTO->pth_arquivo_ctps ."', '". $colTO->pth_arquivo_pis ."', ". $colTO->cod_entidade .", '". $colTO->num_entidade ."', ". $colTO->qtd_horas_contratadas .", ". $colTO->cod_empreendimento .", ". $colTO->flg_hora_extra .", ". $colTO->flg_trabalho_fim_semana .", ". $colTO->flg_trabalho_feriado .", ". $colTO->flg_ajusta_folha_ponto .", ". $colTO->flg_ensino_superior .", ". $colTO->dta_aso .", ". $colTO->cod_contrato .");";
+		$sql = "INSERT INTO tb_colaborador (num_matricula, nme_colaborador, flg_portador_necessidades_especiais, cod_empresa_contratante, cod_regime_contratacao, cod_departamento, flg_cm, cod_local_trabalho, cod_grade_horario, flg_ativo, dta_admissao, dta_demissao, num_ctps, num_serie_ctps, cod_estado_ctps, dta_emissao_ctps, num_rg, num_cpf, num_pis, num_titulo_eleitor, num_zona_eleitoral, num_secao_eleitoral, num_reservista, dsc_endereco, num_endereco, nme_bairro, dsc_complemento, cod_cidade_moradia, cod_estado_moradia, num_cep, dta_nascimento, cod_cidade_naturalidade, cod_estado_naturalidade, num_cnh, nme_categoria_cnh, dta_validade_cnh, flg_sexo, cod_banco, num_agencia, num_digito_agencia, num_conta_corrente, num_digito_conta_corrente, cod_sindicato, pth_arquivo_cnh, pth_arquivo_rg, pth_arquivo_foto, pth_arquivo_cpf, pth_arquivo_entidade, pth_arquivo_curriculo, pth_arquivo_reservista, pth_arquivo_titulo_eleitor, pth_arquivo_ctps, pth_arquivo_pis, cod_entidade, num_entidade, qtd_horas_contratadas, cod_empreendimento, flg_hora_extra, flg_trabalho_fim_semana, flg_trabalho_feriado, flg_ajusta_folha_ponto, flg_ensino_superior, cod_contrato) 
+				VALUES ('". $colTO->num_matricula ."', '". $colTO->nme_colaborador ."', ". $colTO->flg_portador_necessidades_especiais .", ". $colTO->cod_empresa_contratante .", ". $colTO->cod_regime_contratacao .", ". $colTO->cod_departamento .", '". $colTO->flg_cm ."', ". $colTO->cod_local_trabalho .", ". $colTO->cod_grade_horario .", ". $colTO->flg_ativo .", '". $colTO->dta_admissao ."', '". $colTO->dta_demissao ."', '". $colTO->num_ctps ."', '". $colTO->num_serie_ctps ."', ". $colTO->cod_estado_ctps .", '". $colTO->dta_emissao_ctps ."', '". $colTO->num_rg ."', '". $colTO->num_cpf ."', '". $colTO->num_pis ."', '". $colTO->num_titulo_eleitor ."', '". $colTO->num_zona_eleitoral ."', '". $colTO->num_secao_eleitoral ."', '". $colTO->num_reservista ."', '". $colTO->dsc_endereco ."', '". $colTO->num_endereco ."', '". $colTO->nme_bairro ."', '". $colTO->dsc_complemento ."', ". $colTO->cod_cidade_moradia .", ". $colTO->cod_estado_moradia .", '". $colTO->num_cep ."', '". $colTO->dta_nascimento ."', ". $colTO->cod_cidade_naturalidade .", ". $colTO->cod_estado_naturalidade .", '". $colTO->num_cnh ."', '". $colTO->nme_categoria_cnh ."', '". $colTO->dta_validade_cnh ."', '". $colTO->flg_sexo ."', ". $colTO->cod_banco .", '". $colTO->num_agencia ."', '". $colTO->num_digito_agencia ."', '". $colTO->num_conta_corrente ."', '". $colTO->num_digito_conta_corrente ."', ". $colTO->cod_sindicato .", '". $colTO->pth_arquivo_cnh ."', '". $colTO->pth_arquivo_rg ."', '". $colTO->pth_arquivo_foto ."', '". $colTO->pth_arquivo_cpf ."', '". $colTO->pth_arquivo_entidade ."', '". $colTO->pth_arquivo_curriculo ."', '". $colTO->pth_arquivo_reservista ."', '". $colTO->pth_arquivo_titulo_eleitor ."', '". $colTO->pth_arquivo_ctps ."', '". $colTO->pth_arquivo_pis ."', ". $colTO->cod_entidade .", '". $colTO->num_entidade ."', ". $colTO->qtd_horas_contratadas .", ". $colTO->cod_empreendimento .", ". $colTO->flg_hora_extra .", ". $colTO->flg_trabalho_fim_semana .", ". $colTO->flg_trabalho_feriado .", ". $colTO->flg_ajusta_folha_ponto .", ". $colTO->flg_ensino_superior .", ". $colTO->cod_contrato .");";
 
 		$insert = $this->conn->prepare($sql);
 
@@ -256,11 +255,6 @@ class ColaboradorDao{
 			$colTO->dta_validade_cnh = 'NULL';
 		else
 			$colTO->dta_validade_cnh = "'". $colTO->dta_validade_cnh . "'";
-
-		if(!$colTO->dta_aso)
-			$colTO->dta_aso = 'NULL';
-		else
-			$colTO->dta_aso = "'". $colTO->dta_aso . "'";
 
 
 		$sql = "UPDATE tb_colaborador
@@ -326,7 +320,6 @@ class ColaboradorDao{
 					flg_trabalho_feriado					= ". $colTO->flg_trabalho_feriado .",
 					flg_ajusta_folha_ponto					= ". $colTO->flg_ajusta_folha_ponto .",
 					flg_ensino_superior						= ". $colTO->flg_ensino_superior .",
-					dta_aso 								= ". $colTO->dta_aso .",
 					cod_contrato 							= '". $colTO->cod_contrato ."'
 				WHERE cod_colaborador = ". $colTO->cod_colaborador .";";
 
