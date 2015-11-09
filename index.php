@@ -46,9 +46,11 @@ Flight::route('GET /colaborador/emails',							array('EmailController', 'getEmai
 Flight::route('GET /colaboradores/emails/mensagem',					array('EmailController', 'getEmailsMensagem'));
 Flight::route('GET /colaboradores(.json)', 							array('ColaboradorController', 'getColaboradores'));
 
+Flight::route('POST /lancamento-financeiro', 						array('LancamentoFinanceiroController', 'addLancamentoFinanceiro'));
 								
 Flight::route('GET /empreendimentos(.json)', 						array('EmpreendimentoController', 'getEmpreendimentos'));
 Flight::route('GET /empresas(.json)', 								array('EmpresaController', 'getEmpresas'));
+Flight::route('GET /plano-contas(.json)', 							array('PlanoContaController', 'getPlanoContas'));
 Flight::route('GET /modulos(.json)', 								array('ModuloController', 'getModulos'));
 Flight::route('GET /modulos/funcionalidades(.json)', 				array('FuncionalidadeController', 'getFuncionalidades'));
 Flight::route('GET /estados(.json)', 								array('EstadoController', 'getEstados'));

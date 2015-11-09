@@ -50,24 +50,6 @@ class ColaboradorController {
 		$colTO->num_conta_corrente 					= (isset($_POST['num_conta_corrente'])) ? $_POST['num_conta_corrente'] : "";
 		$colTO->num_digito_conta_corrente 			= (isset($_POST['num_digito_conta_corrente'])) ? $_POST['num_digito_conta_corrente'] : "";
 		$colTO->cod_sindicato 						= (isset($_POST['sindicato'])) ? $_POST['sindicato']['cod_sindicato'] : "";
-		$colTO->pth_arquivo_cnh 					= (isset($_POST['pth_arquivo_cnh'])) ? $_POST['pth_arquivo_cnh'] : "";
-		$colTO->pth_arquivo_rg 						= (isset($_POST['pth_arquivo_rg'])) ? $_POST['pth_arquivo_rg'] : "";
-		$colTO->pth_arquivo_foto 					= (isset($_POST['pth_arquivo_foto'])) ? $_POST['pth_arquivo_foto'] : "";
-		$colTO->pth_arquivo_cpf 					= (isset($_POST['pth_arquivo_cpf'])) ? $_POST['pth_arquivo_cpf'] : "";
-		$colTO->pth_arquivo_entidade 				= (isset($_POST['pth_arquivo_entidade'])) ? $_POST['pth_arquivo_entidade'] : "";
-		$colTO->pth_arquivo_curriculo 				= (isset($_POST['pth_arquivo_curriculo'])) ? $_POST['pth_arquivo_curriculo'] : "";
-		$colTO->pth_arquivo_reservista 				= (isset($_POST['pth_arquivo_reservista'])) ? $_POST['pth_arquivo_reservista'] : "";
-		//$colTO->pth_arquivo_aso 					= (isset($_POST['pth_arquivo_aso'])) ? $_POST['pth_arquivo_aso'] : "";
-		//$colTO->pth_arquivo_ensino_superior 		= (isset($_POST['pth_arquivo_ensino_superior'])) ? $_POST['pth_arquivo_ensino_superior'] : "";
-		$colTO->pth_arquivo_titulo_eleitor 			= (isset($_POST['pth_arquivo_titulo_eleitor'])) ? $_POST['pth_arquivo_titulo_eleitor'] : "";
-		$colTO->pth_arquivo_ctps 					= (isset($_POST['pth_arquivo_ctps'])) ? $_POST['pth_arquivo_ctps'] : "";
-		//$colTO->pth_arquivo_certidao 				= (isset($_POST['pth_arquivo_certidao'])) ? $_POST['pth_arquivo_certidao'] : "";
-		//$colTO->pth_arquivo_comprovante_bancario 	= (isset($_POST['pth_arquivo_comprovante_bancario'])) ? $_POST['pth_arquivo_comprovante_bancario'] : "";
-		//$colTO->pth_arquivo_comprovante_endereco 	= (isset($_POST['pth_arquivo_comprovante_endereco'])) ? $_POST['pth_arquivo_comprovante_endereco'] : "";
-		//$colTO->pth_arquivo_carta_referencia 		= (isset($_POST['pth_arquivo_carta_referencia'])) ? $_POST['pth_arquivo_carta_referencia'] : "";
-		$colTO->pth_arquivo_pis 					= (isset($_POST['pth_arquivo_pis'])) ? $_POST['pth_arquivo_pis'] : "";
-		//$colTO->pth_arquivo_sus 					= (isset($_POST['pth_arquivo_sus'])) ? $_POST['pth_arquivo_sus'] : "";
-		//$colTO->dta_aso 							= (isset($_POST['dta_aso'])) ? $_POST['dta_aso'] : "";
 		$colTO->cod_entidade 						= (isset($_POST['entidade'])) ? $_POST['entidade']['cod_entidade'] : "";
 		$colTO->num_entidade 						= (isset($_POST['num_entidade'])) ? $_POST['num_entidade'] : "";
 		$colTO->qtd_horas_contratadas 				= (isset($_POST['qtd_horas_contratadas'])) ? $_POST['qtd_horas_contratadas'] : "";
@@ -77,6 +59,24 @@ class ColaboradorController {
 		$colTO->flg_trabalho_feriado 				= (isset($_POST['flg_trabalho_feriado'])) ? $_POST['flg_trabalho_feriado'] : "";
 		$colTO->flg_ajusta_folha_ponto 				= (isset($_POST['flg_ajusta_folha_ponto'])) ? $_POST['flg_ajusta_folha_ponto'] : "";
 		$colTO->flg_ensino_superior 				= (isset($_POST['flg_ensino_superior'])) ? $_POST['flg_ensino_superior'] : "";
+		
+		// ANEXOS
+		$colTO->files = array();
+		$colTO->files['file_foto'] 					= (isset($_POST['files']['file_foto'])) 				? $_POST['files']['file_foto'] : null;
+		$colTO->files['file_rg'] 					= (isset($_POST['files']['file_rg'])) 					? $_POST['files']['file_rg'] : null;
+		$colTO->files['file_cpf'] 					= (isset($_POST['files']['file_cpf'])) 					? $_POST['files']['file_cpf'] : null;
+		$colTO->files['file_pis'] 					= (isset($_POST['files']['file_pis'])) 					? $_POST['files']['file_pis'] : null;
+		$colTO->files['file_certidao'] 				= (isset($_POST['files']['file_certidao'])) 			? $_POST['files']['file_certidao'] : null;
+		$colTO->files['file_cartao_sus'] 			= (isset($_POST['files']['file_cartao_sus'])) 			? $_POST['files']['file_cartao_sus'] : null;
+		$colTO->files['file_comprovante_endereco'] 	= (isset($_POST['files']['file_comprovante_endereco'])) ? $_POST['files']['file_comprovante_endereco'] : null;
+		$colTO->files['file_comprovante_bancario'] 	= (isset($_POST['files']['file_comprovante_bancario'])) ? $_POST['files']['file_comprovante_bancario'] : null;
+		$colTO->files['file_contrato_trabalho'] 	= (isset($_POST['files']['file_contrato_trabalho'])) 	? $_POST['files']['file_contrato_trabalho'] : null;
+		$colTO->files['file_diploma'] 				= (isset($_POST['files']['file_diploma'])) 				? $_POST['files']['file_diploma'] : null;
+		$colTO->files['file_curriculo'] 			= (isset($_POST['files']['file_curriculo'])) 			? $_POST['files']['file_curriculo'] : null;
+		$colTO->files['file_historico_escolar']		= (isset($_POST['files']['file_historico_escolar'])) 	? $_POST['files']['file_historico_escolar'] : null;
+		$colTO->files['file_titulo_eleitor'] 		= (isset($_POST['files']['file_titulo_eleitor'])) 		? $_POST['files']['file_titulo_eleitor'] : null;
+		$colTO->files['file_cnh'] 					= (isset($_POST['files']['file_cnh'])) 					? $_POST['files']['file_cnh'] : null;
+		$colTO->files['file_reservista'] 			= (isset($_POST['files']['file_reservista'])) 			? $_POST['files']['file_reservista'] : null;
 
 		// Arrays auxiliares de telefones e funções
 		$telefones 		= (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
@@ -246,6 +246,67 @@ class ColaboradorController {
 		$validator->set_msg('O Contrato é obrigatório')
 				  ->set('contrato', $colTO->cod_contrato)
 				  ->is_required();
+
+		// ANEXOS - INICIO
+		$validator->set_msg('A Foto é obrigatória')
+				  ->set('file_foto', $colTO->files['file_foto'])
+				  ->is_required();
+		/*$validator->set_msg('O RG é obrigatório')
+				  ->set('file_rg', $colTO->files['file_rg'])
+				  ->is_required();
+
+		$validator->set_msg('O CPF é obrigatório')
+				  ->set('file_cpf', $colTO->files['file_cpf'])
+				  ->is_required();
+
+		$validator->set_msg('O PIS é obrigatório')
+				  ->set('file_pis', $colTO->files['file_pis'])
+				  ->is_required();
+
+		$validator->set_msg('A Certidão é obrigatória')
+				  ->set('file_certidao', $colTO->files['file_certidao'])
+				  ->is_required();
+
+		$validator->set_msg('O Cartão do SUS é obrigatório')
+				  ->set('file_cartao_sus', $colTO->files['file_cartao_sus'])
+				  ->is_required();
+
+		$validator->set_msg('O Comprovante de Endereço é obrigatório')
+				  ->set('file_comprovante_endereco', $colTO->files['file_comprovante_endereco'])
+				  ->is_required();
+
+		$validator->set_msg('O Comprovante Bancário é obrigatório')
+				  ->set('file_comprovante_bancario', $colTO->files['file_comprovante_bancario'])
+				  ->is_required();
+
+		$validator->set_msg('O Contrato de Trabalho é obrigatório')
+				  ->set('file_contrato_trabalho', $colTO->files['file_contrato_trabalho'])
+				  ->is_required();
+
+		$validator->set_msg('O Diploma é obrigatório')
+				  ->set('file_diploma', $colTO->files['file_diploma'])
+				  ->is_required();
+
+		$validator->set_msg('O Currículo é obrigatório')
+				  ->set('file_curriculo', $colTO->files['file_curriculo'])
+				  ->is_required();
+
+		$validator->set_msg('O Histórico Escolar é obrigatório')
+				  ->set('file_historico_escolar', $colTO->files['file_historico_escolar'])
+				  ->is_required();
+
+		$validator->set_msg('O Título de Eleitor é obrigatório')
+				  ->set('file_titulo_eleitor', $colTO->files['file_titulo_eleitor'])
+				  ->is_required();
+
+		$validator->set_msg('O CNH é obrigatório')
+				  ->set('file_cnh', $colTO->files['file_cnh'])
+				  ->is_required();
+
+		$validator->set_msg('A Reservista é obrigatória')
+				  ->set('file_reservista', $colTO->files['file_reservista'])
+				  ->is_required();*/
+		// ANEXOS - FIM
 		  
 		if(!$validator->validate()){ // Se retornar false, significa que algum campo obrigatório não foi preenchido
 			// Envia os campos não preenchidos com a respectiva mensagem de erro para o front-end
@@ -316,6 +377,21 @@ class ColaboradorController {
 				if(!$benDao->saveBeneficio($beneficioTO))
 					Flight::halt(500, 'Erro ao salvar o plano de saúde ['. $_POST['planoSaude']['nme_plano_saude'] .'] de ['. $colTO->nme_colaborador .']');
 			}
+
+			// Salva os anexos no banco de dados
+			$anexoDao = new AnexoColaboradorDao();
+
+			foreach ($colTO->files as $key => $file) {
+				$anexoTO = new AnexoTO();
+				$anexoTO->cod_colaborador 		= $colTO->cod_colaborador;
+				$anexoTO->nme_anexo 			= $file['nme_anexo'];
+				$anexoTO->pth_anexo 			= $file['pth_anexo'];
+				$anexoTO->dsc_tipo_anexo 		= $file['dsc_tipo_anexo'];
+				$anexoTO->dsc_contexto_anexo 	= $key;
+				if(!$anexoDao->saveAnexoColaborador($anexoTO))
+					Flight::halt(500, 'Erro ao salvar anexo [ '. $key .' ]'); die;
+			}
+
 		}
 		else {
 			$colaboradorDao->updateColaborador($colTO);

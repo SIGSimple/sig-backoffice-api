@@ -180,7 +180,7 @@ class ColaboradorDao{
 		if($select->execute()){
 			if($select->rowCount()>0) {
 				if($sort != "")
-					$result = $this->array_orderby($select->fetchALL(PDO::FETCH_ASSOC), $sort, $order);
+					$result = array_orderby($select->fetchALL(PDO::FETCH_ASSOC), $sort, $order);
 				else
 					$result = $select->fetchALL(PDO::FETCH_ASSOC);
 
