@@ -56,6 +56,8 @@ class EmpresaDao{
 			}
 		}
 
+		$sql .= " ORDER BY nme_fantasia ASC";
+
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
 			if($select->rowCount()>0) {

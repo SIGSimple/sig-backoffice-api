@@ -44,12 +44,51 @@ class LancamentoFinanceiroController {
 			if($lanFinTO->cod_lancamento_financeiro != '') {
 				// Se o lançamento for rateado...
 				if($_POST['abrirLancamento'] === "true") {
-					// Do something else
+					$favorecidos = $_POST['favorecidos'];
+
+					foreach ($favorecidos as $key => $favorecidoItem) {
+						if($favorecidoItem['flg_removido'] == "false") {
+							$favTitLanFinTO = new FavorecidoTitularLancamentoFinanceiroTO();
+							$favTitLanFinTO->cod_lancamento_financeiro 	= $lanFinTO->cod_lancamento_financeiro;
+							$favTitLanFinTO->vlr_correspondente 		= $favorecidoItem['vlr_correspondente'];
+							$favTitLanFinTO->dsc_observacao_adicional 	= $favorecidoItem['dsc_observacao_adicional'];
+							$favTitLanFinTO->cod_origem_correspondente 	= $favorecidoItem['cod_origem_correspondente'];
+
+							switch ($favorecidoItem['favorecido']['type']) {
+								case 'empresas':
+									$favTitLanFinTO->cod_favorecido_fornecedor 	= $favorecidoItem['favorecido']['data']['cod_empresa'];
+									break;
+								case 'colaboradores':
+									$favTitLanFinTO->cod_favorecido_colaborador = $favorecidoItem['favorecido']['data']['cod_colaborador'];
+									break;
+								case 'terceiros':
+									$favTitLanFinTO->cod_favorecido_terceiro 	= $favorecidoItem['favorecido']['data']['cod_terceiro'];
+									break;
+							}
+
+							switch ($favorecidoItem['titularMovimento']['type']) {
+								case 'empresas':
+									$favTitLanFinTO->cod_titular_fornecedor 	= $favorecidoItem['titularMovimento']['data']['cod_empresa'];
+									break;
+								case 'colaboradores':
+									$favTitLanFinTO->cod_titular_colaborador = $favorecidoItem['titularMovimento']['data']['cod_colaborador'];
+									break;
+								case 'terceiros':
+									$favTitLanFinTO->cod_titular_terceiro 	= $favorecidoItem['titularMovimento']['data']['cod_terceiro'];
+									break;
+							}
+
+							$favTitLanFinDAO = new FavorecidoTitularLancamentoFinanceiroDao();
+							if(!$favTitLanFinDAO->saveFavorecidoTitularLancamentoFinanceiro($favTitLanFinTO)) {
+								Flight::halt(500, 'Erro ao associar Favorecido/Titular do Movimento ao Lançamento');
+							}
+						}
+					}
 				}
 				else { // Se não...
 					$favTitLanFinTO = new FavorecidoTitularLancamentoFinanceiroTO();
 					$favTitLanFinTO->cod_lancamento_financeiro 	= $lanFinTO->cod_lancamento_financeiro;
-					$favTitLanFinTO->vlr_correspondente 		= $lanFinTO->vlr_previsto;
+					$favTitLanFinTO->vlr_correspondente 		= ($lanFinTO->vlr_realizado != "") ? $lanFinTO->vlr_realizado : $lanFinTO->vlr_previsto;
 					$favTitLanFinTO->dsc_observacao_adicional 	= $lanFinTO->dsc_observacao;
 					$favTitLanFinTO->cod_origem_correspondente 	= $lanFinTO->cod_origem_despesa;
 					
@@ -92,5 +131,14 @@ class LancamentoFinanceiroController {
 		else {
 			// Atualizar
 		}
+	}
+
+	public static function getLancamentosFinanceiros() {
+		$dao = new LancamentoFinanceiroDao();
+		$items = $dao->getLancamentosFinanceiros($_GET);
+		if($items)
+			Flight::json($items);
+		else
+			Flight::halt(404, 'Nenhum lançamento encontrado.');
 	}
 }
