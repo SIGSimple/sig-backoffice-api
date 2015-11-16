@@ -8,7 +8,21 @@ class EmpresaDao{
 	} 
 
 	public function getEmpresas($busca=null){
-		$sql = "SELECT * FROM tb_empresa";
+		$sql = "SELECT
+					cod_empresa,
+					nme_razao_social,
+					nme_fantasia,
+					num_cnpj,
+					num_inscricao_estadual,
+					dsc_endereco,
+					dsc_complemento,
+					nme_bairro,
+					num_cep,
+					cod_cidade,
+					cod_estado,
+					CAST(flg_ativo AS UNSIGNED) AS flg_ativo,
+					cod_empreendimento
+				FROM tb_empresa";
 		
 		$nolimit = false;
 		$limit = 5;

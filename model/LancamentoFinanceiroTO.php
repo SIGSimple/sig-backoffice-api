@@ -18,6 +18,7 @@ class LancamentoFinanceiroTO {
 	public $cod_origem_despesa;
 	public $dsc_observacao;
 	public $flg_lancamento_aberto;
+	public $cod_empreendimento;
 }
 
 ?>

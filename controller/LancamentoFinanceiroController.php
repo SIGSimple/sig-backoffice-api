@@ -20,6 +20,7 @@ class LancamentoFinanceiroController {
 		$lanFinTO->cod_origem_despesa 			= (isset($_POST['cod_origem_despesa'])) ? $_POST['cod_origem_despesa'] : '';
 		$lanFinTO->dsc_observacao 				= (isset($_POST['dsc_observacao'])) ? $_POST['dsc_observacao'] : '';
 		$lanFinTO->flg_lancamento_aberto 		= (isset($_POST['flg_lancamento_aberto'])) ? (int)$_POST['flg_lancamento_aberto'] : 0;
+		$lanFinTO->cod_empreendimento 			= (isset($_POST['cod_empreendimento'])) ? (int)$_POST['cod_empreendimento'] : 0;
 
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
@@ -158,12 +159,21 @@ class LancamentoFinanceiroController {
 			Flight::halt(404, 'Nenhum lançamento encontrado.');
 	}
 
+	public static function getSaldoAnterior($dta_referencia) {
+		$dao = new LancamentoFinanceiroDao();
+		$items = $dao->getSaldoAnterior($dta_referencia);
+		if($items)
+			Flight::json($items[0]);
+		else
+			Flight::halt(404, 'Nenhum saldo anterior encontrado.');
+	}
+
 	public static function deleteLancamentoFinanceiro() {
 		$colaboradorDao = new LancamentoFinanceiroDao();
 		
-		if($colaboradorDao->deleteLancamentoFinanceiro($_GET['cod_colaborador']))
-			Flight::halt(200, 'Colaborador excluído com sucesso!');
+		if($colaboradorDao->deleteLancamentoFinanceiro($_GET['cod_lancamento_financeiro'], $_GET['cod_usuario']))
+			Flight::halt(200, 'Lançamento excluído com sucesso!');
 		else
-			Flight::halt(500, 'Falha ao excluir colaborador! Contate o administrador do sistema.');
+			Flight::halt(500, 'Falha ao excluir lançamento! Contate o administrador do sistema.');
 	}
 }
