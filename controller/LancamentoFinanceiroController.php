@@ -116,28 +116,32 @@ class LancamentoFinanceiroController {
 				$favTitLanFinTO->dsc_observacao_adicional 	= $lanFinTO->dsc_observacao;
 				$favTitLanFinTO->cod_origem_correspondente 	= $lanFinTO->cod_origem_despesa;
 				
-				switch ($_POST['favorecido']['type']) {
-					case 'empresas':
-						$favTitLanFinTO->cod_favorecido_fornecedor 	= $_POST['favorecido']['data']['cod_empresa'];
-						break;
-					case 'colaboradores':
-						$favTitLanFinTO->cod_favorecido_colaborador = $_POST['favorecido']['data']['cod_colaborador'];
-						break;
-					case 'terceiros':
-						$favTitLanFinTO->cod_favorecido_terceiro 	= $_POST['favorecido']['data']['cod_terceiro'];
-						break;
+				if(isset($_POST['favorecido'])) {
+					switch ($_POST['favorecido']['type']) {
+						case 'empresas':
+							$favTitLanFinTO->cod_favorecido_fornecedor 	= $_POST['favorecido']['data']['cod_empresa'];
+							break;
+						case 'colaboradores':
+							$favTitLanFinTO->cod_favorecido_colaborador = $_POST['favorecido']['data']['cod_colaborador'];
+							break;
+						case 'terceiros':
+							$favTitLanFinTO->cod_favorecido_terceiro 	= $_POST['favorecido']['data']['cod_terceiro'];
+							break;
+					}
 				}
 
-				switch ($_POST['titularMovimento']['type']) {
-					case 'empresas':
-						$favTitLanFinTO->cod_titular_fornecedor 	=  $_POST['titularMovimento']['data']['cod_empresa'];
-						break;
-					case 'colaboradores':
-						$favTitLanFinTO->cod_titular_colaborador = $_POST['titularMovimento']['data']['cod_colaborador'];
-						break;
-					case 'terceiros':
-						$favTitLanFinTO->cod_titular_terceiro 	= $_POST['titularMovimento']['data']['cod_terceiro'];
-						break;
+				if(isset($_POST['titularMovimento'])) {
+					switch ($_POST['titularMovimento']['type']) {
+						case 'empresas':
+							$favTitLanFinTO->cod_titular_fornecedor 	=  $_POST['titularMovimento']['data']['cod_empresa'];
+							break;
+						case 'colaboradores':
+							$favTitLanFinTO->cod_titular_colaborador = $_POST['titularMovimento']['data']['cod_colaborador'];
+							break;
+						case 'terceiros':
+							$favTitLanFinTO->cod_titular_terceiro 	= $_POST['titularMovimento']['data']['cod_terceiro'];
+							break;
+					}
 				}
 
 				$favTitLanFinDAO = new FavorecidoTitularLancamentoFinanceiroDao();

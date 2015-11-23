@@ -80,13 +80,19 @@ class LancamentoFinanceiroDao{
 		else
 			$lanFinTO->dta_pagamento = "'". $lanFinTO->dta_pagamento . "'";
 
+		if(!$lanFinTO->vlr_previsto)
+			$lanFinTO->vlr_previsto = 'NULL';
+
+		if(!$lanFinTO->vlr_realizado)
+			$lanFinTO->vlr_realizado = 'NULL';
+
 		$sql = "UPDATE tb_lancamento_financeiro
 				SET num_nota_fatura = '". 			$lanFinTO->num_nota_fatura ."',
 					num_lancamento_contabil = '". 	$lanFinTO->num_lancamento_contabil ."',
 					num_documento_banco = '". 		$lanFinTO->num_documento_banco ."',
 					dsc_lancamento = '". 			$lanFinTO->dsc_lancamento ."',
-					vlr_previsto = '". 				$lanFinTO->vlr_previsto ."',
-					vlr_realizado = '". 			$lanFinTO->vlr_realizado ."',
+					vlr_previsto = ". 				$lanFinTO->vlr_previsto .",
+					vlr_realizado = ". 				$lanFinTO->vlr_realizado .",
 					dta_emissao = ". 				$lanFinTO->dta_emissao .",
 					dta_competencia = ". 			$lanFinTO->dta_competencia .",
 					dta_vencimento = ". 			$lanFinTO->dta_vencimento .",
@@ -181,7 +187,7 @@ class LancamentoFinanceiroDao{
 			}
 		}
 
-		$sql .= " ORDER BY dta_vencimento ASC, dta_pagamento ASC";
+		$sql .= " ORDER BY dta_vencimento ASC, dta_pagamento ASC, num_lancamento_contabil ASC";
 
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
