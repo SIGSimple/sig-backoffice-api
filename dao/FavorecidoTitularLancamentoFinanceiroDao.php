@@ -55,6 +55,8 @@ class FavorecidoTitularLancamentoFinanceiroDao{
 			$sql .= " WHERE " . $where;
 		}
 
+		$sql .= " ORDER BY nme_fantasia_titular ASC, nme_colaborador_titular ASC, nme_terceiro_titular ASC";
+
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){
 			if($select->rowCount()>0) {
@@ -94,8 +96,12 @@ class FavorecidoTitularLancamentoFinanceiroDao{
 					cod_titular_terceiro = ". $favTitLanFinTO->cod_titular_terceiro .",
 					cod_origem_correspondente =	". $favTitLanFinTO->cod_origem_correspondente .",
 					vlr_correspondente = ". $favTitLanFinTO->vlr_correspondente .",
-					dsc_observacao_adicional ='". $favTitLanFinTO->dsc_observacao_adicional ."'
-				WHERE cod_favorecido_lancamento_financeiro = ". $favTitLanFinTO->cod_favorecido_lancamento_financeiro;
+					dsc_observacao_adicional ='". $favTitLanFinTO->dsc_observacao_adicional ."'";
+		
+		if($favTitLanFinTO->cod_favorecido_lancamento_financeiro != "")
+			$sql .= " WHERE cod_favorecido_lancamento_financeiro = ". $favTitLanFinTO->cod_favorecido_lancamento_financeiro;
+		else if($favTitLanFinTO->cod_lancamento_financeiro != "")
+			$sql .= " WHERE cod_lancamento_financeiro = ". $favTitLanFinTO->cod_lancamento_financeiro;
 
 		//Flight::halt(500, $sql);die;
 
