@@ -20,12 +20,23 @@ class LancamentoFinanceiroController {
 		$lanFinTO->cod_origem_despesa 			= (isset($_POST['cod_origem_despesa'])) ? $_POST['cod_origem_despesa'] : '';
 		$lanFinTO->dsc_observacao 				= (isset($_POST['dsc_observacao'])) ? $_POST['dsc_observacao'] : '';
 		$lanFinTO->flg_lancamento_aberto 		= (isset($_POST['flg_lancamento_aberto'])) ? $_POST['flg_lancamento_aberto'] : "";
+		
+		$lanFinTO->flg_lancamento_recorrente 	= (isset($_POST['flg_lancamento_recorrente'])) ? $_POST['flg_lancamento_recorrente'] : "";
+		$lanFinTO->qtd_dias_recorrencia 		= (isset($_POST['qtd_dias_recorrencia'])) ? $_POST['qtd_dias_recorrencia'] : "";
+		$lanFinTO->qtd_parcelas 				= (isset($_POST['qtd_parcelas'])) ? $_POST['qtd_parcelas'] : "";
+		$lanFinTO->cod_lancamento_pai 			= (isset($_POST['cod_lancamento_pai'])) ? $_POST['cod_lancamento_pai'] : "";
+
 		$lanFinTO->cod_empreendimento 			= (isset($_POST['cod_empreendimento'])) ? (int)$_POST['cod_empreendimento'] : 0;
 
 		if($lanFinTO->flg_lancamento_aberto === "true")
 			$lanFinTO->flg_lancamento_aberto = 1;
 		else
 			$lanFinTO->flg_lancamento_aberto = 0;
+
+		if($lanFinTO->flg_lancamento_recorrente === "true")
+			$lanFinTO->flg_lancamento_recorrente = 1;
+		else
+			$lanFinTO->flg_lancamento_recorrente = 0;
 
 		// Validando os campos obrigatórios
 		$validator = new DataValidator();
@@ -55,127 +66,197 @@ class LancamentoFinanceiroController {
 			return ;
 		}
 
-		$lanFinDao = new LancamentoFinanceiroDao();
-		if(!$lanFinTO->cod_lancamento_financeiro) {
-			$statusCode = 201;
-			$successMessage = 'Lançamento registrado com sucesso!';
-			// Grava o lançamento financeiro
-			$lanFinTO->cod_lancamento_financeiro = $lanFinDao->saveLancamentoFinanceiro($lanFinTO);
-			if(!$lanFinTO->cod_lancamento_financeiro != '')
-				Flight::halt(500, 'Erro ao registrar lançamento.');
-		}
-		else {
-			$statusCode = 200;
-			$successMessage = 'Lançamento atualizado com sucesso!';
-			if(!$lanFinDao->updateLancamentoFinanceiro($lanFinTO))
-				Flight::halt(500, 'Erro ao atualizar lançamento.');
-		}
+		LancamentoFinanceiroController::processSaveLancamentoFinanceiro($lanFinTO);
+	}
 
-		if($lanFinTO->cod_lancamento_financeiro) { // Só se já tiver gravado o lançamento financeiro
-			// Grava os favorecidos/titulares do movimento
-			if($_POST['flg_lancamento_aberto'] === "true") { // Se o lançamento for rateado...
-				$favorecidos = $_POST['favorecidos'];
+	private static function processSaveLancamentoFinanceiro($lanFinTO, $cod_lancamento_pai=null, $num_parcela_processar=0, $statusCode=200, $successMessage="Lançamento registrado com sucesso!") {
+		if((!$lanFinTO->flg_lancamento_recorrente) || (($lanFinTO->flg_lancamento_recorrente) && ($num_parcela_processar < (int)$lanFinTO->qtd_parcelas))) {
+			$lanFinDao = new LancamentoFinanceiroDao();
 
-				foreach ($favorecidos as $key => $favorecidoItem) {
+			if(!$lanFinTO->cod_lancamento_financeiro && $lanFinTO->flg_lancamento_recorrente) { // É novo lançamento recorrente?
+				if($num_parcela_processar == 0) { // É a primeira parcela?
+					$lanFinTO->dsc_lancamento = $lanFinTO->dsc_lancamento ." (1/". $lanFinTO->qtd_parcelas .")";
+				}
+				else if($num_parcela_processar > 0) {
+					$lanFinTO->dsc_lancamento = substr($lanFinTO->dsc_lancamento, 0, strlen($lanFinTO->dsc_lancamento)-6)	." (". ($num_parcela_processar+1) ."/". $lanFinTO->qtd_parcelas .")";
+				}
+			}
+
+			if(!$lanFinTO->cod_lancamento_financeiro) {
+				$statusCode = 201;
+				$successMessage = 'Lançamento registrado com sucesso!';
+				// Grava o lançamento financeiro
+				$lanFinTO->cod_lancamento_financeiro = $lanFinDao->saveLancamentoFinanceiro($lanFinTO);
+				if(!$lanFinTO->cod_lancamento_financeiro != '')
+					Flight::halt(500, 'Erro ao registrar lançamento.');
+			}
+			else {
+				$statusCode = 200;
+				$successMessage = 'Lançamento atualizado com sucesso!';
+				if(!$lanFinDao->updateLancamentoFinanceiro($lanFinTO))
+					Flight::halt(500, 'Erro ao atualizar lançamento.');
+			}
+
+			if($lanFinTO->cod_lancamento_financeiro) { // Só se já tiver gravado o lançamento financeiro
+				// Grava os favorecidos/titulares do movimento
+				if($_POST['flg_lancamento_aberto'] === "true") { // Se o lançamento for rateado...
+					$favorecidos = $_POST['favorecidos'];
+
+					foreach ($favorecidos as $key => $favorecidoItem) {
+						$favTitLanFinTO = new FavorecidoTitularLancamentoFinanceiroTO();
+						$favTitLanFinTO->cod_favorecido_lancamento_financeiro 	= $favorecidoItem['cod_favorecido_lancamento_financeiro'];
+						$favTitLanFinTO->cod_lancamento_financeiro 				= $lanFinTO->cod_lancamento_financeiro;
+						$favTitLanFinTO->vlr_correspondente 					= $favorecidoItem['vlr_correspondente'];
+						$favTitLanFinTO->dsc_observacao_adicional 				= (isset($favorecidoItem['dsc_observacao_adicional'])) ? $favorecidoItem['dsc_observacao_adicional'] : "";
+						$favTitLanFinTO->cod_origem_correspondente 				= (isset($favorecidoItem['cod_origem_correspondente'])) ? $favorecidoItem['cod_origem_correspondente'] : "";
+
+						switch ($favorecidoItem['favorecido']['type']) {
+							case 'empresas':
+								$favTitLanFinTO->cod_favorecido_fornecedor 	= $favorecidoItem['favorecido']['data']['cod_empresa'];
+								break;
+							case 'colaboradores':
+								$favTitLanFinTO->cod_favorecido_colaborador = $favorecidoItem['favorecido']['data']['cod_colaborador'];
+								break;
+							case 'terceiros':
+								$favTitLanFinTO->cod_favorecido_terceiro 	= $favorecidoItem['favorecido']['data']['cod_terceiro'];
+								break;
+						}
+
+						switch ($favorecidoItem['titularMovimento']['type']) {
+							case 'empresas':
+								$favTitLanFinTO->cod_titular_fornecedor 	= $favorecidoItem['titularMovimento']['data']['cod_empresa'];
+								break;
+							case 'colaboradores':
+								$favTitLanFinTO->cod_titular_colaborador 	= $favorecidoItem['titularMovimento']['data']['cod_colaborador'];
+								break;
+							case 'terceiros':
+								$favTitLanFinTO->cod_titular_terceiro 		= $favorecidoItem['titularMovimento']['data']['cod_terceiro'];
+								break;
+						}
+
+						$favTitLanFinDAO = new FavorecidoTitularLancamentoFinanceiroDao();
+						if(!$favTitLanFinTO->cod_favorecido_lancamento_financeiro) { // insert
+							if(!$favTitLanFinDAO->saveFavorecidoTitularLancamentoFinanceiro($favTitLanFinTO)) {
+								Flight::halt(500, 'Erro ao associar Favorecido/Titular do Movimento ao Lançamento');
+							}
+						}
+						else if($favTitLanFinTO->cod_favorecido_lancamento_financeiro && $favorecidoItem['flg_removido'] == "false") { // update
+							if(!$favTitLanFinDAO->updateFavorecidoTitularLancamentoFinanceiro($favTitLanFinTO)) {
+								Flight::halt(500, 'Erro ao atualizar Favorecido/Titular do Movimento');
+							}	
+						}
+						else if($favTitLanFinTO->cod_favorecido_lancamento_financeiro && $favorecidoItem['flg_removido'] == "true") { // delete
+							if(!$favTitLanFinDAO->deleteFavorecidoTitularLancamentoFinanceiro($favTitLanFinTO)) {
+								Flight::halt(500, 'Erro ao excluir Favorecido/Titular do Movimento!');
+							}
+						}
+					}
+				}
+				else { // Se não...
 					$favTitLanFinTO = new FavorecidoTitularLancamentoFinanceiroTO();
-					$favTitLanFinTO->cod_favorecido_lancamento_financeiro 	= $favorecidoItem['cod_favorecido_lancamento_financeiro'];
 					$favTitLanFinTO->cod_lancamento_financeiro 				= $lanFinTO->cod_lancamento_financeiro;
-					$favTitLanFinTO->vlr_correspondente 					= $favorecidoItem['vlr_correspondente'];
-					$favTitLanFinTO->dsc_observacao_adicional 				= (isset($favorecidoItem['dsc_observacao_adicional'])) ? $favorecidoItem['dsc_observacao_adicional'] : "";
-					$favTitLanFinTO->cod_origem_correspondente 				= (isset($favorecidoItem['cod_origem_correspondente'])) ? $favorecidoItem['cod_origem_correspondente'] : "";
-
-					switch ($favorecidoItem['favorecido']['type']) {
-						case 'empresas':
-							$favTitLanFinTO->cod_favorecido_fornecedor 	= $favorecidoItem['favorecido']['data']['cod_empresa'];
-							break;
-						case 'colaboradores':
-							$favTitLanFinTO->cod_favorecido_colaborador = $favorecidoItem['favorecido']['data']['cod_colaborador'];
-							break;
-						case 'terceiros':
-							$favTitLanFinTO->cod_favorecido_terceiro 	= $favorecidoItem['favorecido']['data']['cod_terceiro'];
-							break;
+					$favTitLanFinTO->vlr_correspondente 					= ($lanFinTO->vlr_realizado != "") ? $lanFinTO->vlr_realizado : $lanFinTO->vlr_previsto;
+					$favTitLanFinTO->dsc_observacao_adicional 				= $lanFinTO->dsc_observacao;
+					$favTitLanFinTO->cod_origem_correspondente 				= $lanFinTO->cod_origem_despesa;
+					
+					if(isset($_POST['favorecido'])) {
+						switch ($_POST['favorecido']['type']) {
+							case 'empresas':
+								$favTitLanFinTO->cod_favorecido_fornecedor 	= $_POST['favorecido']['data']['cod_empresa'];
+								break;
+							case 'colaboradores':
+								$favTitLanFinTO->cod_favorecido_colaborador = $_POST['favorecido']['data']['cod_colaborador'];
+								break;
+							case 'terceiros':
+								$favTitLanFinTO->cod_favorecido_terceiro 	= $_POST['favorecido']['data']['cod_terceiro'];
+								break;
+						}
 					}
 
-					switch ($favorecidoItem['titularMovimento']['type']) {
-						case 'empresas':
-							$favTitLanFinTO->cod_titular_fornecedor 	= $favorecidoItem['titularMovimento']['data']['cod_empresa'];
-							break;
-						case 'colaboradores':
-							$favTitLanFinTO->cod_titular_colaborador = $favorecidoItem['titularMovimento']['data']['cod_colaborador'];
-							break;
-						case 'terceiros':
-							$favTitLanFinTO->cod_titular_terceiro 	= $favorecidoItem['titularMovimento']['data']['cod_terceiro'];
-							break;
+					if(isset($_POST['titularMovimento'])) {
+						switch ($_POST['titularMovimento']['type']) {
+							case 'empresas':
+								$favTitLanFinTO->cod_titular_fornecedor 	=  $_POST['titularMovimento']['data']['cod_empresa'];
+								break;
+							case 'colaboradores':
+								$favTitLanFinTO->cod_titular_colaborador = $_POST['titularMovimento']['data']['cod_colaborador'];
+								break;
+							case 'terceiros':
+								$favTitLanFinTO->cod_titular_terceiro 	= $_POST['titularMovimento']['data']['cod_terceiro'];
+								break;
+						}
 					}
 
 					$favTitLanFinDAO = new FavorecidoTitularLancamentoFinanceiroDao();
-					if(!$favTitLanFinTO->cod_favorecido_lancamento_financeiro) { // insert
+					if($statusCode == 201) { // insert
 						if(!$favTitLanFinDAO->saveFavorecidoTitularLancamentoFinanceiro($favTitLanFinTO)) {
 							Flight::halt(500, 'Erro ao associar Favorecido/Titular do Movimento ao Lançamento');
 						}
 					}
-					else if($favTitLanFinTO->cod_favorecido_lancamento_financeiro && $favorecidoItem['flg_removido'] == "false") { // update
+					else if($statusCode == 200) { // update
 						if(!$favTitLanFinDAO->updateFavorecidoTitularLancamentoFinanceiro($favTitLanFinTO)) {
 							Flight::halt(500, 'Erro ao atualizar Favorecido/Titular do Movimento');
 						}	
 					}
-					else if($favTitLanFinTO->cod_favorecido_lancamento_financeiro && $favorecidoItem['flg_removido'] == "true") { // delete
-						if(!$favTitLanFinDAO->deleteFavorecidoTitularLancamentoFinanceiro($favTitLanFinTO)) {
-							Flight::halt(500, 'Erro ao excluir Favorecido/Titular do Movimento!');
-						}
-					}
-				}
-			}
-			else { // Se não...
-				$favTitLanFinTO = new FavorecidoTitularLancamentoFinanceiroTO();
-				$favTitLanFinTO->cod_lancamento_financeiro 				= $lanFinTO->cod_lancamento_financeiro;
-				$favTitLanFinTO->vlr_correspondente 					= ($lanFinTO->vlr_realizado != "") ? $lanFinTO->vlr_realizado : $lanFinTO->vlr_previsto;
-				$favTitLanFinTO->dsc_observacao_adicional 				= $lanFinTO->dsc_observacao;
-				$favTitLanFinTO->cod_origem_correspondente 				= $lanFinTO->cod_origem_despesa;
-				
-				if(isset($_POST['favorecido'])) {
-					switch ($_POST['favorecido']['type']) {
-						case 'empresas':
-							$favTitLanFinTO->cod_favorecido_fornecedor 	= $_POST['favorecido']['data']['cod_empresa'];
-							break;
-						case 'colaboradores':
-							$favTitLanFinTO->cod_favorecido_colaborador = $_POST['favorecido']['data']['cod_colaborador'];
-							break;
-						case 'terceiros':
-							$favTitLanFinTO->cod_favorecido_terceiro 	= $_POST['favorecido']['data']['cod_terceiro'];
-							break;
-					}
 				}
 
-				if(isset($_POST['titularMovimento'])) {
-					switch ($_POST['titularMovimento']['type']) {
-						case 'empresas':
-							$favTitLanFinTO->cod_titular_fornecedor 	=  $_POST['titularMovimento']['data']['cod_empresa'];
-							break;
-						case 'colaboradores':
-							$favTitLanFinTO->cod_titular_colaborador = $_POST['titularMovimento']['data']['cod_colaborador'];
-							break;
-						case 'terceiros':
-							$favTitLanFinTO->cod_titular_terceiro 	= $_POST['titularMovimento']['data']['cod_terceiro'];
-							break;
+				if($statusCode == 201 && $_POST['flg_lancamento_recorrente'] === "true") { // Se o lançamento for parcelado...
+					if($cod_lancamento_pai == null) {
+						$cod_lancamento_pai = $lanFinTO->cod_lancamento_financeiro;
 					}
-				}
 
-				$favTitLanFinDAO = new FavorecidoTitularLancamentoFinanceiroDao();
-				if($statusCode == 201) { // insert
-					if(!$favTitLanFinDAO->saveFavorecidoTitularLancamentoFinanceiro($favTitLanFinTO)) {
-						Flight::halt(500, 'Erro ao associar Favorecido/Titular do Movimento ao Lançamento');
-					}
-				}
-				else if($statusCode == 200) { // update
-					if(!$favTitLanFinDAO->updateFavorecidoTitularLancamentoFinanceiro($favTitLanFinTO)) {
-						Flight::halt(500, 'Erro ao atualizar Favorecido/Titular do Movimento');
-					}	
+					$lanFinTO->cod_lancamento_financeiro = null;
+					$lanFinTO->cod_lancamento_pai = $cod_lancamento_pai;
+					$date = new DateTime(str_replace("'", "", $lanFinTO->dta_vencimento));
+					$date->add(new DateInterval('P'. $lanFinTO->qtd_dias_recorrencia .'D'));
+					$lanFinTO->dta_competencia 	= str_replace("'", "", $lanFinTO->dta_competencia);
+					$lanFinTO->dta_emissao 		= str_replace("'", "", $lanFinTO->dta_emissao);
+					$lanFinTO->dta_vencimento 	= $date->format('Y-m-d');
+					$lanFinTO->dta_pagamento 	= "";
+					$lanFinTO->vlr_realizado 	= null;
+
+					$num_parcela_processar++;
+
+					LancamentoFinanceiroController::processSaveLancamentoFinanceiro($lanFinTO, $cod_lancamento_pai, $num_parcela_processar, $statusCode, $successMessage);
 				}
 			}
 		}
+		else
+			Flight::halt($statusCode, $successMessage);
+	}
 
-		Flight::halt($statusCode, $successMessage);
+	public static function confirmaPagamentoLancamentoFinanceiro() {
+		$lanFinTO = new LancamentoFinanceiroTO();
+		$lanFinTO->cod_lancamento_financeiro 	= (isset($_POST['cod_lancamento_financeiro'])) ? $_POST['cod_lancamento_financeiro'] : '';
+		$lanFinTO->dsc_observacao 				= (isset($_POST['dsc_observacao'])) ? $_POST['dsc_observacao'] : '';
+		$lanFinTO->vlr_realizado 				= (isset($_POST['vlr_realizado'])) ? $_POST['vlr_realizado'] : '';
+		$lanFinTO->dta_pagamento 				= (isset($_POST['dta_pagamento'])) ? $_POST['dta_pagamento'] : '';
+
+		// Validando os campos obrigatórios
+		$validator = new DataValidator();
+
+		$validator->set_msg('A data de pagamento é obrigatória')
+				  ->set('dta_pagamento', $lanFinTO->dta_pagamento)
+				  ->is_required();
+
+		$validator->set_msg('O valor realizado é obrigatório')
+				  ->set('vlr_realizado', $lanFinTO->vlr_realizado)
+				  ->is_required();
+
+		if(!$validator->validate()){ // Se retornar false, significa que algum campo obrigatório não foi preenchido
+			// Envia os campos não preenchidos com a respectiva mensagem de erro para o front-end
+			Flight::response()->status(406)
+							  ->header('Content-Type', 'application/json')
+							  ->write(json_encode($validator->get_errors()))
+							  ->send();
+			return ;
+		}
+
+		$lanFinDao = new LancamentoFinanceiroDao();
+		if(!$lanFinDao->confirmaPagamentoLancamentoFinanceiro($lanFinTO))
+			Flight::halt(500, 'Erro ao confirmar pagamento.');
+
+		Flight::halt(200, 'Pagamento confirmado com sucesso!');
 	}
 
 	public static function getLancamentosFinanceiros() {
@@ -199,7 +280,9 @@ class LancamentoFinanceiroController {
 	public static function deleteLancamentoFinanceiro() {
 		$colaboradorDao = new LancamentoFinanceiroDao();
 		
-		if($colaboradorDao->deleteLancamentoFinanceiro($_GET['cod_lancamento_financeiro'], $_GET['cod_usuario']))
+		$_GET['deleteNextRecords'] = ($_GET['deleteNextRecords'] === "true") ? 1 : 0;
+
+		if($colaboradorDao->deleteLancamentoFinanceiro($_GET['cod_lancamento_financeiro'], $_GET['cod_lancamento_pai'], $_GET['cod_usuario'], $_GET['deleteNextRecords']))
 			Flight::halt(200, 'Lançamento excluído com sucesso!');
 		else
 			Flight::halt(500, 'Falha ao excluir lançamento! Contate o administrador do sistema.');

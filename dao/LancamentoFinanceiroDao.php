@@ -11,18 +11,30 @@ class LancamentoFinanceiroDao{
 		if(!$lanFinTO->cod_conta_contabil)
 			$lanFinTO->cod_conta_contabil = 'NULL';
 
+		if(!$lanFinTO->qtd_dias_recorrencia)
+			$lanFinTO->qtd_dias_recorrencia = 0;
+
+		if(!$lanFinTO->qtd_parcelas)
+			$lanFinTO->qtd_parcelas = 0;
+
+		if(!$lanFinTO->cod_conta_contabil)
+			$lanFinTO->cod_conta_contabil = 'NULL';
+
 		if(!$lanFinTO->cod_natureza_operacao)
 			$lanFinTO->cod_natureza_operacao = 'NULL';
 
 		if(!$lanFinTO->cod_origem_despesa)
 			$lanFinTO->cod_origem_despesa = 'NULL';
 
+		if(!$lanFinTO->cod_lancamento_pai)
+			$lanFinTO->cod_lancamento_pai = 'NULL';
+
 		if(!$lanFinTO->dta_emissao)
 			$lanFinTO->dta_emissao = 'NULL';
 		else
 			$lanFinTO->dta_emissao = "'". $lanFinTO->dta_emissao . "'";
 
-		if(!$lanFinTO->dta_competencia)
+		if(!$lanFinTO->dta_competencia || $lanFinTO->dta_competencia === "NULL")
 			$lanFinTO->dta_competencia = 'NULL';
 		else
 			$lanFinTO->dta_competencia = "'". $lanFinTO->dta_competencia . "'";
@@ -37,10 +49,13 @@ class LancamentoFinanceiroDao{
 		else
 			$lanFinTO->dta_pagamento = "'". $lanFinTO->dta_pagamento . "'";
 
-		$sql = "INSERT INTO tb_lancamento_financeiro (num_nota_fatura, num_lancamento_contabil, num_documento_banco, dsc_lancamento, vlr_previsto, vlr_realizado, dta_emissao, dta_competencia, dta_vencimento, dta_pagamento, cod_natureza_operacao, cod_conta_contabil, cod_tipo_lancamento, cod_origem_despesa, dsc_observacao, flg_lancamento_aberto, cod_empreendimento) 
-			VALUES ('". $lanFinTO->num_nota_fatura ."', '". $lanFinTO->num_lancamento_contabil ."', '". $lanFinTO->num_documento_banco ."', '". $lanFinTO->dsc_lancamento ."', ". $lanFinTO->vlr_previsto .", ". $lanFinTO->vlr_realizado .", ". $lanFinTO->dta_emissao .", ". $lanFinTO->dta_competencia .", ". $lanFinTO->dta_vencimento .", ". $lanFinTO->dta_pagamento .", ". $lanFinTO->cod_natureza_operacao .", ". $lanFinTO->cod_conta_contabil .", ". $lanFinTO->cod_tipo_lancamento .", ". $lanFinTO->cod_origem_despesa .", '". $lanFinTO->dsc_observacao ."', ". $lanFinTO->flg_lancamento_aberto .", ". $lanFinTO->cod_empreendimento .");";
+		if(!$lanFinTO->vlr_realizado)
+			$lanFinTO->vlr_realizado = 'NULL';
+		else
+			$lanFinTO->vlr_realizado = $lanFinTO->vlr_realizado;
 
-		//Flight::halt(500, $sql);die;
+		$sql = "INSERT INTO tb_lancamento_financeiro (num_nota_fatura, num_lancamento_contabil, num_documento_banco, dsc_lancamento, vlr_previsto, vlr_realizado, dta_emissao, dta_competencia, dta_vencimento, dta_pagamento, cod_natureza_operacao, cod_conta_contabil, cod_tipo_lancamento, cod_origem_despesa, dsc_observacao, flg_lancamento_aberto, flg_lancamento_recorrente, qtd_dias_recorrencia, qtd_parcelas, cod_lancamento_pai, cod_empreendimento) 
+			VALUES ('". $lanFinTO->num_nota_fatura ."', '". $lanFinTO->num_lancamento_contabil ."', '". $lanFinTO->num_documento_banco ."', '". $lanFinTO->dsc_lancamento ."', ". $lanFinTO->vlr_previsto .", ". $lanFinTO->vlr_realizado .", ". $lanFinTO->dta_emissao .", ". $lanFinTO->dta_competencia .", ". $lanFinTO->dta_vencimento .", ". $lanFinTO->dta_pagamento .", ". $lanFinTO->cod_natureza_operacao .", ". $lanFinTO->cod_conta_contabil .", ". $lanFinTO->cod_tipo_lancamento .", ". $lanFinTO->cod_origem_despesa .", '". $lanFinTO->dsc_observacao ."', ". $lanFinTO->flg_lancamento_aberto .", ". $lanFinTO->flg_lancamento_recorrente .", ". $lanFinTO->qtd_dias_recorrencia .", ". $lanFinTO->qtd_parcelas .", ". $lanFinTO->cod_lancamento_pai .", ". $lanFinTO->cod_empreendimento .");";
 
 		$insert = $this->conn->prepare($sql);
 
@@ -110,6 +125,18 @@ class LancamentoFinanceiroDao{
 		return $insert->execute();
 	}
 
+	public function confirmaPagamentoLancamentoFinanceiro(LancamentoFinanceiroTO $lanFinTO) {
+		$sql = "UPDATE tb_lancamento_financeiro
+				SET vlr_realizado = ". $lanFinTO->vlr_realizado .",
+					dta_pagamento = '". $lanFinTO->dta_pagamento ."',
+					dsc_observacao = '". $lanFinTO->dsc_observacao ."'
+				WHERE cod_lancamento_financeiro = ". $lanFinTO->cod_lancamento_financeiro;
+
+		$insert = $this->conn->prepare($sql);
+
+		return $insert->execute();
+	}
+
 	public function getLancamentosFinanceiros($busca=null){
 		$sql = "SELECT 
 					tlf.cod_lancamento_financeiro,
@@ -129,6 +156,10 @@ class LancamentoFinanceiroDao{
 					tlf.cod_origem_despesa,
 					tlf.dsc_observacao,
 					CAST(tlf.flg_lancamento_aberto AS UNSIGNED) AS flg_lancamento_aberto,
+					CAST(tlf.flg_lancamento_recorrente AS UNSIGNED) AS flg_lancamento_recorrente,
+					tlf.qtd_dias_recorrencia,
+					tlf.qtd_parcelas,
+					tlf.cod_lancamento_pai,
 					CAST(tlf.flg_excluido AS UNSIGNED) AS flg_excluido,
 					tlf.cod_usuario_ultima_atualizacao,
 					ccb.num_item AS num_conta_contabil, 
@@ -277,10 +308,18 @@ class LancamentoFinanceiroDao{
 			return false;
 	}
 
-	public function deleteLancamentoFinanceiro($cod_lancamento_financeiro, $cod_usuario) {
-		$sql = "UPDATE tb_lancamento_financeiro 
-				SET flg_excluido = 1, cod_usuario_ultima_atualizacao = ". $cod_usuario ."
-				WHERE cod_lancamento_financeiro = ". $cod_lancamento_financeiro;
+	public function deleteLancamentoFinanceiro($cod_lancamento_financeiro, $cod_lancamento_pai, $cod_usuario, $deleteNextRecords) {
+		if(!$cod_lancamento_pai)
+			$cod_lancamento_pai = 'NULL';
+
+		$sql =  "UPDATE tb_lancamento_financeiro ";
+		$sql .= "SET flg_excluido = 1, cod_usuario_ultima_atualizacao = ". $cod_usuario . " ";
+		$sql .= "WHERE cod_lancamento_financeiro = ". $cod_lancamento_financeiro;
+		
+		if($deleteNextRecords) {
+			$sql .= " OR (cod_lancamento_financeiro = ". $cod_lancamento_pai ." OR cod_lancamento_pai = ". $cod_lancamento_pai .") ";
+			$sql .= "AND cod_lancamento_financeiro > ". $cod_lancamento_financeiro;
+		}
 
 		$insert = $this->conn->prepare($sql);
 
