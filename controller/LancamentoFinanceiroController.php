@@ -8,8 +8,11 @@ class LancamentoFinanceiroController {
 		$lanFinTO->num_lancamento_contabil 		= (isset($_POST['num_lancamento_contabil'])) ? $_POST['num_lancamento_contabil'] : '';
 		$lanFinTO->num_documento_banco 			= (isset($_POST['num_documento_banco'])) ? $_POST['num_documento_banco'] : '';
 		$lanFinTO->dsc_lancamento 				= (isset($_POST['dsc_lancamento'])) ? $_POST['dsc_lancamento'] : '';
+		$lanFinTO->vlr_orcado 					= (isset($_POST['vlr_orcado'])) ? $_POST['vlr_orcado'] : '';
 		$lanFinTO->vlr_previsto 				= (isset($_POST['vlr_previsto'])) ? $_POST['vlr_previsto'] : '';
 		$lanFinTO->vlr_realizado 				= (isset($_POST['vlr_realizado'])) ? $_POST['vlr_realizado'] : '';
+		$lanFinTO->vlr_juros 					= (isset($_POST['vlr_juros'])) ? $_POST['vlr_juros'] : '';
+		$lanFinTO->vlr_desconto 				= (isset($_POST['vlr_desconto'])) ? $_POST['vlr_desconto'] : '';
 		$lanFinTO->dta_emissao 					= (isset($_POST['dta_emissao'])) ? $_POST['dta_emissao'] : '';
 		$lanFinTO->dta_competencia 				= (isset($_POST['dta_competencia'])) ? $_POST['dta_competencia'] : '';
 		$lanFinTO->dta_vencimento 				= (isset($_POST['dta_vencimento'])) ? $_POST['dta_vencimento'] : '';
@@ -22,18 +25,21 @@ class LancamentoFinanceiroController {
 		$lanFinTO->flg_lancamento_aberto 		= (isset($_POST['flg_lancamento_aberto'])) ? $_POST['flg_lancamento_aberto'] : "";
 		
 		$lanFinTO->flg_lancamento_recorrente 	= (isset($_POST['flg_lancamento_recorrente'])) ? $_POST['flg_lancamento_recorrente'] : "";
+		
+		$lanFinTO->cod_tipo_recorrencia 		= (isset($_POST['cod_tipo_recorrencia'])) ? $_POST['cod_tipo_recorrencia'] : "";
+		
 		$lanFinTO->qtd_dias_recorrencia 		= (isset($_POST['qtd_dias_recorrencia'])) ? $_POST['qtd_dias_recorrencia'] : "";
 		$lanFinTO->qtd_parcelas 				= (isset($_POST['qtd_parcelas'])) ? $_POST['qtd_parcelas'] : "";
 		$lanFinTO->cod_lancamento_pai 			= (isset($_POST['cod_lancamento_pai'])) ? $_POST['cod_lancamento_pai'] : "";
 
 		$lanFinTO->cod_empreendimento 			= (isset($_POST['cod_empreendimento'])) ? (int)$_POST['cod_empreendimento'] : 0;
 
-		if($lanFinTO->flg_lancamento_aberto === "true")
+		if($lanFinTO->flg_lancamento_aberto === "true" || $lanFinTO->flg_lancamento_aberto === "1")
 			$lanFinTO->flg_lancamento_aberto = 1;
 		else
 			$lanFinTO->flg_lancamento_aberto = 0;
 
-		if($lanFinTO->flg_lancamento_recorrente === "true")
+		if($lanFinTO->flg_lancamento_recorrente === "true" || $lanFinTO->flg_lancamento_recorrente === "1")
 			$lanFinTO->flg_lancamento_recorrente = 1;
 		else
 			$lanFinTO->flg_lancamento_recorrente = 0;
@@ -200,9 +206,19 @@ class LancamentoFinanceiroController {
 					}
 				}
 
-				if($statusCode == 201 && $_POST['flg_lancamento_recorrente'] === "true") { // Se o lançamento for parcelado...
-					if($cod_lancamento_pai == null) {
+				if($_POST['flg_lancamento_recorrente'] === "true" || $_POST['flg_lancamento_recorrente'] === "1") { // Se o lançamento for parcelado...
+					if($cod_lancamento_pai == null && !$lanFinTO->cod_lancamento_pai)
 						$cod_lancamento_pai = $lanFinTO->cod_lancamento_financeiro;
+					else if($lanFinTO->cod_lancamento_pai && $statusCode == 200) {
+						Flight::halt(500, "entrou aqui indevidamente!"); die;
+						$cod_lancamento_pai = $lanFinTO->cod_lancamento_pai;
+						$filtro = array('cod_lancamento_financeiro' => array('exp' => "=". $lanFinTO->cod_lancamento_financeiro ." OR cod_lancamento_pai=". $lanFinTO->cod_lancamento_pai ." OR cod_lancamento_financeiro=". $lanFinTO->cod_lancamento_pai));
+						$itensAssociados = $lanFinDao->getLancamentosFinanceiros($filtro)['rows'];
+						
+						if((int)$lanFinTO->qtd_parcelas > count($itensAssociados)) {
+							$lanFinTO->dta_vencimento = $itensAssociados[count($itensAssociados)-1]['dta_vencimento'];
+							// $num_parcela_processar = 
+						}
 					}
 
 					$lanFinTO->cod_lancamento_financeiro = null;

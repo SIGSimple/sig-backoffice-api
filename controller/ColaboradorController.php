@@ -61,7 +61,7 @@ class ColaboradorController {
 		$colTO->flg_ensino_superior 				= (isset($_POST['flg_ensino_superior'])) ? $_POST['flg_ensino_superior'] : "";
 		
 		// ANEXOS
-		$colTO->files = array();
+		/*$colTO->files = array();
 		$colTO->files['file_foto'] 					= (isset($_POST['files']['file_foto'])) 				? $_POST['files']['file_foto'] : null;
 		$colTO->files['file_rg'] 					= (isset($_POST['files']['file_rg'])) 					? $_POST['files']['file_rg'] : null;
 		$colTO->files['file_cpf'] 					= (isset($_POST['files']['file_cpf'])) 					? $_POST['files']['file_cpf'] : null;
@@ -76,7 +76,7 @@ class ColaboradorController {
 		$colTO->files['file_historico_escolar']		= (isset($_POST['files']['file_historico_escolar'])) 	? $_POST['files']['file_historico_escolar'] : null;
 		$colTO->files['file_titulo_eleitor'] 		= (isset($_POST['files']['file_titulo_eleitor'])) 		? $_POST['files']['file_titulo_eleitor'] : null;
 		$colTO->files['file_cnh'] 					= (isset($_POST['files']['file_cnh'])) 					? $_POST['files']['file_cnh'] : null;
-		$colTO->files['file_reservista'] 			= (isset($_POST['files']['file_reservista'])) 			? $_POST['files']['file_reservista'] : null;
+		$colTO->files['file_reservista'] 			= (isset($_POST['files']['file_reservista'])) 			? $_POST['files']['file_reservista'] : null;*/
 
 		// Arrays auxiliares de telefones e funções
 		$telefones 		= (isset($_POST['telefones'])) ? $_POST['telefones'] : array();
@@ -248,9 +248,9 @@ class ColaboradorController {
 				  ->is_required();
 
 		// ANEXOS - INICIO
-		$validator->set_msg('A Foto é obrigatória')
+		/*$validator->set_msg('A Foto é obrigatória')
 				  ->set('file_foto', $colTO->files['file_foto'])
-				  ->is_required();
+				  ->is_required();*/
 		/*$validator->set_msg('O RG é obrigatório')
 				  ->set('file_rg', $colTO->files['file_rg'])
 				  ->is_required();

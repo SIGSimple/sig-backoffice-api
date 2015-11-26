@@ -288,16 +288,7 @@ class ColaboradorDao{
 					num_conta_corrente 						= '". $colTO->num_conta_corrente ."',
 					num_digito_conta_corrente				= '". $colTO->num_digito_conta_corrente ."',
 					cod_sindicato							= ". $colTO->cod_sindicato .",
-					pth_arquivo_cnh							= '". $colTO->pth_arquivo_cnh ."',
-					pth_arquivo_rg							= '". $colTO->pth_arquivo_rg ."',
-					pth_arquivo_foto						= '". $colTO->pth_arquivo_foto ."',
-					pth_arquivo_cpf							= '". $colTO->pth_arquivo_cpf ."',
-					pth_arquivo_entidade					= '". $colTO->pth_arquivo_entidade ."',
-					pth_arquivo_curriculo					= '". $colTO->pth_arquivo_curriculo ."',
-					pth_arquivo_reservista					= '". $colTO->pth_arquivo_reservista ."',
-					pth_arquivo_titulo_eleitor				= '". $colTO->pth_arquivo_titulo_eleitor ."',
-					pth_arquivo_ctps						= '". $colTO->pth_arquivo_ctps ."',
-					pth_arquivo_pis							= '". $colTO->pth_arquivo_pis ."',
+					
 					cod_entidade 							= ". $colTO->cod_entidade .",
 					num_entidade							= '". $colTO->num_entidade ."',
 					qtd_horas_contratadas					= '". $colTO->qtd_horas_contratadas ."',
@@ -310,7 +301,18 @@ class ColaboradorDao{
 					cod_contrato 							= '". $colTO->cod_contrato ."',
 					cod_estado_civil 						= '". $colTO->cod_estado_civil ."'
 				WHERE cod_colaborador = ". $colTO->cod_colaborador .";";
-
+				/*
+					pth_arquivo_cnh							= '". $colTO->pth_arquivo_cnh ."',
+					pth_arquivo_rg							= '". $colTO->pth_arquivo_rg ."',
+					pth_arquivo_foto						= '". $colTO->pth_arquivo_foto ."',
+					pth_arquivo_cpf							= '". $colTO->pth_arquivo_cpf ."',
+					pth_arquivo_entidade					= '". $colTO->pth_arquivo_entidade ."',
+					pth_arquivo_curriculo					= '". $colTO->pth_arquivo_curriculo ."',
+					pth_arquivo_reservista					= '". $colTO->pth_arquivo_reservista ."',
+					pth_arquivo_titulo_eleitor				= '". $colTO->pth_arquivo_titulo_eleitor ."',
+					pth_arquivo_ctps						= '". $colTO->pth_arquivo_ctps ."',
+					pth_arquivo_pis							= '". $colTO->pth_arquivo_pis ."',
+				*/
 		$update = $this->conn->prepare($sql);
 		
 		return $update->execute();
