@@ -220,6 +220,19 @@ class LancamentoFinanceiroDao{
 		return $insert->execute();
 	}
 
+	public function atualizaQtdParcelasLancamentoFinanceiro($qtd_parcelas, $vlr_orcado, $vlr_previsto, $vlr_realizado, $cod_lancamento_financeiro) {
+		$sql = "UPDATE tb_lancamento_financeiro
+				SET qtd_parcelas = ". $qtd_parcelas .",
+					vlr_orcado = ". $vlr_orcado .",
+					vlr_previsto = ". $vlr_previsto .",
+					vlr_realizado = ". $vlr_realizado ."
+				WHERE cod_lancamento_financeiro = ". $cod_lancamento_financeiro;
+
+		$insert = $this->conn->prepare($sql);
+
+		return $insert->execute();
+	}
+
 	public function confirmaPagamentoLancamentoFinanceiro(LancamentoFinanceiroTO $lanFinTO) {
 		$sql = "UPDATE tb_lancamento_financeiro
 				SET vlr_realizado = ". $lanFinTO->vlr_realizado .",
@@ -318,6 +331,8 @@ class LancamentoFinanceiroDao{
 		}
 
 		$sql .= " ORDER BY dta_vencimento ASC, dta_pagamento ASC, num_lancamento_contabil ASC";
+
+		//echo $sql;die;
 
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){

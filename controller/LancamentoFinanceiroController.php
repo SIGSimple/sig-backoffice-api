@@ -63,6 +63,20 @@ class LancamentoFinanceiroController {
 				  ->set('cod_natureza_operacao', $lanFinTO->cod_natureza_operacao)
 				  ->is_required();
 
+		$validator->set_msg('O valor Orçado é obrigatório')
+				  ->set('vlr_orcado', $lanFinTO->vlr_orcado)
+				  ->is_required();
+
+		if($lanFinTO->flg_lancamento_recorrente == 1) {
+			$validator->set_msg('O tipo de recorrência é obrigatório')
+					  ->set('cod_tipo_recorrencia', $lanFinTO->cod_tipo_recorrencia)
+					  ->is_required();
+
+			$validator->set_msg('A quantidade de parcelas é obrigatória')
+					  ->set('qtd_parcelas', $lanFinTO->qtd_parcelas)
+					  ->is_required();
+		}
+
 		if(!$validator->validate()){ // Se retornar false, significa que algum campo obrigatório não foi preenchido
 			// Envia os campos não preenchidos com a respectiva mensagem de erro para o front-end
 			Flight::response()->status(406)
@@ -79,14 +93,14 @@ class LancamentoFinanceiroController {
 		if((!$lanFinTO->flg_lancamento_recorrente) || (($lanFinTO->flg_lancamento_recorrente) && ($num_parcela_processar < (int)$lanFinTO->qtd_parcelas))) {
 			$lanFinDao = new LancamentoFinanceiroDao();
 
-			if(!$lanFinTO->cod_lancamento_financeiro && $lanFinTO->flg_lancamento_recorrente) { // É novo lançamento recorrente?
+			/*if(!$lanFinTO->cod_lancamento_financeiro && $lanFinTO->flg_lancamento_recorrente) { // É novo lançamento recorrente?
 				if($num_parcela_processar == 0) { // É a primeira parcela?
 					$lanFinTO->dsc_lancamento = $lanFinTO->dsc_lancamento ." (1/". $lanFinTO->qtd_parcelas .")";
 				}
 				else if($num_parcela_processar > 0) {
 					$lanFinTO->dsc_lancamento = substr($lanFinTO->dsc_lancamento, 0, strlen($lanFinTO->dsc_lancamento)-6)	." (". ($num_parcela_processar+1) ."/". $lanFinTO->qtd_parcelas .")";
 				}
-			}
+			}*/
 
 			if(!$lanFinTO->cod_lancamento_financeiro) {
 				$statusCode = 201;
@@ -207,33 +221,71 @@ class LancamentoFinanceiroController {
 				}
 
 				if($_POST['flg_lancamento_recorrente'] === "true" || $_POST['flg_lancamento_recorrente'] === "1") { // Se o lançamento for parcelado...
-					if($cod_lancamento_pai == null && !$lanFinTO->cod_lancamento_pai)
+					$addMoreItems = true;
+
+					if($statusCode == 201 && $cod_lancamento_pai == null && ($lanFinTO->cod_lancamento_pai == "" || $lanFinTO->cod_lancamento_pai == null || $lanFinTO->cod_lancamento_pai == "NULL")) // é um novo registro
 						$cod_lancamento_pai = $lanFinTO->cod_lancamento_financeiro;
-					else if($lanFinTO->cod_lancamento_pai && $statusCode == 200) {
-						Flight::halt(500, "entrou aqui indevidamente!"); die;
+					else if($statusCode == 200) { // esta atualizando
 						$cod_lancamento_pai = $lanFinTO->cod_lancamento_pai;
-						$filtro = array('cod_lancamento_financeiro' => array('exp' => "=". $lanFinTO->cod_lancamento_financeiro ." OR cod_lancamento_pai=". $lanFinTO->cod_lancamento_pai ." OR cod_lancamento_financeiro=". $lanFinTO->cod_lancamento_pai));
+						if(!$cod_lancamento_pai)
+							$cod_lancamento_pai = $lanFinTO->cod_lancamento_financeiro;
+
+						$filtro = array('nolimit'=>'1', 'cod_lancamento_financeiro' => array('exp' => "=". $lanFinTO->cod_lancamento_financeiro ." OR cod_lancamento_pai=". $cod_lancamento_pai ." OR cod_lancamento_financeiro=". $cod_lancamento_pai));
 						$itensAssociados = $lanFinDao->getLancamentosFinanceiros($filtro)['rows'];
-						
-						if((int)$lanFinTO->qtd_parcelas > count($itensAssociados)) {
-							$lanFinTO->dta_vencimento = $itensAssociados[count($itensAssociados)-1]['dta_vencimento'];
-							// $num_parcela_processar = 
+
+						if((int)$lanFinTO->qtd_parcelas > count($itensAssociados)) { // se aumentou a quantidade de parcelas...
+							foreach ($itensAssociados as $index => $value) {
+								$lanFinDao->atualizaQtdParcelasLancamentoFinanceiro(
+										$lanFinTO->qtd_parcelas, 
+										$lanFinTO->vlr_orcado, 
+										$lanFinTO->vlr_previsto, 
+										$lanFinTO->vlr_realizado, 
+										$value['cod_lancamento_financeiro']);
+							}
+
+							$lanFinTO->dta_vencimento = $itensAssociados[count($itensAssociados)-1]['dta_vencimento']; // pego a data de vencimento do último lançamento
+							$num_parcela_processar = count($itensAssociados)-1;
+						}
+						else if((int)$lanFinTO->qtd_parcelas < count($itensAssociados)) { // se diminuiu a quantidade de parcelas
+							$addMoreItems = false;
+							
+							foreach ($itensAssociados as $index => $value) {
+								$lanFinDao->atualizaQtdParcelasLancamentoFinanceiro(
+										$lanFinTO->qtd_parcelas, 
+										$lanFinTO->vlr_orcado, 
+										$lanFinTO->vlr_previsto, 
+										$lanFinTO->vlr_realizado, 
+										$value['cod_lancamento_financeiro']);
+							}
+
+							$countItemsToDelete = count($itensAssociados) - (int)$lanFinTO->qtd_parcelas;
+							$countDelete = 0;
+							for ($i=count($itensAssociados); $i > 0; $i--) { 
+								if($countDelete < $countItemsToDelete) {
+									$lanFinDao->deleteLancamentoFinanceiro($itensAssociados[$i-1]['cod_lancamento_financeiro'], null, 'NULL', false);
+									$countDelete++;
+								}
+								else
+									break;
+							}
 						}
 					}
 
-					$lanFinTO->cod_lancamento_financeiro = null;
-					$lanFinTO->cod_lancamento_pai = $cod_lancamento_pai;
-					$date = new DateTime(str_replace("'", "", $lanFinTO->dta_vencimento));
-					$date->add(new DateInterval('P'. $lanFinTO->qtd_dias_recorrencia .'D'));
-					$lanFinTO->dta_competencia 	= str_replace("'", "", $lanFinTO->dta_competencia);
-					$lanFinTO->dta_emissao 		= str_replace("'", "", $lanFinTO->dta_emissao);
-					$lanFinTO->dta_vencimento 	= $date->format('Y-m-d');
-					$lanFinTO->dta_pagamento 	= "";
-					$lanFinTO->vlr_realizado 	= null;
+					if($addMoreItems) {
+						$lanFinTO->cod_lancamento_financeiro = null;
+						$lanFinTO->cod_lancamento_pai = $cod_lancamento_pai;
+						$date = new DateTime(str_replace("'", "", $lanFinTO->dta_vencimento));
+						$date->add(new DateInterval('P'. $lanFinTO->qtd_dias_recorrencia .'D'));
+						$lanFinTO->dta_competencia 	= str_replace("'", "", $lanFinTO->dta_competencia);
+						$lanFinTO->dta_emissao 		= str_replace("'", "", $lanFinTO->dta_emissao);
+						$lanFinTO->dta_vencimento 	= $date->format('Y-m-d');
+						$lanFinTO->dta_pagamento 	= "";
+						$lanFinTO->vlr_realizado 	= null;
 
-					$num_parcela_processar++;
+						$num_parcela_processar++;
 
-					LancamentoFinanceiroController::processSaveLancamentoFinanceiro($lanFinTO, $cod_lancamento_pai, $num_parcela_processar, $statusCode, $successMessage);
+						LancamentoFinanceiroController::processSaveLancamentoFinanceiro($lanFinTO, $cod_lancamento_pai, $num_parcela_processar, $statusCode, $successMessage);
+					}
 				}
 			}
 		}

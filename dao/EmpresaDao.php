@@ -21,6 +21,13 @@ class EmpresaDao{
 					cod_cidade,
 					cod_estado,
 					CAST(flg_ativo AS UNSIGNED) AS flg_ativo,
+					CAST(flg_apurar_impostos AS UNSIGNED) AS flg_apurar_impostos,
+					num_aliquota_iss,
+					num_aliquota_irrf,
+					num_aliquota_csll,
+					num_aliquota_inss,
+					num_aliquota_pis,
+					num_aliquota_cofins,
 					cod_empreendimento
 				FROM tb_empresa";
 		
