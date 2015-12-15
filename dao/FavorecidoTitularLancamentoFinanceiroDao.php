@@ -42,7 +42,7 @@ class FavorecidoTitularLancamentoFinanceiroDao{
 				    tcol.nme_colaborador 	as nme_colaborador_titular,
 				    tter.nme_terceiro		as nme_terceiro_titular
 				FROM tb_favorecido_titular_lancamento_financeiro 	AS ftlf
-				INNER JOIN tb_origem 								AS torg ON torg.cod_origem 		= ftlf.cod_origem_correspondente
+				LEFT JOIN tb_origem 								AS torg ON torg.cod_origem 		= ftlf.cod_origem_correspondente
 				LEFT JOIN tb_empresa 								AS femp ON femp.cod_empresa 	= ftlf.cod_favorecido_fornecedor
 				LEFT JOIN tb_colaborador							AS fcol ON fcol.cod_colaborador = ftlf.cod_favorecido_colaborador
 				LEFT JOIN tb_terceiro 								AS fter ON fter.cod_terceiro 	= ftlf.cod_favorecido_terceiro
@@ -85,6 +85,8 @@ class FavorecidoTitularLancamentoFinanceiroDao{
 			$favTitLanFinTO->cod_titular_terceiro = 'NULL';
 		if(!$favTitLanFinTO->cod_origem_correspondente)
 			$favTitLanFinTO->cod_origem_correspondente = 'NULL';
+		if(!$favTitLanFinTO->vlr_correspondente)
+			$favTitLanFinTO->vlr_correspondente = 'NULL';
 
 		$sql = "UPDATE tb_favorecido_titular_lancamento_financeiro
 				SET cod_lancamento_financeiro = ". $favTitLanFinTO->cod_lancamento_financeiro .",

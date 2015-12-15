@@ -59,9 +59,9 @@ class LancamentoFinanceiroController {
 				  ->set('dta_vencimento', $lanFinTO->dta_vencimento)
 				  ->is_required();
 
-		$validator->set_msg('A natureza da operação é obrigatória')
+		/*$validator->set_msg('A natureza da operação é obrigatória')
 				  ->set('cod_natureza_operacao', $lanFinTO->cod_natureza_operacao)
-				  ->is_required();
+				  ->is_required();*/
 
 		$validator->set_msg('O valor Orçado é obrigatório')
 				  ->set('vlr_orcado', $lanFinTO->vlr_orcado)
@@ -75,6 +75,38 @@ class LancamentoFinanceiroController {
 			$validator->set_msg('A quantidade de parcelas é obrigatória')
 					  ->set('qtd_parcelas', $lanFinTO->qtd_parcelas)
 					  ->is_required();
+		}
+
+		$cod_favorecido = "";
+
+		if(isset($_POST['favorecido'])) {
+			switch ($_POST['favorecido']['type']) {
+				case 'empresas':
+					$cod_favorecido  	= $_POST['favorecido']['data']['cod_empresa'];
+					break;
+				case 'colaboradores':
+					$cod_favorecido 	= $_POST['favorecido']['data']['cod_colaborador'];
+					break;
+				case 'terceiros':
+					$cod_favorecido  	= $_POST['favorecido']['data']['cod_terceiro'];
+					break;
+			}
+
+			$filtro = array(
+				'nolimit'=>'1', 
+				'tlf->num_nota_fatura' => $lanFinTO->num_nota_fatura,
+				'(ftlf->cod_favorecido_fornecedor' => array(
+					'exp' => "=". $cod_favorecido ." OR ftlf.cod_favorecido_colaborador=". $cod_favorecido ." OR ftlf.cod_favorecido_terceiro=". $cod_favorecido . ")"
+				)
+			);
+			$lanFinDao = new LancamentoFinanceiroDao();
+			$notasExistentes = $lanFinDao->getLancamentosFinanceiros($filtro)['rows'];
+
+			if(count($notasExistentes) > 0) {
+				$validator->set_msg('Já existe uma lançamento com o mesmo número de NF informado para este favorecido')
+						  ->set('num_nota_fatura', $lanFinTO->num_nota_fatura)
+						  ->set_custom_error();
+			}
 		}
 
 		if(!$validator->validate()){ // Se retornar false, significa que algum campo obrigatório não foi preenchido
@@ -124,7 +156,7 @@ class LancamentoFinanceiroController {
 
 					foreach ($favorecidos as $key => $favorecidoItem) {
 						$favTitLanFinTO = new FavorecidoTitularLancamentoFinanceiroTO();
-						$favTitLanFinTO->cod_favorecido_lancamento_financeiro 	= $favorecidoItem['cod_favorecido_lancamento_financeiro'];
+						$favTitLanFinTO->cod_favorecido_lancamento_financeiro 	= (isset($favorecidoItem['cod_favorecido_lancamento_financeiro'])) ? $favorecidoItem['cod_favorecido_lancamento_financeiro'] : null;
 						$favTitLanFinTO->cod_lancamento_financeiro 				= $lanFinTO->cod_lancamento_financeiro;
 						$favTitLanFinTO->vlr_correspondente 					= $favorecidoItem['vlr_correspondente'];
 						$favTitLanFinTO->dsc_observacao_adicional 				= (isset($favorecidoItem['dsc_observacao_adicional'])) ? $favorecidoItem['dsc_observacao_adicional'] : "";
@@ -226,7 +258,9 @@ class LancamentoFinanceiroController {
 					if($statusCode == 201 && $cod_lancamento_pai == null && ($lanFinTO->cod_lancamento_pai == "" || $lanFinTO->cod_lancamento_pai == null || $lanFinTO->cod_lancamento_pai == "NULL")) // é um novo registro
 						$cod_lancamento_pai = $lanFinTO->cod_lancamento_financeiro;
 					else if($statusCode == 200) { // esta atualizando
-						$cod_lancamento_pai = $lanFinTO->cod_lancamento_pai;
+						$addMoreItems = false;
+						
+						/*$cod_lancamento_pai = $lanFinTO->cod_lancamento_pai;
 						if(!$cod_lancamento_pai)
 							$cod_lancamento_pai = $lanFinTO->cod_lancamento_financeiro;
 
@@ -268,7 +302,7 @@ class LancamentoFinanceiroController {
 								else
 									break;
 							}
-						}
+						}*/
 					}
 
 					if($addMoreItems) {
@@ -276,11 +310,17 @@ class LancamentoFinanceiroController {
 						$lanFinTO->cod_lancamento_pai = $cod_lancamento_pai;
 						$date = new DateTime(str_replace("'", "", $lanFinTO->dta_vencimento));
 						$date->add(new DateInterval('P'. $lanFinTO->qtd_dias_recorrencia .'D'));
-						$lanFinTO->dta_competencia 	= str_replace("'", "", $lanFinTO->dta_competencia);
-						$lanFinTO->dta_emissao 		= str_replace("'", "", $lanFinTO->dta_emissao);
-						$lanFinTO->dta_vencimento 	= $date->format('Y-m-d');
-						$lanFinTO->dta_pagamento 	= "";
-						$lanFinTO->vlr_realizado 	= null;
+						$lanFinTO->dta_vencimento 			= $date->format('Y-m-d');
+						$lanFinTO->dta_competencia 			= "";
+						$lanFinTO->dta_emissao 				= "";
+						$lanFinTO->dta_pagamento 			= "";
+						$lanFinTO->num_nota_fatura  		= "";
+						$lanFinTO->num_documento_banco  	= "";
+						$lanFinTO->num_lancamento_contabil  = "";
+						$lanFinTO->vlr_realizado 			= null;
+						$lanFinTO->vlr_previsto 			= null;
+						$lanFinTO->vlr_juros 				= null;
+						$lanFinTO->vlr_desconto 			= null;
 
 						$num_parcela_processar++;
 

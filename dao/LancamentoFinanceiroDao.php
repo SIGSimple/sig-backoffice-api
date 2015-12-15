@@ -278,11 +278,35 @@ class LancamentoFinanceiroDao{
 					ccb.dsc_item AS dsc_conta_contabil, 
 					nop.num_item AS num_natureza_operacao, 
 					nop.dsc_item AS dsc_natureza_operacao,
-					tor.dsc_origem
-				FROM tb_lancamento_financeiro 	AS tlf
-				LEFT JOIN tb_plano_conta 		AS ccb ON ccb.cod_item = tlf.cod_conta_contabil
-				LEFT JOIN tb_plano_conta 		AS nop ON nop.cod_item = tlf.cod_natureza_operacao
-				LEFT JOIN tb_origem				AS tor ON tor.cod_origem = tlf.cod_origem_despesa";
+					CASE WHEN ftlf.cod_favorecido_fornecedor IS NOT NULL THEN
+						emp.nme_fantasia
+					ELSE
+						CASE WHEN ftlf.cod_favorecido_colaborador IS NOT NULL THEN
+							col.nme_colaborador
+				        ELSE
+							CASE WHEN ftlf.cod_favorecido_terceiro IS NOT NULL THEN
+								ter.nme_terceiro
+				            END
+				        END
+				    END AS nme_favorecido,
+				    CASE WHEN ftlf.cod_favorecido_fornecedor IS NOT NULL THEN
+						1
+					ELSE
+						CASE WHEN ftlf.cod_favorecido_colaborador IS NOT NULL THEN
+							2
+				        ELSE
+							CASE WHEN ftlf.cod_favorecido_terceiro IS NOT NULL THEN
+								3
+				            END
+				        END
+				    END AS flg_tipo_favorecido
+				FROM tb_lancamento_financeiro 							AS tlf
+				LEFT JOIN tb_favorecido_titular_lancamento_financeiro 	AS ftlf ON ftlf.cod_lancamento_financeiro = tlf.cod_lancamento_financeiro
+				LEFT JOIN tb_empresa									AS emp ON emp.cod_empresa = ftlf.cod_favorecido_fornecedor
+				LEFT JOIN tb_colaborador								AS col ON col.cod_colaborador = ftlf.cod_favorecido_colaborador
+				LEFT JOIN tb_terceiro									AS ter ON ter.cod_terceiro = ftlf.cod_favorecido_terceiro
+				LEFT JOIN tb_plano_conta 								AS ccb ON ccb.cod_item = tlf.cod_conta_contabil
+				LEFT JOIN tb_plano_conta 								AS nop ON nop.cod_item = tlf.cod_natureza_operacao";
 		
 		$nolimit = false;
 		$limit = 5;
@@ -330,9 +354,10 @@ class LancamentoFinanceiroDao{
 			}
 		}
 
+		$sql .= " GROUP BY tlf.cod_lancamento_financeiro";
 		$sql .= " ORDER BY dta_vencimento ASC, dta_pagamento ASC, num_lancamento_contabil ASC";
 
-		//echo $sql;die;
+		//Flight::halt(500,$sql);die;
 
 		$select = $this->conn->prepare($sql);
 		if($select->execute()){

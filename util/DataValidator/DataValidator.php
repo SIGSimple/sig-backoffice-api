@@ -81,7 +81,8 @@ class DataValidator {
             'is_alpha_num'   => 'O campo %s só aceita caracteres alfanuméricos',
             'no_whitespaces' => 'O campo %s não aceita espaços em branco',
             'is_cep'         => 'O campo %s não é um cpf válido',
-            'is_ip'          => 'O campo %s não é um ip válido'
+            'is_ip'          => 'O campo %s não é um ip válido',
+            'set_custom_error'=> 'Define um erro customizado'
         );
     }
     
@@ -774,6 +775,16 @@ class DataValidator {
         }
         return $this;
     }
+
+    /**
+     * Verify if the current data is not null
+     * @access public
+     * @return Data_Validator The self instance
+     */
+    public function set_custom_error(){
+        $this->set_error(sprintf($this->_messages['set_custom_error'], $this->_data['name']));
+        return $this;
+    } 
     
     
     /**
