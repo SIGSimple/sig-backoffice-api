@@ -79,7 +79,7 @@ class LancamentoFinanceiroController {
 
 		$cod_favorecido = "";
 
-		if(isset($_POST['favorecido'])) {
+		if($lanFinTO->num_nota_fatura != "" && isset($_POST['favorecido'])) {
 			switch ($_POST['favorecido']['type']) {
 				case 'empresas':
 					$cod_favorecido  	= $_POST['favorecido']['data']['cod_empresa'];
