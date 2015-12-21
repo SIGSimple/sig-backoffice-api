@@ -383,7 +383,19 @@ class LancamentoFinanceiroDao{
 		}
 		else
 			return false;
+	}
 
+	public function getConsolidadoNaturezaOperacao($dta_inicio, $dta_final) {
+		$sql = "CALL sp_consolidado_despesa_nat_op('$dta_inicio', '$dta_final');";
+		$select = $this->conn->prepare($sql);
+		if($select->execute()){
+			if($select->rowCount()>0)
+				return $select->fetchALL(PDO::FETCH_ASSOC);
+			else
+				return false;
+		}
+		else
+			return false;
 	}
 
 	public function getSaldoAnterior($dta_referencia) {

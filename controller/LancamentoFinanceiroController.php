@@ -79,7 +79,7 @@ class LancamentoFinanceiroController {
 
 		$cod_favorecido = "";
 
-		if($lanFinTO->num_nota_fatura != "" && isset($_POST['favorecido'])) {
+		if((!isset($lanFinTO->cod_lancamento_financeiro) || $lanFinTO->cod_lancamento_financeiro == "") && $lanFinTO->num_nota_fatura != "" && isset($_POST['favorecido'])) {
 			switch ($_POST['favorecido']['type']) {
 				case 'empresas':
 					$cod_favorecido  	= $_POST['favorecido']['data']['cod_empresa'];
@@ -370,6 +370,15 @@ class LancamentoFinanceiroController {
 	public static function getLancamentosFinanceiros() {
 		$dao = new LancamentoFinanceiroDao();
 		$items = $dao->getLancamentosFinanceiros($_GET);
+		if($items)
+			Flight::json($items);
+		else
+			Flight::halt(404, 'Nenhum lançamento encontrado.');
+	}
+
+	public static function getConsolidadoNaturezaOperacao($dta_inicio, $dta_final){
+		$dao = new LancamentoFinanceiroDao();
+		$items = $dao->getConsolidadoNaturezaOperacao($dta_inicio, $dta_final);
 		if($items)
 			Flight::json($items);
 		else
