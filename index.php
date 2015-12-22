@@ -53,6 +53,7 @@ Flight::route('GET /lancamento-financeiro/favorecidos-titulares(.json)', 	array(
 Flight::route('GET /lancamentos-financeiros(.json)', 						array('LancamentoFinanceiroController', 'getLancamentosFinanceiros'));
 Flight::route('GET /lancamentos-financeiros/saldo-anterior/@dta_referencia', array('LancamentoFinanceiroController', 'getSaldoAnterior'));
 Flight::route('GET /lancamentos-financeiros/consolidado/natureza-operacao/@dta_inicio/@dta_final', array('LancamentoFinanceiroController', 'getConsolidadoNaturezaOperacao'));
+Flight::route('GET /lancamentos-financeiros/distribuicao/despesas/consorcio/@dta_inicio/@dta_final', array('LancamentoFinanceiroController', 'getDistribuicaoDespesasConsorcio'));
 								
 Flight::route('GET /empreendimentos(.json)', 								array('EmpreendimentoController', 'getEmpreendimentos'));
 Flight::route('GET /empresas(.json)', 										array('EmpresaController', 'getEmpresas'));

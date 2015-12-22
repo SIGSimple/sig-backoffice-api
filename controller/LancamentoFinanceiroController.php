@@ -384,6 +384,15 @@ class LancamentoFinanceiroController {
 		else
 			Flight::halt(404, 'Nenhum lançamento encontrado.');
 	}
+	
+	public static function getDistribuicaoDespesasConsorcio($dta_inicio, $dta_final){
+		$dao = new LancamentoFinanceiroDao();
+		$items = $dao->getDistribuicaoDespesasConsorcio($dta_inicio, $dta_final);
+		if($items)
+			Flight::json($items);
+		else
+			Flight::halt(404, 'Nenhum lançamento encontrado.');
+	}
 
 	public static function getSaldoAnterior($dta_referencia) {
 		$dao = new LancamentoFinanceiroDao();

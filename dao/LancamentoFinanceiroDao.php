@@ -411,6 +411,19 @@ class LancamentoFinanceiroDao{
 			return false;
 	}
 
+	public function getDistribuicaoDespesasConsorcio($dta_inicio, $dta_final) {
+		$sql = "CALL sp_calcula_distribuicao_origem_despesa_consorcio('$dta_inicio', '$dta_final');";
+		$select = $this->conn->prepare($sql);
+		if($select->execute()){
+			if($select->rowCount()>0)
+				return $select->fetchALL(PDO::FETCH_ASSOC);
+			else
+				return false;
+		}
+		else
+			return false;
+	}
+
 	public function getSaldoAnterior($dta_referencia) {
 		$sql = "SELECT 
 					ROUND(SUM(vlr_credito),2) AS vlr_credito,
