@@ -308,9 +308,16 @@ class LancamentoFinanceiroController {
 					if($addMoreItems) {
 						$lanFinTO->cod_lancamento_financeiro = null;
 						$lanFinTO->cod_lancamento_pai = $cod_lancamento_pai;
-						$date = new DateTime(str_replace("'", "", $lanFinTO->dta_vencimento));
-						$date->add(new DateInterval('P'. $lanFinTO->qtd_dias_recorrencia .'D'));
-						$lanFinTO->dta_vencimento 			= $date->format('Y-m-d');
+						
+						if((int)$lanFinTO->qtd_dias_recorrencia != 30) {
+							$date = new DateTime(str_replace("'", "", $lanFinTO->dta_vencimento));
+							$date->add(new DateInterval('P'. $lanFinTO->qtd_dias_recorrencia .'D'));
+							$lanFinTO->dta_vencimento = $date->format('Y-m-d');
+						}
+						else {
+							$lanFinTO->dta_vencimento = geraDataProximoMes(str_replace("'", "", $lanFinTO->dta_vencimento));
+						}
+
 						$lanFinTO->dta_competencia 			= "";
 						$lanFinTO->dta_emissao 				= "";
 						$lanFinTO->dta_pagamento 			= "";
@@ -377,7 +384,7 @@ class LancamentoFinanceiroController {
 	}
 
 	public static function getConsolidadoNaturezaOperacao($dta_inicio, $dta_final){
-		$dao = new LancamentoFinanceiroDao();
+		$dao = new RelatorioDao();
 		$items = $dao->getConsolidadoNaturezaOperacao($dta_inicio, $dta_final);
 		if($items)
 			Flight::json($items);
@@ -386,7 +393,7 @@ class LancamentoFinanceiroController {
 	}
 	
 	public static function getDistribuicaoDespesasConsorcio($dta_inicio, $dta_final){
-		$dao = new LancamentoFinanceiroDao();
+		$dao = new RelatorioDao();
 		$items = $dao->getDistribuicaoDespesasConsorcio($dta_inicio, $dta_final);
 		if($items)
 			Flight::json($items);

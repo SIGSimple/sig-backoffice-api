@@ -27,6 +27,27 @@
 		return stripslashes(join(' AND ',$aux));
 	}*/
 
+	function geraDataProximoMes($dta_original) {
+		$dateOriginal = new DateTime($dta_original);
+		$date = new DateTime($dta_original);
+		$newDate = $date->add(new DateInterval("P1M"));
+
+		if( ((int)$newDate->format("m") - $dateOriginal->format("m")) > 1 ) {
+			$m = ((int)$newDate->format("m")-1);
+
+			if($m < 10)
+				$m = "0".$m;
+
+			$f = new DateTime($newDate->format("Y") . $m .'01');
+			$f->modify('last day of this month');
+
+			return $f->format('Y-m-d');
+		}
+		else {
+			return $newDate->format('Y-m-d');
+		}
+	}
+
 	function array_orderby() {
 		$args = func_get_args();
 		$data = array_shift($args);
