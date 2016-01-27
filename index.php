@@ -69,6 +69,8 @@ Flight::route('GET /bancos(.json)',		 									array('BancoController', 'getBanc
 Flight::route('GET /origens(.json)',		 								array('OrigemController', 'getOrigens'));
 Flight::route('GET /alteracao/funcao/motivos(.json)',		 				array('MotivoAlteracaoFuncaoController', 'getMotivosAlteracaoFuncao'));
 Flight::route('GET /terceiros(.json)',		 								array('TerceiroController', 'getTerceiros'));
+Flight::route('GET /perfis(.json)',		 									array('PerfilController', 'getPerfis'));
+Flight::route('GET /perfil/@cod_perfil/modulos(.json)',		 				array('ModuloPerfilController', 'getModulosPerfis'));
 
 Flight::start();
 

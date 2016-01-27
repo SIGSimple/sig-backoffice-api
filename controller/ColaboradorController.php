@@ -151,7 +151,7 @@ class ColaboradorController {
 				  ->set('num_pis', $colTO->num_pis)
 				  ->is_required();
 
-		$validator->set_msg('O Titulo de Eleitor é obrigatório')
+		/*$validator->set_msg('O Titulo de Eleitor é obrigatório')
 				  ->set('num_titulo_eleitor', $colTO->num_titulo_eleitor)
 				  ->is_required();
 
@@ -161,7 +161,7 @@ class ColaboradorController {
 
 		$validator->set_msg('A Seção Eleitoral é obrigatória')
 				  ->set('num_secao_eleitoral', $colTO->num_secao_eleitoral)
-				  ->is_required();
+				  ->is_required();*/
 
 		$validator->set_msg('O Endereço é obrigatório')
 				  ->set('dsc_endereco', $colTO->dsc_endereco)
